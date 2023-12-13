@@ -15,6 +15,8 @@ use crate::y2023::d8::{solve_8a, solve_8b};
 use crate::y2023::d9::{solve_9a, solve_9b};
 
 mod y2023;
+#[allow(dead_code)]
+mod util;
 
 fn main() {
     solve_day(1)
