@@ -1,5 +1,6 @@
 use std::collections::HashMap;
-use std::fmt::{Display, format, Formatter};
+use std::fmt::{Display, Formatter};
+
 use itertools::Itertools;
 use pad::{p, Position};
 
@@ -91,6 +92,7 @@ impl <T> TileMap<T> where T: Copy {
 #[cfg(test)]
 mod tests {
     use Tile::*;
+
     use crate::util::TileMap;
 
     #[derive(Copy, Clone)]
