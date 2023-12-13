@@ -1,173 +1,72 @@
-use std::collections::HashMap;
-use pad::{p, Position};
 use Tile::*;
+
+use crate::util::*;
 
 pub fn solve_13a(input: &str) -> usize {
     let blocks = input
         .split("\r\n\r\n")
-        .map(Block::from)
+        .map(TileMap::<Tile>::from)
         .collect::<Vec<_>>();
-
-    // blocks.iter().for_each(|b| {
-    //     println!("{:?}", b.find_vertical_mirror_line());
-    //     println!("{:?}", b.find_horizontal_mirror_line());
-    // });
 
     blocks
         .into_iter()
-        .enumerate()
-        .map(|(i, b)| match b.find_vertical_mirror_line() {
-            Some(line) => line,
-            None => {
-                println!("{i}");
-                b.find_horizontal_mirror_line() * 100
-            }
-        })
+        .map(get_value)
         .sum()
 }
 
-pub fn solve_13b(input: &str) -> usize {
+pub fn solve_13b(_input: &str) -> usize {
     0
 }
 
-#[derive(Debug)]
-struct Block {
-    width: usize,
-    height: usize,
-    tile_map: HashMap<Position, Tile>,
-}
+fn get_value(tile_map: TileMap<Tile>) -> usize {
+    let columns = tile_map
+        .columns()
+        .into_iter()
+        .collect::<Vec<_>>();
 
-impl Block {
-    fn find_horizontal_mirror_line(&self) -> usize {
-        let mut rows = vec![];
+    let column_opt = (0..columns.len() - 1)
+        .into_iter()
+        .flat_map(|i| {
+            let mut depth = 0;
 
-        for y in 0..self.height {
-            let mut row = vec![];
+            while i.checked_sub(depth).map(|_| true).unwrap_or(false)  && i + 1 + depth < tile_map.width  {
+                if columns[i - depth] != columns[i + 1 + depth] {
+                    return None
+                }
 
-            for x in 0..self.width {
-                row.push(*self.tile_map.get(&p!(x, y)).unwrap())
+                depth += 1
             }
 
-            rows.push((y, row))
-        }
+            Some(i + 1)
+        })
+        .next();
 
-        let half = (self.height as f32 / 2.0).ceil() as usize;
-
-        rows
-            .windows(2)
-            .filter(|window| window[0].1 == window[1].1)
-            .filter(|window| {
-                let take = self.height - window[1].0;
-                if window[1].0 >= half {
-                    let a = rows.iter().map(|row| &row.1).skip(self.height - take * 2).take(take).collect::<Vec<_>>();
-                    let b = rows.iter().map(|row| &row.1).skip((self.height - take * 2) + 1).take(take).rev().collect::<Vec<_>>();
-
-                    println!("top");
-                    println!("a: {:?}", a);
-                    println!("b: {:?}", b);
-
-                    a == b
-                } else {
-                    let a = rows.iter().map(|row| &row.1).skip(0).take(take).collect::<Vec<_>>();
-                    let b = rows.iter().map(|row| &row.1).skip(take).take(take).collect::<Vec<_>>();
-
-                    println!("bottom");
-                    println!("a: {:?}", a);
-                    println!("b: {:?}", b);
-
-                    a == b
-                }
-            })
-            .map(|window| window[1].0)
-            .next().unwrap()
-
-        // rows
-        //     .windows(4)
-        //     .filter(|window| window[0].1 == window[3].1 && window[1].1 == window[2].1)
-        //     .map(|window| window[2].0)
-        //     .next().unwrap_or(self.height - 1)
-
-        // unimplemented!()
+    if column_opt.is_some() {
+        return column_opt.unwrap()
     }
 
-    fn find_vertical_mirror_line(&self) -> Option<usize> {
-        let mut columns = vec![];
+    let rows = tile_map
+        .rows()
+        .into_iter()
+        .collect::<Vec<_>>();
 
-        for x in 0..self.width {
-            let mut column = vec![];
+    (0..rows.len() - 1)
+        .into_iter()
+        .flat_map(|i| {
+            let mut depth = 0;
 
-            for y in 0..self.height {
-                column.push(*self.tile_map.get(&p!(x, y)).unwrap())
+            while i.checked_sub(depth).map(|_| true).unwrap_or(false) && i + 1 + depth < tile_map.height  {
+                if rows[i - depth] != rows[i + 1 + depth] {
+                    return None
+                }
+
+                depth += 1
             }
 
-            columns.push((x, column))
-        }
-
-        let half = (self.width as f32 / 2.0).ceil() as usize;
-
-        columns
-            .windows(2)
-            .filter(|window| window[0].1 == window[1].1)
-            .filter(|window| {
-                let take = self.width - window[1].0;
-
-                if window[1].0 >= half {
-                    let a = columns.iter().map(|col| &col.1).skip(self.width - take * 2).take(take).collect::<Vec<_>>();
-                    let b = columns.iter().map(|col| &col.1).skip((self.width - take * 2) + 1).take(take).rev().collect::<Vec<_>>();
-
-                    println!("right");
-                    println!("a: {:?}", a);
-                    println!("b: {:?}", b);
-
-                    a == b
-                } else {
-                    let a = columns.iter().map(|col| &col.1).skip(0).take(take).collect::<Vec<_>>();
-                    let b = columns.iter().map(|col| &col.1).skip(take).take(take).collect::<Vec<_>>();
-
-                    println!("left");
-                    println!("a: {:?}", a);
-                    println!("b: {:?}", b);
-
-                    a == b
-                }
-            })
-            .map(|window| window[1].0)
-            .next()
-
-        // columns
-        //     .windows(4)
-        //     .filter(|window| window[0].1 == window[3].1 && window[1].1 == window[2].1)
-        //     .map(|window| window[2].0)
-        //     .next()
-
-        // unimplemented!()
-    }
-}
-
-impl From<&str> for Block {
-    fn from(block_str: &str) -> Self {
-        let mut tile_map = HashMap::new();
-
-        block_str
-            .lines()
-            .enumerate()
-            .for_each(|(y, line)| line
-                .chars()
-                .enumerate()
-                .for_each(|(x, c)| {
-                    tile_map.insert(p!(x, y), Tile::from(c));
-                })
-            );
-
-        let width = block_str.lines().next().unwrap().len();
-        let height = block_str.lines().count();
-
-        Block {
-            tile_map,
-            width,
-            height,
-        }
-    }
+            Some(i + 1)
+        })
+        .next()
+        .unwrap() * 100
 }
 
 #[derive(Copy, Clone, Debug, Hash, Eq, PartialEq)]
@@ -182,6 +81,15 @@ impl From<char> for Tile {
             '.' => Ash,
             '#' => Rock,
             _ => panic!("invalid char")
+        }
+    }
+}
+
+impl Into<char> for Tile {
+    fn into(self) -> char {
+        match self {
+            Ash => '.',
+            Rock => '#'
         }
     }
 }

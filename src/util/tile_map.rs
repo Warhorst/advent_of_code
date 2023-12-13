@@ -6,8 +6,8 @@ use pad::{p, Position};
 
 #[derive(Clone, Debug)]
 pub struct TileMap<T> {
-    width: usize,
-    height: usize,
+    pub width: usize,
+    pub height: usize,
     tiles: HashMap<Position, T>
 }
 
