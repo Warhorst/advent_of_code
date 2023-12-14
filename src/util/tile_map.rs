@@ -4,7 +4,7 @@ use std::fmt::{Display, Formatter};
 use itertools::Itertools;
 use pad::{p, Position};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct TileMap<T> {
     pub width: usize,
     pub height: usize,
@@ -22,6 +22,10 @@ impl <T> Line<T> {
         Line {
             values
         }
+    }
+
+    pub fn iter(&self) -> impl Iterator<Item=&T> {
+        self.values.iter()
     }
 }
 
@@ -68,6 +72,10 @@ impl <T> TileMap<T> where T: Copy {
         *self.tiles.get(&pos).expect(format!("The tile at position {:?} should exist", pos).as_str())
     }
 
+    pub fn try_get(&self, pos: Position) -> Option<T> {
+        self.tiles.get(&pos).map(|t| *t)
+    }
+
     pub fn rows(&self) -> impl IntoIterator<Item=Line<T>> + '_ {
         (0..self.height)
             .into_iter()
@@ -86,6 +94,16 @@ impl <T> TileMap<T> where T: Copy {
                 .map(|y| self.get(p!(x, y)))
                 .collect())
             )
+    }
+}
+
+impl <T> TileMap<T> {
+    pub fn set(&mut self, pos: Position, tile: T) {
+        if 0 <= pos.x && pos.x < self.width as isize && 0 <= pos.y && pos.y < self.height as isize {
+            self.tiles.insert(pos, tile);
+        } else {
+            panic!("outside of tile map!")
+        }
     }
 }
 
