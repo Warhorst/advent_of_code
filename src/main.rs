@@ -6,6 +6,7 @@ use crate::y2023::d11::{solve_11a, solve_11b};
 use crate::y2023::d12::{solve_12a, solve_12b};
 use crate::y2023::d13::{solve_13a, solve_13b};
 use crate::y2023::d14::{solve_14a, solve_14b};
+use crate::y2023::d15::{solve_15a, solve_15b};
 use crate::y2023::d2::{solve_2a, solve_2b};
 use crate::y2023::d3::{solve_3a, solve_3b};
 use crate::y2023::d4::{solve_4a, solve_4b};
@@ -20,7 +21,7 @@ mod y2023;
 mod util;
 
 fn main() {
-    solve_day(14)
+    solve_day(15)
 }
 
 fn solve_day(day: usize) {
@@ -39,6 +40,7 @@ fn solve_day(day: usize) {
         || solve(12, 2023, solve_12a, 21, solve_12b, 525152),
         || solve(13, 2023, solve_13a, 405, solve_13b, 0),
         || solve(14, 2023, solve_14a, 136, solve_14b, 64),
+        || solve(15, 2023, solve_15a, 1320, solve_15b, 145),
     ];
 
     solve_day_funcs[day - 1]()
