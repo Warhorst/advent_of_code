@@ -111,7 +111,7 @@ impl <T> TileMap<T> {
 mod tests {
     use Tile::*;
 
-    use crate::util::TileMap;
+    use crate::aoc_lib::TileMap;
 
     #[derive(Copy, Clone)]
     enum Tile {

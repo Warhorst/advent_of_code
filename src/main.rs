@@ -19,10 +19,10 @@ use crate::y2023::d9::{solve_9a, solve_9b};
 
 mod y2023;
 #[allow(dead_code)]
-mod util;
+mod aoc_lib;
 
 fn main() {
-    solve_day(14)
+    solve_day(16)
 }
 
 fn solve_day(day: usize) {

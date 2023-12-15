@@ -1,6 +1,6 @@
 use Tile::*;
 
-use crate::util::*;
+use crate::aoc_lib::*;
 
 pub fn solve_13a(input: &str) -> usize {
     let blocks = input
