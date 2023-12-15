@@ -22,7 +22,7 @@ mod y2023;
 mod util;
 
 fn main() {
-    solve_day(16)
+    solve_day(14)
 }
 
 fn solve_day(day: usize) {

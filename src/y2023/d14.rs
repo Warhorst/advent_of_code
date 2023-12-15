@@ -12,48 +12,16 @@ pub fn solve_14a(input: &str) -> usize {
 
 pub fn solve_14b(input: &str) -> usize {
     let mut tile_map = TileMap::<Tile>::from(input);
-
-    let mut prevs = vec![];
-
-    for _ in 0..1_000_000_000 {
-        slide_north(&mut tile_map);
-        slide_west(&mut tile_map);
-        slide_south(&mut tile_map);
-        slide_east(&mut tile_map);
-
-        if prevs.contains(&tile_map) {
-            prevs.push(tile_map.clone());
-            break
-        } else {
-            prevs.push(tile_map.clone())
+    run_n_times_with_cycle(
+        1_000_000_000,
+        &mut tile_map,
+        |tm| {
+            slide_north(tm);
+            slide_west(tm);
+            slide_south(tm);
+            slide_east(tm);
         }
-    }
-
-    let cycle_elem = &prevs[prevs.len() - 1];
-
-    let first_index_of_cycle = prevs
-        .iter()
-        .enumerate()
-        .skip_while(|(_, p)| p != &cycle_elem)
-        .map(|(i, _)| i)
-        .next().unwrap();
-
-
-    let diff = 1_000_000_000 - first_index_of_cycle;
-    let cycle_size = prevs.len() - first_index_of_cycle - 1;
-    let foo = diff / cycle_size;
-
-    let bar = diff - foo * cycle_size;
-
-    let mut tile_map = TileMap::<Tile>::from(input);
-
-    // execute n times until start of cycle, then one time for the cycle and then the remaining times until 1 billion
-    for _ in 0..(first_index_of_cycle + bar) {
-        slide_north(&mut tile_map);
-        slide_west(&mut tile_map);
-        slide_south(&mut tile_map);
-        slide_east(&mut tile_map);
-    }
+    );
 
     calculate_north_weight(&tile_map)
 }
