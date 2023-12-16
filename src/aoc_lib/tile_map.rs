@@ -99,11 +99,22 @@ impl <T> TileMap<T> where T: Copy {
 
 impl <T> TileMap<T> {
     pub fn set(&mut self, pos: Position, tile: T) {
-        if 0 <= pos.x && pos.x < self.width as isize && 0 <= pos.y && pos.y < self.height as isize {
+        if self.pos_in_bounds(pos) {
             self.tiles.insert(pos, tile);
         } else {
             panic!("outside of tile map!")
         }
+    }
+
+    /// Same as set, but does nothing if the position is not in bounds
+    pub fn set_if_in_bounds(&mut self, pos: Position, tile: T) {
+        if self.pos_in_bounds(pos) {
+            self.tiles.insert(pos, tile);
+        }
+    }
+
+    pub fn pos_in_bounds(&self, pos: Position) -> bool {
+        0 <= pos.x && pos.x < self.width as isize && 0 <= pos.y && pos.y < self.height as isize
     }
 }
 
