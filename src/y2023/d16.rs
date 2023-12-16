@@ -1,53 +1,128 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
+
 use pad::{Direction, p, Position};
 use pad::Direction::*;
+use rayon::iter::ParallelIterator;
+use rayon::prelude::IntoParallelIterator;
+
 use crate::aoc_lib::*;
 use crate::y2023::d16::Tile::*;
 
 pub fn solve_16a(input: &str) -> usize {
     let tile_map = TileMap::<Tile>::from(input);
-    println!("{tile_map}");
 
-    let mut beamer = Beamer::new(tile_map);
+    let mut beamer = Beamer::new(&tile_map, p!(0, 0), XP);
     beamer.beam();
-    beamer.print_energized_tiles();
     beamer.count_unique_energized_tiles()
 }
 
 pub fn solve_16b(input: &str) -> usize {
-    0
+    let tile_map = TileMap::<Tile>::from(input);
+
+    let positions_and_directions = (0..tile_map.width)
+        .into_iter()
+        .flat_map(|x| [(p!(x, 0), YP), (p!(x, tile_map.height - 1), YM)])
+        .chain((0..tile_map.height)
+            .into_iter()
+            .flat_map(|y| [(p!(0, y), XP), (p!(tile_map.width - 1, y), XM)])
+        )
+        .collect::<Vec<_>>();
+
+    positions_and_directions
+        .into_par_iter()
+        .map(|(pos, dir)| {
+            let mut beamer = Beamer::new(&tile_map, pos, dir);
+            beamer.beam();
+            beamer.count_unique_energized_tiles()
+        })
+        .max().unwrap()
 }
 
 #[derive(Clone, Eq, PartialEq)]
-struct Beamer {
-    /// (position, dir of beam) to is_front_beam
-    beams: HashMap<(Position, Direction), bool>,
-    tile_map: TileMap<Tile>,
+struct Beamer<'a> {
+    beams: HashSet<(Position, Direction)>,
+    tile_map: &'a TileMap<Tile>,
 }
 
-impl Beamer {
-    fn new(tile_map: TileMap<Tile>) -> Self {
-        let mut beams = HashMap::new();
+impl<'a> Beamer<'a> {
+    fn new(tile_map: &'a TileMap<Tile>, start_pos: Position, start_dir: Direction) -> Self {
+        let mut beams = HashSet::new();
 
-        match tile_map.get(p!(0, 0)) {
-            Empty => {
-                beams.insert((p!(0, 0), XP), true);
+        match start_dir {
+            XP => match tile_map.get(start_pos) {
+                Empty => {
+                    beams.insert((start_pos, XP));
+                }
+                RMirror => {
+                    beams.insert((start_pos, YM));
+                }
+                LMirror => {
+                    beams.insert((start_pos, YP));
+                }
+                HSplitter => {
+                    beams.insert((start_pos, XP));
+                }
+                VSplitter => {
+                    beams.insert((start_pos, YP));
+                    beams.insert((start_pos, YM));
+                }
             }
-            RMirror => {
-                beams.insert((p!(0, 0), YM), true);
+            YP => match tile_map.get(start_pos) {
+                Empty => {
+                    beams.insert((start_pos, YP));
+                }
+                RMirror => {
+                    beams.insert((start_pos, XM));
+                }
+                LMirror => {
+                    beams.insert((start_pos, XP));
+                }
+                HSplitter => {
+                    beams.insert((start_pos, XP));
+                    beams.insert((start_pos, XM));
+                }
+                VSplitter => {
+                    beams.insert((start_pos, YP));
+                }
             }
-            LMirror => {
-                beams.insert((p!(0, 0), YP), true);
+            XM => match tile_map.get(start_pos) {
+                Empty => {
+                    beams.insert((start_pos, XM));
+                }
+                RMirror => {
+                    beams.insert((start_pos, YP));
+                }
+                LMirror => {
+                    beams.insert((start_pos, YM));
+                }
+                HSplitter => {
+                    beams.insert((start_pos, XM));
+                }
+                VSplitter => {
+                    beams.insert((start_pos, YP));
+                    beams.insert((start_pos, YM));
+                }
             }
-            HSplitter => {
-                beams.insert((p!(0, 0), XP), true);
+            YM => match tile_map.get(start_pos) {
+                Empty => {
+                    beams.insert((start_pos, YM));
+                }
+                RMirror => {
+                    beams.insert((start_pos, XP));
+                }
+                LMirror => {
+                    beams.insert((start_pos, XM));
+                }
+                HSplitter => {
+                    beams.insert((start_pos, XP));
+                    beams.insert((start_pos, XM));
+                }
+                VSplitter => {
+                    beams.insert((start_pos, YM));
+                }
             }
-            VSplitter => {
-                beams.insert((p!(0, 0), YP), true);
-            }
+            _ => {}
         }
-
-        beams.insert((p!(0, 0), XP), true);
 
         Beamer {
             beams,
@@ -57,93 +132,93 @@ impl Beamer {
 
     fn beam(&mut self) {
         loop {
-            let prev = self.count_energized_tiles();
+            let prev = self.clone();
             self.update();
 
-            if self.count_energized_tiles() == prev {
+            if *self == prev {
                 return;
             }
         }
     }
 
     fn update(&mut self) {
-        let mut new_state = HashMap::new();
-        let mut insert = |pos: Position, dir: Direction, is_front_beam: bool| {
+        let mut new_state = HashSet::new();
+        let mut insert = |pos: Position, dir: Direction| {
             if self.tile_map.pos_in_bounds(pos) {
-                new_state.entry((pos, dir)).and_modify(|front_beam: &mut bool| *front_beam = is_front_beam).or_insert(is_front_beam);
+                new_state.insert((pos, dir));
             }
         };
 
         self.beams
             .iter()
-            .for_each(|((pos, dir), _)| {
+            .for_each(|(pos, dir)| {
                 let pos_in_dir = pos.position_in_direction(*dir, 1);
 
-                insert(*pos, *dir, false);
+                insert(*pos, *dir);
 
                 match self.tile_map.try_get(pos_in_dir) {
-                    Some(Empty) => insert(pos_in_dir, *dir, true),
+                    Some(Empty) => insert(pos_in_dir, *dir),
                     Some(RMirror) => match *dir {
                         XP => {
-                            insert(pos_in_dir, YM, true);
+                            insert(pos_in_dir, YM);
                         }
                         XM => {
-                            insert(pos_in_dir, YP, true);
+                            insert(pos_in_dir, YP);
                         }
                         YP => {
-                            insert(pos_in_dir, XM, true);
+                            insert(pos_in_dir, XM);
                         }
                         YM => {
-                            insert(pos_in_dir, XP, true);
+                            insert(pos_in_dir, XP);
                         }
                         _ => {}
                     }
                     Some(LMirror) => match *dir {
                         XP => {
-                            insert(pos_in_dir, YP, true);
+                            insert(pos_in_dir, YP);
                         }
                         XM => {
-                            insert(pos_in_dir, YM, true);
+                            insert(pos_in_dir, YM);
                         }
                         YP => {
-                            insert(pos_in_dir, XP, true);
+                            insert(pos_in_dir, XP);
                         }
                         YM => {
-                            insert(pos_in_dir, XM, true);
+                            insert(pos_in_dir, XM);
                         }
                         _ => {}
                     }
                     Some(HSplitter) => match *dir {
                         XP => {
-                            insert(pos_in_dir, XP, true);
+                            insert(pos_in_dir, XP);
                         }
                         XM => {
-                            insert(pos_in_dir, XM, true);
+                            insert(pos_in_dir, XM);
                         }
                         YP => {
-                            insert(pos_in_dir, XP, true);
-                            insert(pos_in_dir, XM, true);
+                            insert(pos_in_dir, XP);
+                            insert(pos_in_dir, XM);
                         }
                         YM => {
-                            insert(pos_in_dir, XP, true);
-                            insert(pos_in_dir, XM, true);
+                            insert(pos_in_dir, XP);
+                            insert(pos_in_dir, XM);
                         }
                         _ => {}
                     }
                     Some(VSplitter) => match *dir {
                         XP => {
-                            insert(pos_in_dir, YM, true);
-                            insert(pos_in_dir, YP, true);
+                            insert(pos_in_dir, YM);
+                            insert(pos_in_dir, YP);
                         }
                         XM => {
-                            insert(pos_in_dir, YM, true);
-                            insert(pos_in_dir, YP, true);
+                            insert(pos_in_dir, YM);
+                            insert(pos_in_dir, YP);
                         }
                         YP => {
-                            insert(pos_in_dir, YP, true);
+                            insert(pos_in_dir, YP);
                         }
                         YM => {
-                            insert(pos_in_dir, YM, true);
+                            insert(pos_in_dir, YM);
                         }
                         _ => {}
                     },
@@ -154,30 +229,9 @@ impl Beamer {
         self.beams = new_state;
     }
 
-    fn print_energized_tiles(&self) {
-        for y in 0..self.tile_map.height {
-            for x in 0..self.tile_map.width {
-                let beams_on_pos = self.beams.keys().filter(|(pos, _)| *pos == p!(x, y)).count();
-
-                if beams_on_pos == 1 {
-                    print!("#");
-                } else if beams_on_pos > 1 {
-                    print!("{beams_on_pos}");
-                } else {
-                    print!(".")
-                }
-            }
-            println!()
-        }
-    }
-
-    fn count_energized_tiles(&self) -> usize {
-        self.beams.keys().count()
-    }
-
     fn count_unique_energized_tiles(&self) -> usize {
         let mut energized_positions = HashSet::new();
-        self.beams.keys().for_each(|(pos, _)| {
+        self.beams.iter().for_each(|(pos, _)| {
             energized_positions.insert(*pos);
         });
         energized_positions.len()
