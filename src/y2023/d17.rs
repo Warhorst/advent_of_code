@@ -5,16 +5,36 @@ use crate::aoc_lib::*;
 pub fn solve_17a(input: &str) -> usize {
     let tile_map = TileMap::<Tile>::from(input);
 
-    println!("{tile_map}");
-
-    let start = (p!(0, 0), None);
+    let start = (p!(0, 0), Vec::with_capacity(3));
     let goal = p!(tile_map.width - 1, tile_map.height - 1);
 
     let res = astar(
         &start,
-        |n| successors(&tile_map, *n), // successors
-        |(pos, _)| distance(*pos, goal), // heuristic
-        |(pos, _)| *pos == goal
+        |n| successors(&tile_map, n.clone()),
+        |(pos, _)| distance(*pos, goal),
+        |(pos, _)| *pos == goal,
+    );
+
+    if let Some((_, c)) = res {
+        c
+    } else {
+        0
+    }
+}
+
+// TODO this does not work. I added 1 to the returned puzzle result, just for fun, and it was correct.
+//  It works on the example input tho...
+pub fn solve_17b(input: &str) -> usize {
+    let tile_map = TileMap::<Tile>::from(input);
+
+    let start = (p!(0, 0), Vec::with_capacity(10));
+    let goal = p!(tile_map.width - 1, tile_map.height - 1);
+
+    let res = astar(
+        &start,
+        |n| successors_ultra(&tile_map, n.clone()),
+        |(pos, _)| distance(*pos, goal),
+        |(pos, _)| *pos == goal,
     );
 
     if let Some((path, c)) = res {
@@ -25,36 +45,79 @@ pub fn solve_17a(input: &str) -> usize {
     }
 }
 
-pub fn solve_17b(input: &str) -> usize {
-    0
-}
-
-fn successors(
-    tilemap: &TileMap<Tile>,
-    (pos, dir_opt): (Position, Option<Direction>)
-) -> impl IntoIterator<Item=((Position, Option<Direction>), usize)> + '_ {
+fn successors<'a>(
+    tilemap: &'a TileMap<Tile>,
+    (pos, prev_dirs): (Position, Vec<Direction>),
+) -> impl IntoIterator<Item=((Position, Vec<Direction>), usize)> + 'a {
     [XP, XM, YP, YM]
         .into_iter()
-        .filter(move |dir| match dir_opt {
-            Some(d) => dir.opposite() != d,
-            None => true
+        .filter_map(move |dir| {
+            if prev_dirs.last() == Some(&dir.opposite()) {
+                return None;
+            }
+
+            if prev_dirs.len() == 3 && prev_dirs.iter().all(|pd| *pd == dir) {
+                return None;
+            }
+
+            let pos_in_dir = pos.position_in_direction(dir, 1);
+            let mut new_prevs = prev_dirs.clone();
+
+            match prev_dirs.len() {
+                3 => {
+                    new_prevs.remove(0);
+                    new_prevs.push(dir)
+                }
+                _ => new_prevs.push(dir)
+            };
+
+            match tilemap.try_get(pos_in_dir) {
+                Some(t) => Some(((pos_in_dir, new_prevs), t.0)),
+                None => None
+            }
         })
-        .flat_map(move |dir| {
-            let mut v = Vec::with_capacity(3);
-            let mut cost = 0;
+}
 
-            for i in 1..=3 {
-                let pos_in_dir = pos.position_in_direction(dir, i);
+fn successors_ultra<'a>(
+    tilemap: &'a TileMap<Tile>,
+    (pos, prev_dirs): (Position, Vec<Direction>),
+) -> impl IntoIterator<Item=((Position, Vec<Direction>), usize)> + 'a {
+    [XP, XM, YP, YM]
+        .into_iter()
+        .filter_map(move |dir| {
+            if prev_dirs.last() == Some(&dir.opposite()) {
+                return None;
+            }
 
-                if let Some(t) = tilemap.try_get(pos_in_dir) {
-                    cost += t.0;
-                    v.push(((pos_in_dir, Some(dir)), cost));
-                } else {
-                    break
+            if let Some(w) = prev_dirs.windows(4).last() {
+                if w.into_iter().any(|wd| *wd != w[3]) && w[3] != dir {
+                    return None
+                }
+            } else if let Some(d) = prev_dirs.last() {
+                if *d != dir {
+                    return None
                 }
             }
 
-            v
+            if prev_dirs.len() == 10 && prev_dirs.iter().all(|pd| *pd == dir) {
+                return None;
+            }
+
+            let pos_in_dir = pos.position_in_direction(dir, 1);
+            let mut new_prevs = prev_dirs.clone();
+
+            match prev_dirs.len() {
+                10 => {
+                    new_prevs.remove(0);
+                    new_prevs.push(dir)
+                }
+                _ => new_prevs.push(dir)
+            };
+
+            match tilemap.try_get(pos_in_dir) {
+                Some(t) => Some(((pos_in_dir, new_prevs), t.0)),
+                None => None
+            }
         })
 }
 
@@ -63,9 +126,10 @@ fn distance(pos: Position, goal: Position) -> usize {
 }
 
 /// For debugging
+#[allow(dead_code)]
 fn print_path(
     tile_map: &TileMap<Tile>,
-    path: Vec<(Position, Option<Direction>)>
+    path: Vec<(Position, Vec<Direction>)>,
 ) {
     let map = path
         .into_iter()
@@ -75,8 +139,8 @@ fn print_path(
         for x in 0..tile_map.width {
             let pos = p!(x, y);
 
-            if let Some(dir) = map.get(&pos) {
-                match dir {
+            if let Some(dirs) = map.get(&pos) {
+                match dirs.last() {
                     Some(XP) => print!("{}", ">".red()),
                     Some(XM) => print!("{}", "<".red()),
                     Some(YP) => print!("{}", "v".red()),
@@ -86,7 +150,6 @@ fn print_path(
             } else {
                 print!("{}", <Tile as Into<char>>::into(tile_map.get(pos)))
             }
-            print!(" ")
         }
         println!()
     }
