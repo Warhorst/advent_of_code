@@ -12,6 +12,7 @@ use crate::y2023::d14::{solve_14a, solve_14b};
 use crate::y2023::d15::{solve_15a, solve_15b};
 use crate::y2023::d16::{solve_16a, solve_16b};
 use crate::y2023::d17::{solve_17a, solve_17b};
+use crate::y2023::d18::{solve_18a, solve_18b};
 use crate::y2023::d2::{solve_2a, solve_2b};
 use crate::y2023::d3::{solve_3a, solve_3b};
 use crate::y2023::d4::{solve_4a, solve_4b};
@@ -26,7 +27,7 @@ mod y2023;
 mod aoc_lib;
 
 fn main() {
-    solve_day(17)
+    solve_day(18)
 }
 
 fn solve_day(day: usize) {
@@ -48,6 +49,7 @@ fn solve_day(day: usize) {
         || solve(15, 2023, solve_15a, 1320, solve_15b, 145),
         || solve(16, 2023, solve_16a, 46, solve_16b, 51),
         || solve(17, 2023, solve_17a, 102, solve_17b, 94),
+        || solve(18, 2023, solve_18a, 0, solve_18b, 0),
     ];
 
     solve_day_funcs[day - 1]()
