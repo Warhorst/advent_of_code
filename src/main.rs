@@ -1,5 +1,8 @@
 use std::fmt::Debug;
 use std::fs::read_to_string;
+
+use colored::Colorize;
+
 use crate::y2023::d1::{solve_1a, solve_1b};
 use crate::y2023::d10::{solve_10a, solve_10b};
 use crate::y2023::d11::{solve_11a, solve_11b};
@@ -54,33 +57,44 @@ fn solve<A: Debug + PartialEq, B: Debug + PartialEq, AS: Fn(&str) -> A, BS: Fn(&
     day: u8,
     year: u16,
     a_solver: AS,
-    a_example_solution: A,
+    a_expectation: A,
     b_solver: BS,
-    b_example_solution: B,
+    b_expectation: B,
 ) {
     println!("Solving day {day}, {year}");
 
     let input = load_input(day, year);
 
     if input.example_a.is_empty() {
-        println!("example a does not exist yet, skipping it");
+        println!("example B does not exist yet, skipping it");
     } else {
-        assert_eq!(a_example_solution, a_solver(&input.example_a));
-        println!("Example a works");
+        let a_result = a_solver(&input.example_a);
+        if a_expectation == a_result {
+            println!("{}", "Example A works".green())
+        } else {
+            println!("{}", format!("Example A failed. Expected was {:?}, but result was {:?}.", a_expectation, a_result).red());
+            return;
+        }
     }
 
     if input.example_b.is_empty() {
         println!("example b does not exist yet, skipping it");
     } else {
-        assert_eq!(b_example_solution, b_solver(&input.example_b));
-        println!("Example b works");
+        let b_result = b_solver(&input.example_b);
+
+        if b_expectation == b_result {
+            println!("{}", "Example B works".green())
+        } else {
+            println!("{}", format!("Example B failed. Expected was {:?}, but result was {:?}.", b_expectation, b_result).red());
+            return;
+        }
     }
 
     if input.puzzle_input.is_empty() {
         println!("the puzzle input does not exist yet, skipping it");
     } else {
-        println!("Solution a: {:?}", a_solver(&input.puzzle_input));
-        println!("Solution b: {:?}", b_solver(&input.puzzle_input));
+        println!("Solution A: {:?}", a_solver(&input.puzzle_input));
+        println!("Solution B: {:?}", b_solver(&input.puzzle_input));
     }
 }
 
