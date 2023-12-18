@@ -49,7 +49,7 @@ fn solve_day(day: usize) {
         || solve(15, 2023, solve_15a, 1320, solve_15b, 145),
         || solve(16, 2023, solve_16a, 46, solve_16b, 51),
         || solve(17, 2023, solve_17a, 102, solve_17b, 94),
-        || solve(18, 2023, solve_18a, 0, solve_18b, 0),
+        || solve(18, 2023, solve_18a, 62, solve_18b, 952408144115),
     ];
 
     solve_day_funcs[day - 1]()
@@ -68,7 +68,7 @@ fn solve<A: Debug + PartialEq, B: Debug + PartialEq, AS: Fn(&str) -> A, BS: Fn(&
     let input = load_input(day, year);
 
     if input.example_a.is_empty() {
-        println!("example B does not exist yet, skipping it");
+        println!("example A does not exist yet, skipping it");
     } else {
         let a_result = a_solver(&input.example_a);
         if a_expectation == a_result {
@@ -80,7 +80,7 @@ fn solve<A: Debug + PartialEq, B: Debug + PartialEq, AS: Fn(&str) -> A, BS: Fn(&
     }
 
     if input.example_b.is_empty() {
-        println!("example b does not exist yet, skipping it");
+        println!("example B does not exist yet, skipping it");
     } else {
         let b_result = b_solver(&input.example_b);
 

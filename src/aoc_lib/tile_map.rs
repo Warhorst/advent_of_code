@@ -68,6 +68,24 @@ impl <T> Display for TileMap<T> where T: Copy + Into<char> {
 }
 
 impl <T> TileMap<T> where T: Copy {
+    pub fn new(
+        init: T,
+        width: usize,
+        height: usize
+    ) -> Self {
+        let tiles = (0..width)
+            .into_iter()
+            .flat_map(|x| (0..height)
+                .into_iter()
+                .map(move |y| (p!(x, y), init))
+            )
+            .collect();
+
+        TileMap {
+            width, height, tiles
+        }
+    }
+
     pub fn get(&self, pos: Position) -> T {
         *self.tiles.get(&pos).expect(format!("The tile at position {:?} should exist", pos).as_str())
     }
