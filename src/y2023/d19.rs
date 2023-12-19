@@ -50,6 +50,45 @@ fn get_value_for_part(part: Part, key_instructions_map: &HashMap<String, Instruc
     }
 }
 
+/// Current idea: Find all conditions which lead to accepts. Remove pairs of pos and neg conditions, determine the number of possible values for x,m,a and s based on the remaining conditions and
+/// multiply them. Important: as no repetitions are allowed, the following formula must be used: #x * (#m - 1) * (#a - 2) * (#s - 3) where #n is the amount of possible values
+fn recursive(key: &str, key_instructions_map: &HashMap<String, Instructions>) -> Vec<Condition> {
+    let mut result = vec![];
+
+    let instructions = key_instructions_map.get(key).unwrap();
+
+    for ins in &instructions.instructions {
+        match ins {
+            CheckAndGoto(value, check, number, follow_up) => {} // add the condition to the path, if follow_up is accept or goto
+            JustGoto(follow_up) => match follow_up {
+                Accept => {} // if all other checks don't match
+                Reject => {
+                    // don't add anything to the final result
+
+                }
+                Goto(next) => {
+                    // recursive call with new ranges
+                }
+            }
+        }
+    }
+
+    result
+}
+
+#[derive(Copy, Clone)]
+enum Condition {
+    Pos(ConditionSpec),
+    Neg(ConditionSpec)
+}
+
+#[derive(Copy, Clone, Eq, PartialEq)]
+struct ConditionSpec {
+    value: Value,
+    check: Check,
+    number: usize
+}
+
 #[derive(Debug)]
 struct Instructions {
     key: String,
@@ -99,7 +138,7 @@ impl Instruction {
     }
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum Value {
     X,
     M,
@@ -107,7 +146,7 @@ enum Value {
     S,
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum Check {
     Greater,
     Less,
