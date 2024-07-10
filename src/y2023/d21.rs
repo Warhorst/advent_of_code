@@ -4,7 +4,7 @@ use Tile::*;
 use crate::aoc_lib::TileMap;
 
 /// Hint: I added the number of taken steps to my puzzle input (first line)
-pub fn solve_21a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     let mut lines = input.lines();
     let num_steps = lines.next().unwrap().parse::<usize>().unwrap();
     let mut tile_map = TileMap::<Tile>::from(lines.join("\n").as_str());
@@ -13,7 +13,7 @@ pub fn solve_21a(input: &str) -> usize {
 }
 
 /// No idea so far. Maybe find out a pattern and skip ahead
-pub fn solve_21b(_input: &str) -> usize {
+pub fn solve_b(_input: &str) -> usize {
     0
 }
 

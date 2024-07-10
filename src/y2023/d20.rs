@@ -2,14 +2,14 @@ use std::collections::HashMap;
 use crate::y2023::d20::ModuleType::*;
 use crate::y2023::d20::Pulse::*;
 
-pub fn solve_20a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     let mut configuration = Configuration::from(input);
     let (low, high) = configuration.push_button_times(1000);
     low * high
 }
 
 /// TODO naive and slow, improve!
-pub fn solve_20b(input: &str) -> usize {
+pub fn solve_b(input: &str) -> usize {
     let mut configuration = Configuration::from(input);
     configuration.count_times_to_reach_rx()
 }
