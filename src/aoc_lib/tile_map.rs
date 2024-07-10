@@ -59,7 +59,7 @@ impl <T> Display for TileMap<T> where T: Copy + Into<char> {
                 .into_iter()
                 .map(|x| self.get(p!(x, y)))
                 .map(Into::into)
-                .join(" ")
+                .join("")
             )
             .join("\n");
 
@@ -112,6 +112,10 @@ impl <T> TileMap<T> where T: Copy {
                 .map(|y| self.get(p!(x, y)))
                 .collect())
             )
+    }
+
+    pub fn iter(&self) -> impl Iterator<Item=(Position, T)> + '_{
+        self.tiles.iter().map(|(pos, tile)| (*pos, *tile))
     }
 }
 
