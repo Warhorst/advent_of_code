@@ -1,4 +1,4 @@
-pub fn solve_2a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     input
         .lines()
         .map(Game::from_line)
@@ -7,7 +7,7 @@ pub fn solve_2a(input: &str) -> usize {
         .sum()
 }
 
-pub fn solve_2b(input: &str) -> usize {
+pub fn solve_b(input: &str) -> usize {
     input
         .lines()
         .map(Game::from_line)

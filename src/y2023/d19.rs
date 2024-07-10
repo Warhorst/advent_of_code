@@ -5,7 +5,7 @@ use crate::y2023::d19::FollowUp::*;
 use crate::y2023::d19::Instruction::*;
 use crate::y2023::d19::Value::*;
 
-pub fn solve_19a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     let split = input.split("\r\n\r\n").collect::<Vec<_>>();
 
     let key_instructions_map = split[0]
@@ -21,15 +21,15 @@ pub fn solve_19a(input: &str) -> usize {
         .sum()
 }
 
-pub fn solve_19b(input: &str) -> u128 {
-    let key_instructions_map = input
-        .split("\r\n\r\n")
-        .next()
-        .unwrap()
-        .lines()
-        .map(Instructions::from)
-        .map(|ins| (ins.key.clone(), ins))
-        .collect::<HashMap<_, _>>();
+pub fn solve_b(_input: &str) -> u128 {
+    // let key_instructions_map = input
+    //     .split("\r\n\r\n")
+    //     .next()
+    //     .unwrap()
+    //     .lines()
+    //     .map(Instructions::from)
+    //     .map(|ins| (ins.key.clone(), ins))
+    //     .collect::<HashMap<_, _>>();
 
 
 

@@ -2,7 +2,7 @@ use pad::p;
 use Tile::*;
 use crate::aoc_lib::*;
 
-pub fn solve_14a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     let mut tile_map = TileMap::<Tile>::from(input);
 
     slide_north(&mut tile_map);
@@ -10,7 +10,7 @@ pub fn solve_14a(input: &str) -> usize {
     calculate_north_weight(&tile_map)
 }
 
-pub fn solve_14b(input: &str) -> usize {
+pub fn solve_b(input: &str) -> usize {
     let mut tile_map = TileMap::<Tile>::from(input);
     run_n_times_with_cycle(
         1_000_000_000,

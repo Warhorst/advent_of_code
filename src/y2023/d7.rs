@@ -3,7 +3,7 @@ use std::collections::HashMap;
 
 use HandType::*;
 
-pub fn solve_7a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     let mut hands = input.lines().map(Hand::from_line).collect::<Vec<_>>();
 
     hands.sort();
@@ -11,7 +11,7 @@ pub fn solve_7a(input: &str) -> usize {
     hands.iter().enumerate().map(|(i, h)| (i + 1) * h.bid).sum()
 }
 
-pub fn solve_7b(input: &str) -> usize {
+pub fn solve_b(input: &str) -> usize {
     let mut hands = input.lines().map(Hand::from_line_with_joker).collect::<Vec<_>>();
 
     hands.sort();

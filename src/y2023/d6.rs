@@ -1,4 +1,4 @@
-pub fn solve_6a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     let times = input
         .lines()
         .next()
@@ -32,7 +32,7 @@ pub fn solve_6a(input: &str) -> usize {
         .product()
 }
 
-pub fn solve_6b(input: &str) -> usize {
+pub fn solve_b(input: &str) -> usize {
     let time = input
         .lines()
         .next()

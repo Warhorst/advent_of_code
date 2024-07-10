@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use pad::{p, Position};
 
-pub fn solve_3a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     let pos_char_map = create_pos_char_map(input);
 
     let width = input.lines().next().unwrap().len();
@@ -54,7 +54,7 @@ pub fn solve_3a(input: &str) -> usize {
     number_matches.into_iter().sum()
 }
 
-pub fn solve_3b(input: &str) -> usize {
+pub fn solve_b(input: &str) -> usize {
     let pos_char_map = create_pos_char_map(input);
 
     let width = input.lines().next().unwrap().len();

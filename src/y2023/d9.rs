@@ -1,4 +1,4 @@
-pub fn solve_9a(input: &str) -> isize {
+pub fn solve_a(input: &str) -> isize {
     input
         .lines()
         .map(|line| line.split(" ").map(|s| s.parse::<isize>().unwrap()).collect::<Vec<_>>())
@@ -7,7 +7,7 @@ pub fn solve_9a(input: &str) -> isize {
         .sum()
 }
 
-pub fn solve_9b(input: &str) -> isize {
+pub fn solve_b(input: &str) -> isize {
     input
         .lines()
         .map(|line| line.split(" ").map(|s| s.parse::<isize>().unwrap()).collect::<Vec<_>>())

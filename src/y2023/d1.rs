@@ -1,4 +1,4 @@
-pub fn solve_1a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     input
         .lines()
         .map(|line| line
@@ -11,7 +11,7 @@ pub fn solve_1a(input: &str) -> usize {
         .sum()
 }
 
-pub fn solve_1b(input: &str) -> usize {
+pub fn solve_b(input: &str) -> usize {
     input
         .lines()
         .map(|line| get_line_numbers(line))

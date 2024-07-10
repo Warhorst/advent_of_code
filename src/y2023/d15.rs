@@ -1,12 +1,12 @@
 use Operation::*;
 
-pub fn solve_15a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     input.split(",")
         .map(calculate_hash)
         .sum()
 }
 
-pub fn solve_15b(input: &str) -> usize {
+pub fn solve_b(input: &str) -> usize {
     let entries = input
         .split(",")
         .map(Entry::from)

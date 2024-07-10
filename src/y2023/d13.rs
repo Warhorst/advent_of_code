@@ -2,7 +2,7 @@ use Tile::*;
 
 use crate::aoc_lib::*;
 
-pub fn solve_13a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     let blocks = input
         .split("\r\n\r\n")
         .map(TileMap::<Tile>::from)
@@ -14,7 +14,7 @@ pub fn solve_13a(input: &str) -> usize {
         .sum()
 }
 
-pub fn solve_13b(_input: &str) -> usize {
+pub fn solve_b(_input: &str) -> usize {
     0
 }
 

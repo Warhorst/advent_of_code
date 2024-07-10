@@ -1,6 +1,6 @@
 use rayon::prelude::*;
 
-pub fn solve_5a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     let seeds = parse_seeds(input.lines().next().unwrap());
 
     let mappings = collect_mappings(input);
@@ -11,7 +11,7 @@ pub fn solve_5a(input: &str) -> usize {
         .min().unwrap()
 }
 
-pub fn solve_5b(input: &str) -> usize {
+pub fn solve_b(input: &str) -> usize {
     let seeds = parse_seeds(input.lines().next().unwrap());
     let mappings = collect_mappings(input);
 

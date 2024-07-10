@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-pub fn solve_4a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     input
         .lines()
         .map(Card::from_line)
@@ -8,7 +8,7 @@ pub fn solve_4a(input: &str) -> usize {
         .sum()
 }
 
-pub fn solve_4b(input: &str) -> usize {
+pub fn solve_b(input: &str) -> usize {
     let cards = input
         .lines()
         .map(Card::from_line)

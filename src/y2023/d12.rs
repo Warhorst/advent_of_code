@@ -3,7 +3,7 @@ use rayon::prelude::IntoParallelIterator;
 
 use Spring::*;
 
-pub fn solve_12a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     let rows = input
         .lines()
         .map(Row::from)
@@ -25,7 +25,7 @@ pub fn solve_12a(input: &str) -> usize {
 // 4. continue with the current position until a non valid position was reached
 // 5. backtrack to the point before moving the current position, move the previous one
 // 6. Repeat until done
-pub fn solve_12b(_input: &str) -> usize {
+pub fn solve_b(_input: &str) -> usize {
     0
 }
 

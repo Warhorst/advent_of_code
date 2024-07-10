@@ -6,7 +6,7 @@ use rayon::prelude::IntoParallelIterator;
 
 use Tile::*;
 
-pub fn solve_11a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     let mut space = input
         .lines()
         .map(|line| line.chars().map(Tile::from_char).collect::<Vec<_>>())
@@ -54,7 +54,7 @@ pub fn solve_11a(input: &str) -> usize {
         .sum::<usize>()
 }
 
-pub fn solve_11b(input: &str) -> u128 {
+pub fn solve_b(input: &str) -> u128 {
     let space = input
         .lines()
         .map(|line| line.chars().map(Tile::from_char).collect::<Vec<_>>())

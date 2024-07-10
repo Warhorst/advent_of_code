@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use num::Integer;
 
-pub fn solve_8a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     let instructions = input.lines().next().unwrap().chars().collect::<Vec<_>>();
 
     let mut key_ways_map = HashMap::new();
@@ -38,7 +38,7 @@ pub fn solve_8a(input: &str) -> usize {
     count
 }
 
-pub fn solve_8b(input: &str) -> usize {
+pub fn solve_b(input: &str) -> usize {
     let instructions = input.lines().next().unwrap().chars().collect::<Vec<_>>();
 
     let mut key_ways_map = HashMap::new();

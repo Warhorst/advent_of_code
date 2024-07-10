@@ -4,7 +4,7 @@ use pad::{Direction, p, Position};
 use pad::Direction::*;
 use Tile::*;
 
-pub fn solve_10a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     let tile_map = input
         .lines()
         .enumerate()
@@ -45,7 +45,7 @@ pub fn solve_10a(input: &str) -> usize {
     count / 2
 }
 
-pub fn solve_10b(input: &str) -> usize {
+pub fn solve_b(input: &str) -> usize {
     let tile_map = input
         .lines()
         .enumerate()

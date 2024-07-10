@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use colored::Colorize;
 use crate::aoc_lib::*;
 
-pub fn solve_17a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     let tile_map = TileMap::<Tile>::from(input);
 
     let start = (p!(0, 0), Vec::with_capacity(3));
@@ -24,7 +24,7 @@ pub fn solve_17a(input: &str) -> usize {
 
 // TODO this does not work. I added 1 to the returned puzzle result, just for fun, and it was correct.
 //  It works on the example input tho...
-pub fn solve_17b(input: &str) -> usize {
+pub fn solve_b(input: &str) -> usize {
     let tile_map = TileMap::<Tile>::from(input);
 
     let start = (p!(0, 0), Vec::with_capacity(10));

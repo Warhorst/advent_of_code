@@ -5,7 +5,7 @@ use Tile::*;
 
 use crate::aoc_lib::*;
 
-pub fn solve_18a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     let digs = input.lines().map(Dig::from_a).collect::<Vec<_>>();
 
     let mut dig_pos = p!(0, 0);
@@ -47,7 +47,7 @@ pub fn solve_18a(input: &str) -> usize {
     dig_positions.len()
 }
 
-pub fn solve_18b(input: &str) -> u128 {
+pub fn solve_b(input: &str) -> u128 {
     let digs = input.lines().map(Dig::from_b).collect::<Vec<_>>();
 
     let mut dig_pos = p!(0, 0);

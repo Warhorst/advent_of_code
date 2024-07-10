@@ -8,7 +8,7 @@ use rayon::prelude::IntoParallelIterator;
 use crate::aoc_lib::*;
 use crate::y2023::d16::Tile::*;
 
-pub fn solve_16a(input: &str) -> usize {
+pub fn solve_a(input: &str) -> usize {
     let tile_map = TileMap::<Tile>::from(input);
 
     let mut beamer = Beamer::new(&tile_map, p!(0, 0), XP);
@@ -16,7 +16,7 @@ pub fn solve_16a(input: &str) -> usize {
     beamer.count_unique_energized_tiles()
 }
 
-pub fn solve_16b(input: &str) -> usize {
+pub fn solve_b(input: &str) -> usize {
     let tile_map = TileMap::<Tile>::from(input);
 
     let positions_and_directions = (0..tile_map.width)
