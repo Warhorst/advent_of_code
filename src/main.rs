@@ -15,7 +15,7 @@ fn main() {
     execute!();
 }
 
-trait PuzzleResult : Debug + PartialEq + FromStr<Err: Debug> + Debug {}
+trait PuzzleResult: Debug + PartialEq + FromStr<Err: Debug> + Debug {}
 
 impl<T> PuzzleResult for T where T: Debug + PartialEq + FromStr<Err: Debug> + Debug {}
 
@@ -28,7 +28,7 @@ fn solve<
     day: u8,
     year: u16,
     a_solver: AS,
-    b_solver: BS
+    b_solver: BS,
 ) {
     println!("Solving day {day}, {year}");
 
@@ -77,12 +77,14 @@ struct Input<A: PuzzleResult, B: PuzzleResult> {
     /// Input and expected result of example A, if present
     pub example_a: Option<(String, A)>,
     /// Input and expected result of example B, if present
-    pub example_b: Option<(String, B)>
+    pub example_b: Option<(String, B)>,
 }
 
 impl<A: PuzzleResult, B: PuzzleResult> Input<A, B> {
     fn load_input(day: u8, year: u16) -> Self {
-        let puzzle_input = read_to_string(format!("./input/{year}/{day}/p.txt")).ok();
+        let puzzle_input = read_to_string(format!("./input/{year}/{day}/p.txt"))
+            .ok()
+            .map(|s| s.replace("\r\n", "\n")); // replace line endings to resolve regex issues
         let example_a = read_to_string(format!("./input/{year}/{day}/ea.txt"))
             .ok()
             .map(Self::parse_text_to_result_and_text::<A>);
@@ -94,7 +96,7 @@ impl<A: PuzzleResult, B: PuzzleResult> Input<A, B> {
         Input {
             puzzle_input,
             example_a,
-            example_b
+            example_b,
         }
     }
 

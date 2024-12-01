@@ -12,6 +12,7 @@ itertools = "0.13.0"
 colored = "2.1.0"
 execute_proc_macro = { path = "execute_proc_macro" }
 pad = { git = "https://github.com/Warhorst/pad.git" }
+regex = "1.11.1"
 
 [workspace]
 members = [
