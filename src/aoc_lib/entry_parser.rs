@@ -20,6 +20,8 @@ pub fn parse_entries<'a, T>(
         .map(|cap| {
             let mut caps = [EMPTY; 8];
 
+            // skipping the first capture, as it contains the whole line which
+            // we are not interested in.
             for (i, c) in cap.iter().skip(1).enumerate() {
                 if let Some(m) = c {
                     caps[i] = m.as_str();
