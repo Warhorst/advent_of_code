@@ -7,6 +7,7 @@ use itertools::Itertools;
 use execute_proc_macro::execute;
 
 mod y2023;
+mod y2024;
 #[allow(dead_code)]
 mod aoc_lib;
 
