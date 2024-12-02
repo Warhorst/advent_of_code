@@ -4,9 +4,7 @@ pub fn solve_a(input: &str) -> usize {
     input
         .lines()
         .map(|line| line.split(" ").map(|split| parse::<usize>(split)).collect::<Vec<_>>())
-        //.inspect(|(kind, nums)| println!("{:?} {:?}", kind, nums))
         .filter(|nums| is_save(nums))
-        //.inspect(|(kind, nums)| println!("{:?} {:?}", kind, nums))
         .count()
 }
 
@@ -14,13 +12,11 @@ pub fn solve_b(input: &str) -> usize {
     input
         .lines()
         .map(|line| line.split(" ").map(|split| parse::<usize>(split)).collect::<Vec<_>>())
-        //.inspect(|(kind, nums)| println!("{:?} {:?}", kind, nums))
         .filter(|nums| (0..nums.len()).into_iter().any(|i| {
             let mut clone = nums.clone();
             clone.remove(i);
             is_save(&clone)
         }))
-        //.inspect(|(kind, nums)| println!("{:?} {:?}", kind, nums))
         .count()
 }
 
