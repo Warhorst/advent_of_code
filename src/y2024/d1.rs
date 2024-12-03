@@ -9,7 +9,7 @@ pub fn solve_a(input: &str) -> isize {
     let mut right = Vec::<isize>::with_capacity(num_lines);
     let regex = Regex::new(r"(?m)^(\d+)\s+(\d+)$").unwrap();
 
-    parse_entries(
+    regex_captures(
         input,
         &regex,
         |caps| (parse(caps[0]), parse(caps[1]))
@@ -37,7 +37,7 @@ pub fn solve_b(input: &str) -> isize {
     let mut right = HashMap::<isize, isize>::with_capacity(num_lines);
     let regex = Regex::new(r"(?m)^(\d+)\s+(\d+)$").unwrap();
 
-    parse_entries(
+    regex_captures(
         input,
         &regex,
         |caps| (parse(caps[0]), parse(caps[1]))

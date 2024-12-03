@@ -10,7 +10,7 @@ pub type Caps<'a> = [&'a str; MAX_CAPTURES];
 /// The captures are stored in an array with fixes size MAX_CAPTURES, so the regex
 /// can at max have this amount of captures or this call will crash.
 /// Important: The first default capture group is ignored and the captures are still zero-based.
-pub fn parse_entries<'a, T>(
+pub fn regex_captures<'a, T>(
     input: &'a str,
     regex: &'a Regex,
     mapper: impl Fn(Caps<'a>) -> T + 'a
