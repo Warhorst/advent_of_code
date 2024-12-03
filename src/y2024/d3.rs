@@ -19,14 +19,22 @@ pub fn solve_a(input: &str) -> usize {
 pub fn solve_b(input: &str) -> usize {
     let regex = Regex::new(r"(mul\(\d+,\d+\)|do\(\)|don't\(\))").unwrap();
 
-    multiply(input
+    input
         .lines()
         .flat_map(|line| regex_captures(
             line,
             &regex,
             |caps| Ins::from_str(caps[0]).unwrap()
         ))
-    )
+        .fold((0, true), |(mut sum, mut is_do), ins| {
+            match ins {
+                Ins::Mul(a, b) => if is_do { sum += a * b}
+                Ins::Do => is_do = true,
+                Ins::Dont => is_do = false
+            };
+
+            (sum, is_do)
+        }).0
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -54,20 +62,4 @@ impl FromStr for Ins {
             Err(format!("could not parse {s}"))
         }
     }
-}
-
-fn multiply(instructions: impl IntoIterator<Item=Ins>) -> usize {
-    let mut sum = 0;
-    // is multiplying currently enabled?
-    let mut is_do = true;
-
-    for ins in instructions {
-        match ins {
-            Ins::Mul(a, b) => if is_do { sum += a * b}
-            Ins::Do => is_do = true,
-            Ins::Dont => is_do = false
-        }
-    }
-
-    sum
 }
