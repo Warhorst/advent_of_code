@@ -19,11 +19,9 @@ pub fn solve_a(input: &str) -> usize {
 fn amount_xmas_at_position(tiles: &Vec<Vec<char>>, pos: Position) -> usize {
     // expects that the char at pos is an 'X', the caller must guarantee this
 
-    use Direction::*;
-
     let mut amount = 0;
 
-    for dir in [XP, XM, YP, YM, XPYP, XPYM, XMYP, XMYM] {
+    for dir in Direction::dirs() {
         if get_char_at_pos(tiles, pos) == Some('X')
             && get_char_at_pos(tiles, pos.position_in_direction(dir, 1)) == Some('M')
             && get_char_at_pos(tiles, pos.position_in_direction(dir, 2)) == Some('A')
