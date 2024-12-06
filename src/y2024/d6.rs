@@ -4,28 +4,18 @@ use rayon::iter::ParallelIterator;
 use rayon::iter::ParallelBridge;
 
 pub fn solve_a(input: &str) -> usize {
-    let board = input
-        .lines()
-        .map(|line| line.chars().map(Tile::from).collect::<Vec<_>>())
-        .collect::<Vec<_>>();
+    let (board, guardians) = Board::board_and_specials_from_text(input, |c, pos| match c {
+        '^' => Some((Guardian::new(pos), Tile::Free)),
+        _ => None
+    });
 
-    let guardian_pos = input
-        .lines()
-        .enumerate()
-        .filter(|(_, line)| line.contains("^"))
-        .find_map(|(y, line)| line.chars().enumerate().find_map(|(x, char)| match char {
-            '^' => Some(p!(x, y)),
-            _ => None
-        }))
-        .expect("The guardian must exist");
-
-    let mut guardian = Guardian::new(guardian_pos);
-    let mut visited_positions = HashSet::with_capacity(board.len() * board[0].len());
+    let mut guardian = guardians[0];
+    let mut visited_positions = HashSet::with_capacity(board.len());
 
     loop {
         visited_positions.insert(guardian.current_position);
 
-        match get_tile(&board, guardian.next_pos()) {
+        match board.get_tile(guardian.next_pos()) {
             None => return visited_positions.len(),
             Some(tile) => match tile {
                 Tile::Free => guardian.go_forward(),
@@ -35,58 +25,47 @@ pub fn solve_a(input: &str) -> usize {
     }
 }
 
-fn get_tile(board: &Vec<Vec<Tile>>, pos: Position) -> Option<Tile> {
-    board.get(pos.y as usize)?.get(pos.x as usize).copied()
-}
-
 pub fn solve_b(input: &str) -> usize {
-    let board = input
-        .lines()
-        .map(|line| line.chars().map(Tile::from).collect::<Vec<_>>())
-        .collect::<Vec<_>>();
+    let (board, guardians) = Board::board_and_specials_from_text(input, |c, pos| match c {
+        '^' => Some((Guardian::new(pos), Tile::Free)),
+        _ => None
+    });
 
-    let guardian_pos = input
-        .lines()
-        .enumerate()
-        .filter(|(_, line)| line.contains("^"))
-        .find_map(|(y, line)| line.chars().enumerate().find_map(|(x, char)| match char {
-            '^' => Some(p!(x, y)),
-            _ => None
-        }))
-        .expect("The guardian must exist");
+    let guardian = guardians[0];
 
-    p!(0, 0).iter_to(p!(board[0].len() - 1, board.len() - 1))
+    board
+        .positions()
         .par_bridge()
         .map(|obs_pos| {
             // solve with good old brute force
-            let mut guardian = Guardian::new(guardian_pos);
-            let mut visited_spots = HashSet::with_capacity(board.len() * board[0].len());
+            let mut guard = guardian;
+            let mut visited_spots = HashSet::with_capacity(board.len());
 
             loop {
-                let spot = (guardian.current_position, guardian.current_direction);
+                let spot = (guard.current_position, guard.current_direction);
 
                 if visited_spots.contains(&spot) {
                     // The guardian already was at this position with this direction,
                     // so she must be in a loop. Return 1 to add it to the count.
-                    break 1
+                    break 1;
                 }
 
                 visited_spots.insert(spot);
 
                 // if the current pos is the new obstacle pos, return
                 // an obstacle
-                let next_tile = match guardian.next_pos() {
+                let next_tile = match guard.next_pos() {
                     pos if pos == obs_pos => Some(Tile::Obstacle),
-                    _ => get_tile(&board, guardian.next_pos())
+                    _ => board.get_tile(guard.next_pos()).copied()
                 };
 
                 match next_tile {
                     // The guardian broke out, no loop here.
                     // Return 0 to add to the count.
                     None => break 0,
-                Some(tile) => match tile {
-                        Tile::Free => guardian.go_forward(),
-                        Tile::Obstacle => guardian.turn()
+                    Some(tile) => match tile {
+                        Tile::Free => guard.go_forward(),
+                        Tile::Obstacle => guard.turn()
                     }
                 }
             }
@@ -94,9 +73,10 @@ pub fn solve_b(input: &str) -> usize {
         .sum()
 }
 
+#[derive(Clone, Copy)]
 struct Guardian {
     current_position: Position,
-    current_direction: Direction
+    current_direction: Direction,
 }
 
 impl Guardian {
@@ -126,10 +106,10 @@ impl Guardian {
     }
 }
 
-#[derive(Copy, Clone)]
+#[derive(Clone, Copy)]
 enum Tile {
     Free,
-    Obstacle
+    Obstacle,
 }
 
 impl From<char> for Tile {
