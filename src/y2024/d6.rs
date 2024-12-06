@@ -1,5 +1,7 @@
 use std::collections::HashSet;
 use crate::aoc_lib::*;
+use rayon::iter::ParallelIterator;
+use rayon::iter::ParallelBridge;
 
 pub fn solve_a(input: &str) -> usize {
     let board = input
@@ -53,39 +55,43 @@ pub fn solve_b(input: &str) -> usize {
         }))
         .expect("The guardian must exist");
 
-    let mut count = 0;
-    for obs_pos in p!(0, 0).iter_to(p!(board[0].len() - 1, board.len() - 1)) {
-        // solve with good old brute force
-        let mut guardian = Guardian::new(guardian_pos);
-        let mut visited_spots = HashSet::with_capacity(board.len() * board[0].len());
+    p!(0, 0).iter_to(p!(board[0].len() - 1, board.len() - 1))
+        .par_bridge()
+        .map(|obs_pos| {
+            // solve with good old brute force
+            let mut guardian = Guardian::new(guardian_pos);
+            let mut visited_spots = HashSet::with_capacity(board.len() * board[0].len());
 
-        loop {
-            let spot = (guardian.current_position, guardian.current_direction);
+            loop {
+                let spot = (guardian.current_position, guardian.current_direction);
 
-            if visited_spots.contains(&spot) {
-                count += 1;
-                break
-            }
+                if visited_spots.contains(&spot) {
+                    // The guardian already was at this position with this direction,
+                    // so she must be in a loop. Return 1 to add it to the count.
+                    break 1
+                }
 
-            visited_spots.insert(spot);
+                visited_spots.insert(spot);
 
-            let next_tile = match guardian.next_pos() {
-                pos if pos == obs_pos => Some(Tile::Obstacle),
-                _ => get_tile(&board, guardian.next_pos())
-            };
+                // if the current pos is the new obstacle pos, return
+                // an obstacle
+                let next_tile = match guardian.next_pos() {
+                    pos if pos == obs_pos => Some(Tile::Obstacle),
+                    _ => get_tile(&board, guardian.next_pos())
+                };
 
-            match next_tile {
-                None => break,
+                match next_tile {
+                    // The guardian broke out, no loop here.
+                    // Return 0 to add to the count.
+                    None => break 0,
                 Some(tile) => match tile {
-                    Tile::Free => guardian.go_forward(),
-                    Tile::Obstacle => guardian.turn()
+                        Tile::Free => guardian.go_forward(),
+                        Tile::Obstacle => guardian.turn()
+                    }
                 }
             }
-        }
-
-    }
-
-    count
+        })
+        .sum()
 }
 
 struct Guardian {
