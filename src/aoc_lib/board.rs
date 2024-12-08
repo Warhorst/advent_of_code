@@ -9,6 +9,32 @@ pub struct Board<T> {
 }
 
 impl<T: From<char>> Board<T> {
+    /// Create the board from a text input, where each character represents
+    /// a designated board element. If the input might contain special elements,
+    /// use Board::board_and_specials_from_text instead
+    /// * `input` - The text input which represents the board. Expected to be a multiline string
+    ///             where every line has the same amount of characters
+    pub fn from_text(input: &str) -> Self {
+        let height = input.lines().count();
+        let width = input
+            .lines()
+            .next()
+            .expect("The input must contain at least one line")
+            .chars()
+            .count();
+
+        let tiles = input
+            .lines()
+            .flat_map(|line| line.chars().map(|c| T::from(c)))
+            .collect();
+
+        Board {
+            width,
+            height,
+            tiles,
+        }
+    }
+
     /// Create a board and all special tiles from the given text input
     ///
     /// * `input` - The text input which represents the board. Expected to be a multiline string
@@ -61,12 +87,22 @@ impl<T> Board<T> {
         self.tiles.len()
     }
 
+    pub fn pos_in_bounds(&self, pos: Position) -> bool {
+        (0..self.width).contains(&(pos.x as usize)) && (0..self.height).contains(&(pos.y as usize))
+    }
+
+    pub fn tiles_and_positions(&self) -> impl IntoIterator<Item=(&T, Position)> {
+        self.positions()
+            .into_iter()
+            .map(|pos| (self.get_tile(pos).expect("the tile must exist"), pos))
+    }
+
     pub fn positions(&self) -> PositionIter {
         p!(0, 0).iter_to(p!(self.width - 1, self.height - 1))
     }
 
     pub fn get_tile(&self, pos: Position) -> Option<&T> {
-        if !(0..self.width).contains(&(pos.x as usize)) || !(0..self.height).contains(&(pos.y as usize)) {
+        if !self.pos_in_bounds(pos) {
             None
         } else {
             self.tiles.get(pos.y as usize * self.width + pos.x as usize)
