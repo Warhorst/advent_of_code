@@ -108,4 +108,10 @@ impl<T> Board<T> {
             self.tiles.get(pos.y as usize * self.width + pos.x as usize)
         }
     }
+
+    pub fn get_tiles(&self, positions: impl IntoIterator<Item=Position>) -> impl IntoIterator<Item=&T> {
+        positions
+            .into_iter()
+            .flat_map(|pos| self.get_tile(pos))
+    }
 }
