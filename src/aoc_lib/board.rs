@@ -15,13 +15,8 @@ impl<T: From<char>> Board<T> {
     /// * `input` - The text input which represents the board. Expected to be a multiline string
     ///             where every line has the same amount of characters
     pub fn from_text(input: &str) -> Self {
-        let height = input.lines().count();
-        let width = input
-            .lines()
-            .next()
-            .expect("The input must contain at least one line")
-            .chars()
-            .count();
+        let width = width_from_input(input);
+        let height = height_from_input(input);
 
         let tiles = input
             .lines()
@@ -49,13 +44,8 @@ impl<T: From<char>> Board<T> {
         input: &str,
         special_map: impl Fn(char, Position) -> Option<(S, T)>,
     ) -> (Self, Vec<S>) {
-        let height = input.lines().count();
-        let width = input
-            .lines()
-            .next()
-            .expect("The input must contain at least one line")
-            .chars()
-            .count();
+        let width = width_from_input(input);
+        let height = height_from_input(input);
 
         let mut tiles = Vec::with_capacity(width * height);
         let mut specials = Vec::new();
@@ -83,6 +73,27 @@ impl<T: From<char>> Board<T> {
 }
 
 impl<T> Board<T> {
+    /// Same as Board::from_text, but the tile type does not implement From<char>, so the provided
+    /// mapper is used to parse the chars to tiles.
+    /// * `input` - The text input which represents the board. Expected to be a multiline string
+    ///             where every line has the same amount of characters
+    /// * `map` - Mapper which converts a char to at tile
+    pub fn from_text_and_mapping(input: &str, map: impl Fn(char) -> T) -> Self {
+        let width = width_from_input(input);
+        let height = height_from_input(input);
+
+        let tiles = input
+            .lines()
+            .flat_map(|line| line.chars().map(|c| map(c)))
+            .collect();
+
+        Board {
+            width,
+            height,
+            tiles,
+        }
+    }
+
     pub fn len(&self) -> usize {
         self.tiles.len()
     }
@@ -114,4 +125,17 @@ impl<T> Board<T> {
             .into_iter()
             .flat_map(|pos| self.get_tile(pos))
     }
+}
+
+fn width_from_input(input: &str) -> usize {
+    input
+        .lines()
+        .next()
+        .expect("The input must contain at least one line")
+        .chars()
+        .count()
+}
+
+fn height_from_input(input: &str) -> usize {
+    input.lines().count()
 }
