@@ -9,7 +9,7 @@ pub fn solve_a(input: &str) -> usize {
         .sum()
 }
 
-pub fn solve_b(input: &str) -> usize {
+pub fn solve_b(input: &str) -> u128 {
     parse_input(input)
         .into_iter()
         .map(|i| Input {
@@ -17,8 +17,8 @@ pub fn solve_b(input: &str) -> usize {
             button_b: i.button_b,
             prize_location: (10000000000000 + i.prize_location.0, 10000000000000 + i.prize_location.1)
         })
-        .flat_map(|i| i.min_tokens_to_win_b())
-        .sum()
+        .map(|i| i.min_tokens_to_win_b())
+        .fold(0, |acc, item| acc + item)
 }
 
 fn parse_input(input: &str) -> Vec<Input> {
@@ -72,16 +72,25 @@ impl Input {
             .min()
     }
 
-    fn min_tokens_to_win_b(&self) -> Option<usize> {
-        println!("{self}");
-        println!("{}", self.prize_location.0 / self.button_a.0);
-        println!("{}", self.prize_location.0 % self.button_a.0);
-        println!("{}", self.prize_location.0 / self.button_b.0);
-        println!("{}", self.prize_location.0 % self.button_b.0);
-        println!();
-        println!();
+    fn min_tokens_to_win_b(&self) -> u128 {
+        // as I didn't had the energy to invest hours into refreshing my algebra knowledge,
+        // I used this explanation/formula from this nice person on reddit:
+        // https://www.reddit.com/r/adventofcode/comments/1hd7irq/2024_day_13_an_explanation_of_the_mathematics/
+        let a0 = self.button_a.0 as isize;
+        let a1 = self.button_a.1 as isize;
+        let b0 = self.button_b.0 as isize;
+        let b1 = self.button_b.1 as isize;
+        let p0 = self.prize_location.0 as isize;
+        let p1 = self.prize_location.1 as isize;
 
-        None
+        let a_presses = ((p0 * b1 - p1 * b0) / (a0 * b1 - a1 * b0)).abs();
+        let b_presses = ((p0 * a1 - p1 * a0) / (a0 * b1 - a1 * b0)).abs();
+
+        if (a0 * a_presses + b0 * b_presses, a1 * a_presses + b1 * b_presses) == (p0, p1) {
+            (a_presses * 3 + b_presses) as u128
+        } else {
+            0
+        }
     }
 }
 
