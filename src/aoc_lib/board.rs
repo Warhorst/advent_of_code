@@ -1,4 +1,6 @@
-use pad::{p, Position, PositionIter};
+use std::collections::HashSet;
+use pad::{p, Position, PositionIter, PositionPrinter};
+use crate::aoc_lib::shape::Shape;
 
 /// A board of tiles where the tiles can be access by positions.
 /// Orientation: The position (-inf, -inf) is top left and the position (+inf, +inf) is bottom right.
@@ -124,6 +126,61 @@ impl<T> Board<T> {
         positions
             .into_iter()
             .flat_map(|pos| self.get_tile(pos))
+    }
+}
+
+impl<T> Board<T> where T: Copy + Clone {
+    pub fn from_positions_and_bounds(
+        positions: impl IntoIterator<Item=Position>,
+        width: usize,
+        height: usize,
+        match_tile: T,
+        non_match_tile: T
+    ) -> Self {
+        let positions = positions.into_iter().collect::<HashSet<_>>();
+
+        let tiles = p!(0, 0)
+            .iter_to(p!(width - 1, height - 1))
+            .map(|pos| match positions.contains(&pos) {
+                true => match_tile,
+                false => non_match_tile
+            })
+            .collect();
+
+        Board {
+            tiles,
+            width,
+            height
+        }
+    }
+}
+
+impl<T> Board<T> where T: Eq + PartialEq {
+    pub fn contains_shape(&self, shape: &Shape, shape_tile: T) -> bool {
+        self
+            .positions()
+            .into_iter()
+            .filter(|pos| self.pos_in_bounds(*pos + p!(shape.width - 1, shape.height - 1)))
+            .any(|pos| shape
+                .positions()
+                .into_iter()
+                .all(|p| match self.get_tile(pos + p) {
+                    Some(t) => t == &shape_tile,
+                    _ => unreachable!()
+                })
+            )
+    }
+
+    pub fn print_matches(&self, tile: T) {
+        PositionPrinter::new()
+            .draw_axis(false)
+            .print(self.tiles_and_positions()
+                .into_iter()
+                .filter_map(|(t, p)| match tile == *t {
+                    true => Some(p),
+                    false => None
+                })
+            )
     }
 }
 

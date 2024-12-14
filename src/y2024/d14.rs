@@ -1,9 +1,7 @@
-use std::collections::HashMap;
-use std::fmt::Formatter;
-use std::thread::sleep;
-use std::time::Duration;
-use regex::Regex;
 use crate::aoc_lib::*;
+use indoc::indoc;
+use regex::Regex;
+use std::fmt::Formatter;
 
 pub fn solve_a(input: &str) -> usize {
     let dim_regex = Regex::new(r#"(\d+),(\d+)"#).unwrap();
@@ -77,8 +75,6 @@ pub fn solve_a(input: &str) -> usize {
 }
 
 pub fn solve_b(input: &str) -> usize {
-    // solving it the most stupid way: I looked on reddit how this tree should look
-    // and printed every position that might represent it
     let dim_regex = Regex::new(r#"(\d+),(\d+)"#).unwrap();
     let robot_regex = Regex::new(r#"p=(\d+),(\d+)\sv=(-?\d+),(-?\d+)"#).unwrap();
 
@@ -105,44 +101,91 @@ pub fn solve_b(input: &str) -> usize {
 
     let mut positions = robots.iter().map(|r| r.start).collect::<Vec<_>>();
     let mut count = 0;
+    let tree = tree_shape();
+    tree.print();
 
+    // For every iteration of robots, create a board from their current positions
+    // and check if the shape is in there
+    // a bit slow, but it works
     loop {
         count += 1;
+        robots
+            .iter()
+            .enumerate()
+            .for_each(|(i, r)| {
+                let mut new_pos = positions[i] + r.vel;
 
-        positions = positions.into_iter().zip(robots.iter()).map(|(pos, r)| {
-            let mut new_pos = pos + r.vel;
+                if new_pos.x < 0 {
+                    new_pos.x += dim.0
+                }
 
-            if new_pos.x < 0 {
-                new_pos.x += dim.0
-            }
+                if new_pos.x >= dim.0 {
+                    new_pos.x -= dim.0
+                }
 
-            if new_pos.x >= dim.0 {
-                new_pos.x -= dim.0
-            }
+                if new_pos.y < 0 {
+                    new_pos.y += dim.1
+                }
 
-            if new_pos.y < 0 {
-                new_pos.y += dim.1
-            }
+                if new_pos.y >= dim.1 {
+                    new_pos.y -= dim.1
+                }
 
-            if new_pos.y >= dim.1 {
-                new_pos.y -= dim.1
-            }
+                *positions.get_mut(i).unwrap() = new_pos
+            });
 
-            new_pos
-        }).collect();
+        let board = Board::from_positions_and_bounds(
+            positions.iter().copied(),
+            dim.0 as usize,
+            dim.1 as usize,
+            true,
+            false
+        );
 
-        let mut y_to_x_amount_map = HashMap::new();
-
-        positions.iter().for_each(|pos| { y_to_x_amount_map.entry(pos.y).and_modify(|amount| *amount += 1).or_insert(0);});
-
-        if y_to_x_amount_map.values().filter(|amount| **amount == 32).count() == 2 {
-            println!("{count}");
-            PositionPrinter::new().draw_axis(false).print(positions.iter().copied());
-            sleep(Duration::from_secs_f64(1.0))
+        if board.contains_shape(&tree, true) {
+            break count
         }
     }
+}
 
-    0
+fn tree_shape() -> Shape {
+    let tree_string = indoc! {"
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        X                             X
+        X                             X
+        X                             X
+        X                             X
+        X              X              X
+        X             XXX             X
+        X            XXXXX            X
+        X           XXXXXXX           X
+        X          XXXXXXXXX          X
+        X            XXXXX            X
+        X           XXXXXXX           X
+        X          XXXXXXXXX          X
+        X         XXXXXXXXXXX         X
+        X        XXXXXXXXXXXXX        X
+        X          XXXXXXXXX          X
+        X         XXXXXXXXXXX         X
+        X        XXXXXXXXXXXXX        X
+        X       XXXXXXXXXXXXXXX       X
+        X      XXXXXXXXXXXXXXXXX      X
+        X        XXXXXXXXXXXXX        X
+        X       XXXXXXXXXXXXXXX       X
+        X      XXXXXXXXXXXXXXXXX      X
+        X     XXXXXXXXXXXXXXXXXXX     X
+        X    XXXXXXXXXXXXXXXXXXXXX    X
+        X             XXX             X
+        X             XXX             X
+        X             XXX             X
+        X                             X
+        X                             X
+        X                             X
+        X                             X
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    "};
+
+    Shape::from_string(tree_string)
 }
 
 struct Robot {

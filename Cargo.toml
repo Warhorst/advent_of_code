@@ -13,6 +13,7 @@ colored = "2.1.0"
 execute_proc_macro = { path = "execute_proc_macro" }
 pad = { git = "https://github.com/Warhorst/pad.git" }
 regex = "1.11.1"
+indoc = "2.0.5"
 
 [workspace]
 members = [
