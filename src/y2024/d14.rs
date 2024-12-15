@@ -4,6 +4,7 @@ use regex::Regex;
 use std::fmt::Formatter;
 
 pub fn solve_a(input: &str) -> usize {
+    // I manually added the dimension of the board to my puzzle/example input to vary between the 2
     let dim_regex = Regex::new(r#"(\d+),(\d+)"#).unwrap();
     let robot_regex = Regex::new(r#"p=(\d+),(\d+)\sv=(-?\d+),(-?\d+)"#).unwrap();
 

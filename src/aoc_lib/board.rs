@@ -122,10 +122,32 @@ impl<T> Board<T> {
         }
     }
 
+    pub fn get_tile_mut(&mut self, pos: Position) -> Option<&mut T> {
+        if !self.pos_in_bounds(pos) {
+            None
+        } else {
+            self.tiles.get_mut(pos.y as usize * self.width + pos.x as usize)
+        }
+    }
+
     pub fn get_tiles(&self, positions: impl IntoIterator<Item=Position>) -> impl IntoIterator<Item=&T> {
         positions
             .into_iter()
             .flat_map(|pos| self.get_tile(pos))
+    }
+
+    pub fn set_tile(&mut self, pos: Position, tile: T) {
+        *self.get_tile_mut(pos).expect(&format!("The board should have a tile at position {:?}", pos)) = tile
+    }
+
+    pub fn print(&self, map: impl Fn(&T) -> char) {
+        PositionPrinter::new()
+            .draw_axis(false)
+            .y_is_top(true)
+            .print_with_mapping(self.positions(), |pos| match self.get_tile(pos) {
+                Some(t) => map(t),
+                None => ' '
+            })
     }
 }
 
@@ -135,7 +157,7 @@ impl<T> Board<T> where T: Copy + Clone {
         width: usize,
         height: usize,
         match_tile: T,
-        non_match_tile: T
+        non_match_tile: T,
     ) -> Self {
         let positions = positions.into_iter().collect::<HashSet<_>>();
 
@@ -150,12 +172,13 @@ impl<T> Board<T> where T: Copy + Clone {
         Board {
             tiles,
             width,
-            height
+            height,
         }
     }
 }
 
-impl<T> Board<T> where T: Eq + PartialEq {
+impl<T> Board<T> where T: Eq + PartialEq,
+{
     pub fn contains_shape(&self, shape: &Shape, shape_tile: T) -> bool {
         self
             .positions()
@@ -171,9 +194,18 @@ impl<T> Board<T> where T: Eq + PartialEq {
             )
     }
 
-    pub fn print_matches(&self, tile: T) {
+    pub fn get_position_of(&self, tile: &T) -> Option<Position> {
+        self.tiles_and_positions().into_iter().find_map(|(t, p)| match t == tile {
+            true => Some(p),
+            false => None
+        })
+    }
+
+    /// Print all the tiles where the current tile equals the given tile
+    pub fn print_occurrences_of_tile(&self, tile: T) {
         PositionPrinter::new()
             .draw_axis(false)
+            .y_is_top(true)
             .print(self.tiles_and_positions()
                 .into_iter()
                 .filter_map(|(t, p)| match tile == *t {
