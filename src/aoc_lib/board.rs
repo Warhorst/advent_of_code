@@ -140,7 +140,7 @@ impl<T> Board<T> {
         *self.get_tile_mut(pos).expect(&format!("The board should have a tile at position {:?}", pos)) = tile
     }
 
-    pub fn print(&self, map: impl Fn(&T) -> char) {
+    pub fn print_with_mapping(&self, map: impl Fn(&T) -> char) {
         PositionPrinter::new()
             .draw_axis(false)
             .y_is_top(true)
@@ -213,6 +213,12 @@ impl<T> Board<T> where T: Eq + PartialEq,
                     false => None
                 })
             )
+    }
+}
+
+impl<T> Board<T> where T: Into<char> + Copy {
+    pub fn print(&self) {
+        self.print_with_mapping(|t| (*t).into())
     }
 }
 

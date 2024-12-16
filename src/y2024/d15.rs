@@ -152,11 +152,11 @@ pub fn solve_b(input: &str) -> usize {
                             // combine the box positions with their tile type (left or right)
                             let boards_and_tiles = collect_adjacent_boxes(pos_in_dir, dir, &board)
                                 .into_iter()
-                                .map(|pos| (pos, board.get_tile(*pos).copied().unwrap()))
+                                .map(|pos| (pos, board.get_tile(pos).copied().unwrap()))
                                 .collect::<Vec<_>>();
 
                             // clear all the current box positions by setting them to Free
-                            boards_and_tiles.iter().for_each(|(pos, _)| board.set_tile(**pos, Free));
+                            boards_and_tiles.iter().for_each(|(pos, _)| board.set_tile(*pos, Free));
                             // put all the box tiles one up or down, depending on the direction
                             boards_and_tiles.iter().for_each(|(pos, tile)| board.set_tile(pos.position_in_direction(dir, 1), *tile));
 
