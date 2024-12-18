@@ -74,6 +74,22 @@ impl<T: From<char>> Board<T> {
     }
 }
 
+impl<T> Board<T> where T: Copy {
+    pub fn from_width_height(
+        width: usize,
+        height: usize,
+        tile: T
+    ) -> Self {
+        let tiles = p!(0, 0).iter_to(p!(width - 1, height - 1)).map(|_| tile).collect();
+
+        Board {
+            width,
+            height,
+            tiles
+        }
+    }
+}
+
 impl<T> Board<T> {
     /// Same as Board::from_text, but the tile type does not implement From<char>, so the provided
     /// mapper is used to parse the chars to tiles.
