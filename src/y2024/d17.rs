@@ -11,10 +11,7 @@ pub fn solve_a(input: &str) -> String {
 }
 
 pub fn solve_b(input: &str) -> usize {
-    let device = Device::new(input);
-    let foo = device.run_b();
-
-    foo.unwrap()
+    Device::new(input).find_a_producing_input()
 }
 
 #[derive(Clone, Debug)]
@@ -69,23 +66,15 @@ impl Device {
 
         while let Some(ins) = self.instructions.get(self.ins_pointer) {
             match ins {
-                // 0
                 Adv(op) => self.reg_a = self.reg_a / 2_usize.pow(self.combo_value(*op) as u32),
-                // 1
                 Bxl(op) => self.reg_b = self.reg_b ^ op,
-                // 2
                 Bst(op) => self.reg_b = self.combo_value(*op) % 8,
-                // 3
                 Jnz(op) => if self.reg_a != 0 {
                     self.ins_pointer = *op / 2
                 }
-                // 4
                 Bxc(_) => self.reg_b = self.reg_b ^ self.reg_c,
-                // 5
                 Out(op) => output.push(self.combo_value(*op) % 8),
-                // 6
                 Bdv(op) => self.reg_b = self.reg_a / 2_usize.pow(self.combo_value(*op) as u32),
-                // 7
                 Cdv(op) => self.reg_c = self.reg_a / 2_usize.pow(self.combo_value(*op) as u32)
             };
 
@@ -101,12 +90,12 @@ impl Device {
         output
     }
 
-    fn run_b(&self) -> Option<usize> {
+    fn find_a_producing_input(&self) -> usize {
         let mut selection = vec![];
-        self.run_b_rec(self.original_instructions.len(), &mut selection)
+        self.find_a_producing_input_inner(self.original_instructions.len(), &mut selection).unwrap()
     }
 
-    fn run_b_rec(&self, index: usize, selection: &mut Vec<usize>) -> Option<usize> {
+    fn find_a_producing_input_inner(&self, index: usize, selection: &mut Vec<usize>) -> Option<usize> {
         let get_a = |selection: &Vec<usize>| selection.iter().fold(0, |mut acc, item| {
             acc <<= 3;
             acc |= item;
@@ -122,14 +111,11 @@ impl Device {
 
             let a = get_a(selection);
 
-            let mut clone = self.clone();
-            clone.reg_a = a;
-
-            let result = clone.run();
+            let result = self.run_with_a(a);
             let expected = &self.original_instructions[(index - 1)..];
 
             if &result == expected {
-                match self.run_b_rec(index - 1, selection) {
+                match self.find_a_producing_input_inner(index - 1, selection) {
                     Some(a) => return Some(a),
                     None => {
                         selection.pop();
@@ -140,12 +126,13 @@ impl Device {
             }
         }
 
-        let a = get_a(selection);
+        None
+    }
 
+    fn run_with_a(&self, a: usize) -> Vec<usize> {
         let mut clone = self.clone();
         clone.reg_a = a;
-
-        None
+        clone.run()
     }
 
     fn combo_value(&self, val: usize) -> usize {
