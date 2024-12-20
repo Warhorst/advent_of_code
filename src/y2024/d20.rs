@@ -43,7 +43,7 @@ pub fn solve_a(input: &str) -> usize {
         .map(|(wall, _)| wall)
         .collect::<HashSet<_>>();
 
-    // find the path with the added rule that the path can through the gap
+    // find the path with the added rule that the path can go through the gap
     potential_gaps
         .into_iter()
         .flat_map(|gap| astar(
@@ -65,6 +65,37 @@ pub fn solve_a(input: &str) -> usize {
 }
 
 pub fn solve_b(input: &str) -> usize {
+    // instead of a path, the cheat can be seen as a jump, with a min manhatten distance of 2 and
+    // a max manhattan distance of 20
+
+    // I can only make one jump per pathfind
+
+    // every position in the path has a remaining length to goal
+    // I want to jump to positions where len - (jump_remaining_distance + taken_distance) >= 100
+
+    // Speculation: I can only jump from one position in the best path to another position in the
+    // best path -> therefore, no new pathfinding are necessary
+
+    // a cheat starts when I walk into a wall
+
+    let board = Board::<Tile>::from_text(input);
+    let start = board.get_position_of(&Start).unwrap();
+    let goal = board.get_position_of(&End).unwrap();
+
+    let (path, len) = astar(
+        &start,
+        |pos| pos
+            .cardinal_neighbours()
+            .into_iter()
+            .filter(|n| *board.get_tile(*n).unwrap() != Wall)
+            .map(|n| (n, 1)),
+        |pos| pos.manhattan_distance(&goal) as usize,
+        |pos| *pos == goal,
+    ).unwrap();
+
+    println!("{len}");
+    PositionPrinter::new().draw_axis(false).y_is_top(true).print(path);
+
     0
 }
 
