@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use Tile::*;
 use crate::aoc_lib::*;
 use pathfinding::prelude::astar;
@@ -21,47 +21,61 @@ pub fn solve_a(input: &str) -> usize {
         |pos| *pos == goal,
     ).unwrap();
 
-    // find every wall that is between 2 positions of the best path
-    let potential_gaps = path
-        .iter()
-        .flat_map(|pos| pos.cardinal_neighbours())
-        .filter(|pos| *board.get_tile(*pos).unwrap() == Wall)
-        .map(|wall| (wall, wall
-            .cardinal_neighbours_with_directions()
-            .into_iter()
-            .filter(|(n, _)| match board.get_tile(*n) {
-                Some(t) => *t != Wall,
-                None => false
-            })
-            .collect::<Vec<_>>())
-        )
-        .filter(|(_, ns)| ns.len() == 2)
-        .filter(|(_, ns)| match (ns[0].1, ns[1].1) {
-            (XP, XM) | (XM, XP) | (YP, YM) | (YM, YP) => true,
-            _ => false
-        })
-        .map(|(wall, _)| wall)
-        .collect::<HashSet<_>>();
+    println!("Len: {len}");
+    //println!("{:?}", path);
 
-    // find the path with the added rule that the path can go through the gap
-    potential_gaps
-        .into_iter()
-        .flat_map(|gap| astar(
-            &start,
-            |pos| pos
-                .cardinal_neighbours()
+    let mut stats = HashMap::<usize, usize>::new();
+
+    // idea
+    //.filter_map(move |(j, _)| match (i..i + j).into_iter().any(|index| board.get_tile(path[index]).unwrap() == &Wall) {
+    //    true => Some(j - 1),
+    //    false => None
+    //})
+
+    let res = path
+        .iter()
+        .enumerate()
+        .map(|(i, pos)| pos
+            .cardinal_neighbours()
+            .into_iter()
+            .filter(|n| board.get_tile(*n).unwrap() == &Wall)
+            .flat_map(|n| path[(i + 1)..]
                 .into_iter()
-                .filter(|n| match board.get_tile(*n) {
-                    Some(Wall) => *n == gap,
-                    _ => true
-                })
-                .map(|n| (n, 1)),
-            |pos| pos.manhattan_distance(&goal) as usize,
-            |pos| *pos == goal,
-        ))
-        .map(|(_, new_len)| len - new_len)
-        .filter(|len| *len >= 100)
-        .count()
+                .enumerate()
+                .filter(move |(_, path_pos)| (n.manhattan_distance(path_pos) as usize) == 2 - 1)
+                .filter(|(j, _)| *j > 0)
+                .map(|(j, _)| j - 1)
+            )
+            .inspect(|diff| { stats.entry(*diff).and_modify(|val| *val += 1).or_insert(1); })
+            .filter(|diff| *diff >= 100)
+            .count()
+        )
+        .sum();
+
+    //let res = path
+    //    .iter()
+    //    .enumerate()
+    //    .flat_map(|(i, pos)| path[(i + 1)..]
+    //        .into_iter()
+    //        .enumerate()
+    //        .map(move |(j, path_pos)| ((i, pos), (j, path_pos)))
+    //    )
+    //    .filter(|((i, pos), (_, path_pos))| (pos.manhattan_distance(path_pos) as usize) == 2)
+    //    .filter_map(|((i, pos), (j, _))| match (i..i + j).into_iter().any(|index| board.get_tile(path[index]).unwrap() == &Wall) {
+    //        true => Some(j - 1),
+    //        false => None
+    //    })
+    //    .inspect(|diff| { stats.entry(*diff).and_modify(|val| *val += 1).or_insert(1); })
+    //    .filter(|diff| *diff >= 100)
+    //    .count();
+
+    let mut stats = stats
+        .into_iter()
+        .collect::<Vec<_>>();
+    stats.sort();
+    stats.into_iter().for_each(|(key, value)| println!("{key} : {value}"));
+
+    res
 }
 
 pub fn solve_b(input: &str) -> usize {
@@ -82,7 +96,7 @@ pub fn solve_b(input: &str) -> usize {
     let start = board.get_position_of(&Start).unwrap();
     let goal = board.get_position_of(&End).unwrap();
 
-    let (path, len) = astar(
+    let (path, _len) = astar(
         &start,
         |pos| pos
             .cardinal_neighbours()
@@ -93,10 +107,94 @@ pub fn solve_b(input: &str) -> usize {
         |pos| *pos == goal,
     ).unwrap();
 
-    println!("{len}");
-    PositionPrinter::new().draw_axis(false).y_is_top(true).print(path);
+    let mut stats = HashMap::<usize, usize>::new();
 
-    0
+    let mut res = 0;
+
+    let mut foo = HashMap::<usize, HashSet<(Position, Position)>>::new();
+
+    for cheat in 2..=20 {
+        res += path
+            .iter()
+            .enumerate()
+            .map(|(i, pos)| pos
+                .cardinal_neighbours()
+                .into_iter()
+                .filter(|n| board.get_tile(*n).unwrap() == &Wall)
+                .flat_map(|n| path[(i + 1)..]
+                    .into_iter()
+                    .enumerate()
+                    .filter(move |(_, path_pos)| (n.manhattan_distance(path_pos) as usize) == cheat - 1)
+                    .filter(|(j, _)| *j > 0)
+                    .map(|(j, path_pos)| (j - 1, path_pos))
+                )
+                .inspect(|(diff, _)| { stats.entry(*diff).and_modify(|val| *val += 1).or_insert(1); })
+                .filter(|(diff, _)| *diff >= 50)
+                .inspect(|(diff, path_pos)| {
+                    foo.entry(*diff).and_modify(|set| { set.insert((*pos, **path_pos)); }).or_insert(HashSet::new());
+                })
+                .count()
+            )
+            .sum::<usize>();
+    }
+
+    let foo_len = foo.len();
+    let mut foo = foo
+        .into_iter()
+        .collect::<Vec<_>>();
+    foo.sort_by(|a, b| a.0.cmp(&b.0));
+    foo.into_iter().for_each(|(key, set)| println!("{} : {}", set.len(), key));
+
+    println!("Foo {}", foo_len);
+
+    //let res = (2..=20)
+    //    .into_iter()
+    //    .map(|cheat| path
+    //        .iter()
+    //        .enumerate()
+    //        .map(|(i, pos)| pos
+    //            .cardinal_neighbours()
+    //            .into_iter()
+    //            .filter(|n| board.get_tile(*n).unwrap() == &Wall)
+    //            .flat_map(|n| path[(i + 1)..]
+    //                .into_iter()
+    //                .enumerate()
+    //                .filter(move |(_, path_pos)| (n.manhattan_distance(path_pos) as usize) == cheat - 1)
+    //                .map(|(j, _)| j - 1)
+    //            )
+    //            .inspect(|diff| { stats.entry(*diff).and_modify(|val| *val += 1).or_insert(1); })
+    //            .filter(|diff| *diff >= 100)
+    //            .count()
+    //        )
+    //        .sum::<usize>())
+    //    .sum();
+
+    let mut stats = stats
+        .into_iter()
+        .collect::<Vec<_>>();
+    stats.sort();
+    //stats.into_iter().for_each(|(key, value)| println!("{key} : {value}"));
+
+    res
+
+    //path
+    //    .iter()
+    //    .enumerate()
+    //    .map(|(i, pos)| pos
+    //        .cardinal_neighbours()
+    //        .into_iter()
+    //        .filter(|n| board.get_tile(*n).unwrap() == &Wall)
+    //        .flat_map(|n| path[(i + 1)..]
+    //            .into_iter()
+    //            .enumerate()
+    //            .filter(move |(_, path_pos)| (n.manhattan_distance(path_pos) as usize) == 2 - 1)
+    //            .map(|(j, _)| j)
+    //        )
+    //        .filter(|diff| *diff >= 100)
+    //        .count())
+    //    .sum();
+
+    //0
 }
 
 #[derive(Clone, Copy, Eq, PartialEq)]
