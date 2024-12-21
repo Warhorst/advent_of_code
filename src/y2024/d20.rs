@@ -1,10 +1,14 @@
-use std::collections::{HashMap, HashSet};
 use Tile::*;
 use crate::aoc_lib::*;
 use pathfinding::prelude::astar;
+use itertools::Itertools;
+use rayon::prelude::*;
 
 pub fn solve_a(input: &str) -> usize {
-    let board = Board::<Tile>::from_text(input);
+    // I added the target threshold to the puzzle input
+    let threshold = parse(input.lines().next().unwrap());
+    let board_input = input.lines().skip(1).map(|line|line).join("\n");
+    let board = Board::<Tile>::from_text(&board_input);
 
     let start = board.get_position_of(&Start).unwrap();
     let goal = board.get_position_of(&End).unwrap();
@@ -21,82 +25,24 @@ pub fn solve_a(input: &str) -> usize {
         |pos| *pos == goal,
     ).unwrap();
 
-    println!("Len: {len}");
-    //println!("{:?}", path);
-
-    let mut stats = HashMap::<usize, usize>::new();
-
-    // idea
-    //.filter_map(move |(j, _)| match (i..i + j).into_iter().any(|index| board.get_tile(path[index]).unwrap() == &Wall) {
-    //    true => Some(j - 1),
-    //    false => None
-    //})
-
-    let res = path
-        .iter()
-        .enumerate()
-        .map(|(i, pos)| pos
-            .cardinal_neighbours()
-            .into_iter()
-            .filter(|n| board.get_tile(*n).unwrap() == &Wall)
-            .flat_map(|n| path[(i + 1)..]
-                .into_iter()
-                .enumerate()
-                .filter(move |(_, path_pos)| (n.manhattan_distance(path_pos) as usize) == 2 - 1)
-                .filter(|(j, _)| *j > 0)
-                .map(|(j, _)| j - 1)
-            )
-            .inspect(|diff| { stats.entry(*diff).and_modify(|val| *val += 1).or_insert(1); })
-            .filter(|diff| *diff >= 100)
-            .count()
-        )
-        .sum();
-
-    //let res = path
-    //    .iter()
-    //    .enumerate()
-    //    .flat_map(|(i, pos)| path[(i + 1)..]
-    //        .into_iter()
-    //        .enumerate()
-    //        .map(move |(j, path_pos)| ((i, pos), (j, path_pos)))
-    //    )
-    //    .filter(|((i, pos), (_, path_pos))| (pos.manhattan_distance(path_pos) as usize) == 2)
-    //    .filter_map(|((i, pos), (j, _))| match (i..i + j).into_iter().any(|index| board.get_tile(path[index]).unwrap() == &Wall) {
-    //        true => Some(j - 1),
-    //        false => None
-    //    })
-    //    .inspect(|diff| { stats.entry(*diff).and_modify(|val| *val += 1).or_insert(1); })
-    //    .filter(|diff| *diff >= 100)
-    //    .count();
-
-    let mut stats = stats
-        .into_iter()
-        .collect::<Vec<_>>();
-    stats.sort();
-    stats.into_iter().for_each(|(key, value)| println!("{key} : {value}"));
-
-    res
+    count_cheats(
+        len,
+        &path,
+        2,
+        threshold,
+    )
 }
 
 pub fn solve_b(input: &str) -> usize {
-    // instead of a path, the cheat can be seen as a jump, with a min manhatten distance of 2 and
-    // a max manhattan distance of 20
-
-    // I can only make one jump per pathfind
-
-    // every position in the path has a remaining length to goal
-    // I want to jump to positions where len - (jump_remaining_distance + taken_distance) >= 100
-
-    // Speculation: I can only jump from one position in the best path to another position in the
-    // best path -> therefore, no new pathfinding are necessary
-
-    // a cheat starts when I walk into a wall
-
-    let board = Board::<Tile>::from_text(input);
+    // I added the target threshold to the puzzle input
+    let threshold = parse(input.lines().next().unwrap());
+    let board_input = input.lines().skip(1).map(|line|line).join("\n");
+    let board = Board::<Tile>::from_text(&board_input);
     let start = board.get_position_of(&Start).unwrap();
     let goal = board.get_position_of(&End).unwrap();
 
-    let (path, _len) = astar(
+    // get the best path and its len when using no cheats
+    let (path, len) = astar(
         &start,
         |pos| pos
             .cardinal_neighbours()
@@ -107,94 +53,55 @@ pub fn solve_b(input: &str) -> usize {
         |pos| *pos == goal,
     ).unwrap();
 
-    let mut stats = HashMap::<usize, usize>::new();
+    count_cheats(
+        len,
+        &path,
+        20,
+        threshold,
+    )
+}
 
-    let mut res = 0;
+fn count_cheats(
+    shortest_path_len: usize,
+    shortest_path: &Vec<Position>,
+    max_cheat_len: usize,
+    threshold: usize,
+) -> usize {
+    // General idea: There is only one path in the labyrinth, so it is not possible
+    // to cheat your way to some position on another path to the goal. This means I
+    // can only go from some position i on the shortest path to some position j on the
+    // shortest path, where i and j are the indexes on the shortest path, i < j and
+    // shortest_path[i] has a manhattan distance of the cheat length to shortest_path[j].
+    // I therefore iterate over all positions in the path, look ahead to all positions after
+    // it, only take the ones with a manhattan distance of my cheat distance into consideration and check if
+    // the difference between my new path and the shortest path is smaller than the threshold.
+    // Every match will be counted and the sum gets returned.
 
-    let mut foo = HashMap::<usize, HashSet<(Position, Position)>>::new();
-
-    for cheat in 2..=20 {
-        res += path
+    // go from the min cheat length (always 2) to the max cheat length provided by the caller
+    (2..=max_cheat_len)
+        .into_iter()
+        // rayon for speed
+        .par_bridge()
+        // iterate over the whole shortest path
+        .map(|cheat| shortest_path
             .iter()
             .enumerate()
-            .map(|(i, pos)| pos
-                .cardinal_neighbours()
+            // look ahead from the current position
+            .flat_map(|(i, pos)| ((i + 1)..shortest_path.len())
                 .into_iter()
-                .filter(|n| board.get_tile(*n).unwrap() == &Wall)
-                .flat_map(|n| path[(i + 1)..]
-                    .into_iter()
-                    .enumerate()
-                    .filter(move |(_, path_pos)| (n.manhattan_distance(path_pos) as usize) == cheat - 1)
-                    .filter(|(j, _)| *j > 0)
-                    .map(|(j, path_pos)| (j - 1, path_pos))
-                )
-                .inspect(|(diff, _)| { stats.entry(*diff).and_modify(|val| *val += 1).or_insert(1); })
-                .filter(|(diff, _)| *diff >= 50)
-                .inspect(|(diff, path_pos)| {
-                    foo.entry(*diff).and_modify(|set| { set.insert((*pos, **path_pos)); }).or_insert(HashSet::new());
-                })
-                .count()
+                .map(|j| (j, shortest_path[j]))
+                // only consider positions which have a manhattan distance of cheat
+                .filter(move |(_, path_pos)| (pos.manhattan_distance(path_pos) as usize) == cheat)
+                // Calculate the difference between the original path length and the resulting
+                // length when using the cheat. Note: If the cheat would go along the original path,
+                // which means going over 0 walls, this formula will return 0, so this case is handled too.
+                .map(move |(j, _)| shortest_path_len - (i + cheat + (shortest_path_len - j)))
             )
-            .sum::<usize>();
-    }
-
-    let foo_len = foo.len();
-    let mut foo = foo
-        .into_iter()
-        .collect::<Vec<_>>();
-    foo.sort_by(|a, b| a.0.cmp(&b.0));
-    foo.into_iter().for_each(|(key, set)| println!("{} : {}", set.len(), key));
-
-    println!("Foo {}", foo_len);
-
-    //let res = (2..=20)
-    //    .into_iter()
-    //    .map(|cheat| path
-    //        .iter()
-    //        .enumerate()
-    //        .map(|(i, pos)| pos
-    //            .cardinal_neighbours()
-    //            .into_iter()
-    //            .filter(|n| board.get_tile(*n).unwrap() == &Wall)
-    //            .flat_map(|n| path[(i + 1)..]
-    //                .into_iter()
-    //                .enumerate()
-    //                .filter(move |(_, path_pos)| (n.manhattan_distance(path_pos) as usize) == cheat - 1)
-    //                .map(|(j, _)| j - 1)
-    //            )
-    //            .inspect(|diff| { stats.entry(*diff).and_modify(|val| *val += 1).or_insert(1); })
-    //            .filter(|diff| *diff >= 100)
-    //            .count()
-    //        )
-    //        .sum::<usize>())
-    //    .sum();
-
-    let mut stats = stats
-        .into_iter()
-        .collect::<Vec<_>>();
-    stats.sort();
-    //stats.into_iter().for_each(|(key, value)| println!("{key} : {value}"));
-
-    res
-
-    //path
-    //    .iter()
-    //    .enumerate()
-    //    .map(|(i, pos)| pos
-    //        .cardinal_neighbours()
-    //        .into_iter()
-    //        .filter(|n| board.get_tile(*n).unwrap() == &Wall)
-    //        .flat_map(|n| path[(i + 1)..]
-    //            .into_iter()
-    //            .enumerate()
-    //            .filter(move |(_, path_pos)| (n.manhattan_distance(path_pos) as usize) == 2 - 1)
-    //            .map(|(j, _)| j)
-    //        )
-    //        .filter(|diff| *diff >= 100)
-    //        .count())
-    //    .sum();
-
-    //0
+            // keep only differences on or above the threshold
+            .filter(|diff| *diff >= threshold)
+            .count()
+        )
+        .sum()
 }
 
 #[derive(Clone, Copy, Eq, PartialEq)]
@@ -213,17 +120,6 @@ impl From<char> for Tile {
             '#' => Wall,
             '.' => Free,
             _ => unreachable!()
-        }
-    }
-}
-
-impl Into<char> for Tile {
-    fn into(self) -> char {
-        match self {
-            Start => 'S',
-            End => 'E',
-            Wall => '#',
-            Free => '.'
         }
     }
 }
