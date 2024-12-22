@@ -10,9 +10,11 @@ pub fn solve_a(input: &str) -> usize {
 }
 
 pub fn solve_b(input: &str) -> usize {
-    // too high: 2277
-
     let last_place = |num: usize| num % 10;
+
+    // todo This produces a slightly off result, and I currently dont know why. The resulting value
+    //  is like one price higher than my actual value (I could get the star by trial and error).
+    //  But the example works...
 
     input
         .lines()
@@ -31,11 +33,11 @@ pub fn solve_b(input: &str) -> usize {
             .windows(4)
             .map(|w| [w[0], w[1], w[2], w[3]])
             .enumerate()
-            .fold(HashMap::new(), |mut acc, (i, pattern)| {
-                if !acc.contains_key(&pattern) {
-                    acc.insert(pattern, prices[i + 3]);
+            .fold(HashMap::new(), |mut map, (i, pattern)| {
+                if !map.contains_key(&pattern) {
+                    map.insert(pattern, prices[i + 3]);
                 }
-                acc
+                map
             })
         )
         .fold(HashMap::with_capacity(50000), |mut map, (pattern, price)| {
