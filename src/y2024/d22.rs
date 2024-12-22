@@ -13,7 +13,7 @@ pub fn solve_b(input: &str) -> usize {
     let last_place = |num: usize| num % 10;
 
     // todo This produces a slightly off result, and I currently dont know why. The resulting value
-    //  is like one price higher than my actual value (I could get the star by trial and error).
+    //  is like one price higher than my actual value (I got the star by trial and error).
     //  But the example works...
 
     input
