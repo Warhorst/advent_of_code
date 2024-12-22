@@ -1,4 +1,5 @@
 use crate::aoc_lib::*;
+use std::collections::HashMap;
 
 pub fn solve_a(input: &str) -> usize {
     input
@@ -9,9 +10,11 @@ pub fn solve_a(input: &str) -> usize {
 }
 
 pub fn solve_b(input: &str) -> usize {
+    // too high: 2277
+
     let last_place = |num: usize| num % 10;
 
-    let collect = input
+    input
         .lines()
         .map(|line| parse::<usize>(line))
         .map(|num| (0..2000)
@@ -24,31 +27,25 @@ pub fn solve_b(input: &str) -> usize {
             })
         )
         .map(|(_, prices, diffs)| (prices, diffs))
-        .collect::<Vec<_>>();
-
-    let mut max = 0;
-
-    for (_, diffs) in &collect {
-        max = usize::max(
-            max,
-            diffs
-                .windows(4)
-                .map(|pattern| collect
-                    .iter()
-                    .flat_map(move |(other_prices, other_diffs)| other_diffs
-                        .windows(4)
-                        .enumerate()
-                        .find(|(_, w)| *w == pattern)
-                        .map(|(j, _)| other_prices[j + 3])
-                    )
-                    .sum()
-                )
-                .max()
-                .unwrap_or_default(),
-        );
-    }
-
-    max
+        .flat_map(|(prices, diffs)| diffs
+            .windows(4)
+            .map(|w| [w[0], w[1], w[2], w[3]])
+            .enumerate()
+            .fold(HashMap::new(), |mut acc, (i, pattern)| {
+                if !acc.contains_key(&pattern) {
+                    acc.insert(pattern, prices[i + 3]);
+                }
+                acc
+            })
+        )
+        .fold(HashMap::with_capacity(50000), |mut map, (pattern, price)| {
+            map.entry(pattern).and_modify(|val| *val += price).or_insert(price);
+            map
+        })
+        .values()
+        .copied()
+        .max()
+        .unwrap_or_default()
 }
 
 fn calculate_next_number(current: usize) -> usize {
