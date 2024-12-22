@@ -4,10 +4,6 @@ use KeypadButton::*;
 use ControlButton::*;
 
 pub fn solve_a(input: &str) -> usize {
-    // too high: 158428
-
-    // todo does not work, because going left is more expensive than other moves
-
     input
         .lines()
         .map(|line| (get_numerical_part(line), line.chars().map(KeypadButton::from).collect::<Vec<_>>()))
@@ -19,7 +15,6 @@ pub fn solve_a(input: &str) -> usize {
                 )
             ).len()
         ))
-        .inspect(|(num, amount_inputs)| println!("{}, {}", num, amount_inputs))
         .map(|(num, amount_inputs)| num * amount_inputs)
         .sum()
 }
@@ -40,58 +35,51 @@ fn get_required_inputs_for_keypad(mut keypad_inputs: Vec<KeypadButton>) -> Vec<C
 fn get_keypad_inputs_from_to(current: KeypadButton, target: KeypadButton) -> Vec<ControlButton> {
     let mut inputs = vec![];
 
-    let current_pos = get_keypad_button_pos(current);
-    let target_pos = get_keypad_button_pos(target);
+    // get the keys position on the keypad
+    let current_pos = current.get_position();
+    let target_pos = target.get_position();
+    // calculate the diff to determine how the arm must be moved
     let (x_diff, y_diff) = (target_pos.x - current_pos.x, target_pos.y - current_pos.y);
 
-    if current_pos + (x_diff, 0) == p!(0, 0) {
-        // going x first would move over gap, which is invalid, so move over y first
+    // on the control pad, moving farther left is more expensive than moving up or down,
+    // while moving up or down is more expensive than moving right or activate,
+    // so perform moves in this order (but don't hover over the gap, switch order then)
 
+    // on the keypad, the Gap is at (0, 0)
+
+    if x_diff < 0 && current_pos + (x_diff, 0) == p!(0, 0) {
         match y_diff {
             yd if y_diff > 0 => (0..yd).into_iter().for_each(|_| inputs.push(Up)),
             yd if y_diff < 0 => (0..yd.abs()).into_iter().for_each(|_| inputs.push(Down)),
             _ => {}
         }
-
-        match x_diff {
-            xd if x_diff > 0 => (0..xd).into_iter().for_each(|_| inputs.push(Right)),
-            xd if x_diff < 0 => (0..xd.abs()).into_iter().for_each(|_| inputs.push(Left)),
+        (0..x_diff.abs()).into_iter().for_each(|_| inputs.push(Left));
+    } else if x_diff < 0 {
+        (0..x_diff.abs()).into_iter().for_each(|_| inputs.push(Left));
+        match y_diff {
+            yd if y_diff > 0 => (0..yd).into_iter().for_each(|_| inputs.push(Up)),
+            yd if y_diff < 0 => (0..yd.abs()).into_iter().for_each(|_| inputs.push(Down)),
+            _ => {}
+        }
+    } else if current_pos + (0, y_diff) == p!(0, 0) {
+        (0..x_diff).into_iter().for_each(|_| inputs.push(Right));
+        match y_diff {
+            yd if y_diff > 0 => (0..yd).into_iter().for_each(|_| inputs.push(Up)),
+            yd if y_diff < 0 => (0..yd.abs()).into_iter().for_each(|_| inputs.push(Down)),
             _ => {}
         }
     } else {
-        match x_diff {
-            xd if x_diff > 0 => (0..xd).into_iter().for_each(|_| inputs.push(Right)),
-            xd if x_diff < 0 => (0..xd.abs()).into_iter().for_each(|_| inputs.push(Left)),
-            _ => {}
-        }
-
         match y_diff {
             yd if y_diff > 0 => (0..yd).into_iter().for_each(|_| inputs.push(Up)),
             yd if y_diff < 0 => (0..yd.abs()).into_iter().for_each(|_| inputs.push(Down)),
             _ => {}
         }
+        (0..x_diff).into_iter().for_each(|_| inputs.push(Right))
     }
 
     inputs.push(Activate);
 
     inputs
-}
-
-fn get_keypad_button_pos(button: KeypadButton) -> Position {
-    match button {
-        KB0 => p!(1, 0),
-        KB1 => p!(0, 1),
-        KB2 => p!(1, 1),
-        KB3 => p!(2, 1),
-        KB4 => p!(0, 2),
-        KB5 => p!(1, 2),
-        KB6 => p!(2, 2),
-        KB7 => p!(0, 3),
-        KB8 => p!(1, 3),
-        KB9 => p!(2, 3),
-        KBA => p!(2, 0),
-        //KGap => p!(0, 0),
-    }
 }
 
 fn get_required_inputs_for_control(mut control_inputs: Vec<ControlButton>) -> Vec<ControlButton> {
@@ -106,52 +94,52 @@ fn get_required_inputs_for_control(mut control_inputs: Vec<ControlButton>) -> Ve
 fn get_control_inputs_from_to(current: ControlButton, target: ControlButton) -> Vec<ControlButton> {
     let mut inputs = vec![];
 
-    let current_pos = get_control_button_pos(current);
-    let target_pos = get_control_button_pos(target);
+    // get the keys position on the keypad
+    let current_pos = current.get_position();
+    let target_pos = target.get_position();
+    // calculate the diff to determine how the arm must be moved
     let (x_diff, y_diff) = (target_pos.x - current_pos.x, target_pos.y - current_pos.y);
 
-    if current_pos + (x_diff, 0) == p!(0, 1) {
-        // going x first would move over gap, which is invalid, so move over y first
+    // on the control pad, moving farther left is more expensive than moving up or down,
+    // while moving up or down is more expensive than moving right or activate,
+    // so perform moves in this order (but don't hover over the gap, switch order then)
 
+    // on the keypad, the Gap is at (0, 1)
+
+    if x_diff < 0 && current_pos + (x_diff, 0) == p!(0, 1) {
         match y_diff {
-            yd if y_diff > 0 => (0..yd).into_iter().for_each(|_| inputs.push(Up)),
-            yd if y_diff < 0 => (0..yd.abs()).into_iter().for_each(|_| inputs.push(Down)),
+            _ if y_diff > 0 => inputs.push(Up),
+            _ if y_diff < 0 => inputs.push(Down),
             _ => {}
         }
+        (0..x_diff.abs()).into_iter().for_each(|_| inputs.push(Left));
+    } else if x_diff < 0 {
+        (0..x_diff.abs()).into_iter().for_each(|_| inputs.push(Left));
+        match y_diff {
+            _ if y_diff > 0 => inputs.push(Up),
+            _ if y_diff < 0 => inputs.push(Down),
+            _ => {}
+        }
+    } else if current_pos + (0, y_diff) == p!(0, 1) {
+        (0..x_diff).into_iter().for_each(|_| inputs.push(Right));
 
-        match x_diff {
-            xd if x_diff > 0 => (0..xd).into_iter().for_each(|_| inputs.push(Right)),
-            xd if x_diff < 0 => (0..xd.abs()).into_iter().for_each(|_| inputs.push(Left)),
+        match y_diff {
+            _ if y_diff > 0 => inputs.push(Up),
+            _ if y_diff < 0 => inputs.push(Down),
             _ => {}
         }
     } else {
-        match x_diff {
-            xd if x_diff > 0 => (0..xd).into_iter().for_each(|_| inputs.push(Right)),
-            xd if x_diff < 0 => (0..xd.abs()).into_iter().for_each(|_| inputs.push(Left)),
-            _ => {}
-        }
-
         match y_diff {
-            yd if y_diff > 0 => (0..yd).into_iter().for_each(|_| inputs.push(Up)),
-            yd if y_diff < 0 => (0..yd.abs()).into_iter().for_each(|_| inputs.push(Down)),
+            _ if y_diff > 0 => inputs.push(Up),
+            _ if y_diff < 0 => inputs.push(Down),
             _ => {}
         }
+        (0..x_diff).into_iter().for_each(|_| inputs.push(Right))
     }
 
     inputs.push(Activate);
 
     inputs
-}
-
-fn get_control_button_pos(button: ControlButton) -> Position {
-    match button {
-        Up => p!(1, 1),
-        Down => p!(1, 0),
-        Left => p!(0, 0),
-        Right => p!(2, 0),
-        Activate => p!(2, 1),
-        //CGap => p!(0, 1),
-    }
 }
 
 pub fn solve_b(_input: &str) -> usize {
@@ -171,7 +159,24 @@ enum KeypadButton {
     KB8,
     KB9,
     KBA,
-    //KGap,
+}
+
+impl KeypadButton {
+    fn get_position(&self) -> Position {
+        match self {
+            KB0 => p!(1, 0),
+            KB1 => p!(0, 1),
+            KB2 => p!(1, 1),
+            KB3 => p!(2, 1),
+            KB4 => p!(0, 2),
+            KB5 => p!(1, 2),
+            KB6 => p!(2, 2),
+            KB7 => p!(0, 3),
+            KB8 => p!(1, 3),
+            KB9 => p!(2, 3),
+            KBA => p!(2, 0),
+        }
+    }
 }
 
 impl From<char> for KeypadButton {
@@ -200,7 +205,18 @@ enum ControlButton {
     Left,
     Right,
     Activate,
-    //CGap,
+}
+
+impl ControlButton {
+    fn get_position(&self) -> Position {
+        match self {
+            Up => p!(1, 1),
+            Down => p!(1, 0),
+            Left => p!(0, 0),
+            Right => p!(2, 0),
+            Activate => p!(2, 1),
+        }
+    }
 }
 
 impl std::fmt::Debug for ControlButton {
@@ -211,7 +227,6 @@ impl std::fmt::Debug for ControlButton {
             Left => '<',
             Right => '>',
             Activate => 'A',
-            //CGap => 'G'
         })
     }
 }
