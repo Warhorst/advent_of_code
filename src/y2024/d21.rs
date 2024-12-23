@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fmt::Formatter;
 use crate::aoc_lib::*;
 use KeypadButton::*;
@@ -26,10 +27,14 @@ fn get_numerical_part(line: &str) -> usize {
 fn get_required_inputs_for_keypad(mut keypad_inputs: Vec<KeypadButton>) -> Vec<ControlButton> {
     keypad_inputs.insert(0, KBA);
 
-    keypad_inputs
+    let res = keypad_inputs
         .windows(2)
         .flat_map(|w| get_keypad_inputs_from_to(w[0], w[1]))
-        .collect()
+        .collect();
+
+    println!("{:?}", res);
+
+    res
 }
 
 fn get_keypad_inputs_from_to(current: KeypadButton, target: KeypadButton) -> Vec<ControlButton> {
@@ -85,10 +90,14 @@ fn get_keypad_inputs_from_to(current: KeypadButton, target: KeypadButton) -> Vec
 fn get_required_inputs_for_control(mut control_inputs: Vec<ControlButton>) -> Vec<ControlButton> {
     control_inputs.insert(0, Activate);
 
-    control_inputs
+    let res = control_inputs
         .windows(2)
         .flat_map(|w| get_control_inputs_from_to(w[0], w[1]))
-        .collect()
+        .collect();
+
+    println!("{:?}", res);
+
+    res
 }
 
 fn get_control_inputs_from_to(current: ControlButton, target: ControlButton) -> Vec<ControlButton> {
@@ -142,8 +151,113 @@ fn get_control_inputs_from_to(current: ControlButton, target: ControlButton) -> 
     inputs
 }
 
-pub fn solve_b(_input: &str) -> usize {
-    0
+pub fn solve_b(input: &str) -> usize {
+    // todo current state: The idea is simple: transform the current version of A into a recursive version,
+    //  use a cache and call it until depth 25. The problem: I just don't get it how to implement this
+    //  recursively. I am extremely burned out of this puzzle and might try it later one day
+
+    //let mut inputs = get_required_inputs_for_keypad(inputs);
+    //(0..2)
+    //    .into_iter()
+    //    .for_each(|_| inputs = get_required_inputs_for_control(inputs.clone()));
+    //inputs.len();
+
+    input
+        .lines()
+        .map(|line| (get_numerical_part(line), line.chars().map(KeypadButton::from).collect::<Vec<_>>()))
+        .map(|(num, inputs)| (
+            num,
+            get_num_keypad_presses(inputs, 1)
+        ))
+        .map(|(num, amount_inputs)| num * amount_inputs)
+        .sum()
+}
+
+fn get_num_keypad_presses(inputs: Vec<KeypadButton>, depth: usize) -> usize {
+    let inputs = get_required_inputs_for_keypad(inputs);
+    let mut cache = HashMap::new();
+
+    println!("{:?}", inputs);
+
+    //inputs.insert(0, Activate);
+
+    let sum = inputs
+        .windows(2)
+        .enumerate()
+        .map(|(i, w)| get_num_control_presses(w[0], w[1], i == 0, depth, &mut cache))
+        .sum();
+
+    println!("{sum}");
+
+    sum
+}
+
+fn get_num_control_presses(
+    current: ControlButton,
+    target: ControlButton,
+    is_first: bool,
+    current_depth: usize,
+    cache: &mut HashMap<(ControlButton, ControlButton, usize), usize>,
+) -> usize {
+    //let amount_opt = cache.get(&(current, target, current_depth)).copied();
+    let amount_opt = None;
+
+    match amount_opt {
+        Some(amount) => {
+            println!("Returning cached value for: {:?}, amount: {amount}", (current, target, current_depth));
+            amount
+        }
+        None => {
+            let new = if current_depth == 0 {
+                //get_control_inputs_from_to(current, target).len()
+                let inputs = if is_first {
+                    let mut inputs = get_control_inputs_from_to(Activate, current);
+                    inputs.extend(get_control_inputs_from_to(current, target));
+                    inputs
+                } else {
+                    get_control_inputs_from_to(current, target)
+                };
+
+                println!("({:?} to {:?}), Inputs: {:?}, Depth: {current_depth}", current, target, inputs);
+
+                inputs.len()
+            } else {
+                //let mut inputs = get_control_inputs_from_to(current, target);
+
+                let inputs = if is_first {
+                    let mut inputs = get_control_inputs_from_to(Activate, current);
+                    inputs.extend(get_control_inputs_from_to(current, target));
+                    inputs
+                } else {
+                    get_control_inputs_from_to(current, target)
+                };
+
+                println!("({:?} to {:?}), Inputs: {:?}, Depth: {current_depth}", current, target, inputs);
+
+                // todo breaks when input is only one element long
+
+                //if inputs.len() == 1 && next.is_some() {
+                //    inputs.extend(get_control_inputs_from_to(target, next.unwrap()));
+                //}
+
+                if inputs.len() == 1 {
+                    3 * current_depth
+                } else {
+                    inputs
+                        .windows(2)
+                        .enumerate()
+                        .map(|(i, w)| get_num_control_presses(w[0], w[1], is_first && i == 0, current_depth - 1, cache))
+                        .sum()
+                }
+
+
+            };
+
+            cache.insert((current, target, current_depth), new);
+
+            new
+        }
+    }
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -198,7 +312,7 @@ impl From<char> for KeypadButton {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Eq, Hash, PartialEq)]
 enum ControlButton {
     Up,
     Down,
