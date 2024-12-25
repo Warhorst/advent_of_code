@@ -165,6 +165,14 @@ impl<T> Board<T> {
                 None => ' '
             })
     }
+
+    pub fn rows(&self) -> Rows<T> {
+        Rows::new(self)
+    }
+
+    pub fn columns(&self) -> Columns<T> {
+        Columns::new(self)
+    }
 }
 
 impl<T> Board<T> where T: Copy + Clone {
@@ -249,4 +257,117 @@ fn width_from_input(input: &str) -> usize {
 
 fn height_from_input(input: &str) -> usize {
     input.lines().count()
+}
+
+pub struct Rows<'a, T> {
+    current_y: usize,
+    board: &'a  Board<T>
+}
+
+impl<'a, T> Rows<'a, T> {
+    fn new(board: &'a Board<T>) -> Self {
+        Rows {
+            current_y: 0,
+            board
+        }
+    }
+}
+
+impl<'a, T> Iterator for Rows<'a, T> {
+    type Item = Row<'a, T>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.current_y == self.board.height {
+            None
+        } else {
+            let next = Some(Row::new(self.board, self.current_y));
+            self.current_y += 1;
+            next
+        }
+    }
+}
+
+pub struct Row<'a, T> {
+    board: &'a Board<T>,
+    position_iter: PositionIter
+}
+
+impl<'a, T> Row<'a, T> {
+    fn new(board: &'a Board<T>, current_y: usize) -> Self {
+        let position_iter = p!(0, current_y).iter_to(p!(board.width - 1, current_y));
+
+        Row {
+            board,
+            position_iter
+        }
+    }
+}
+
+impl<'a, T> Iterator for Row<'a, T> {
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.position_iter.next() {
+            Some(pos) => self.board.get_tile(pos),
+            None => None
+        }
+    }
+}
+
+pub struct Columns<'a, T> {
+    current_x: usize,
+    board: &'a Board<T>
+}
+
+impl <'a, T> Columns<'a, T> {
+    fn new(board: &'a Board<T>) -> Self {
+        Columns {
+            current_x: 0,
+            board
+        }
+    }
+}
+
+impl <'a, T> Iterator for Columns<'a, T> {
+    type Item = Column<'a, T>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.current_x == self.board.width {
+            None
+        } else {
+            let next = Some(Column::new(self.current_x, self.board));
+            self.current_x += 1;
+            next
+        }
+    }
+}
+
+pub struct Column<'a, T> {
+    x: usize,
+    current_y: usize,
+    board: &'a Board<T>
+}
+
+impl<'a, T> Column<'a, T> {
+    fn new(x: usize, board: &'a Board<T>) -> Self {
+        Column {
+            x,
+            current_y: 0,
+            board
+        }
+    }
+}
+
+impl<'a, T> Iterator for Column<'a, T> {
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.current_y == self.board.height {
+            None
+        } else {
+            let next = self.board.get_tile(p!(self.x, self.current_y));
+            self.current_y += 1;
+            next
+        }
+    }
 }
