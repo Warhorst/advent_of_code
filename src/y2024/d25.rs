@@ -1,5 +1,6 @@
 use crate::aoc_lib::*;
 use Tile::*;
+use tile_macro::tile;
 
 pub fn solve_a(input: &str) -> usize {
     let mut locks = vec![];
@@ -50,27 +51,10 @@ impl Lock {
 #[derive(Clone, Copy)]
 struct Key([usize; 5]);
 
-#[derive(Clone, Copy, Eq, PartialEq)]
+#[tile]
 enum Tile {
+    #[t('#')]
     Filled,
+    #[t('.')]
     Empty
-}
-
-impl From<char> for Tile {
-    fn from(value: char) -> Self {
-        match value {
-            '#' => Filled,
-            '.' => Empty,
-            _ => unreachable!()
-        }
-    }
-}
-
-impl Into<char> for Tile {
-    fn into(self) -> char {
-        match self {
-            Filled => '#',
-            Empty => '.'
-        }
-    }
 }
