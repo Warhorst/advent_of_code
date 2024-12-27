@@ -335,7 +335,7 @@ impl <'a, T> Iterator for Columns<'a, T> {
         if self.current_x == self.board.width {
             None
         } else {
-            let next = Some(Column::new(self.current_x, self.board));
+            let next = Some(Column::new(self.board, self.current_x));
             self.current_x += 1;
             next
         }
@@ -343,17 +343,15 @@ impl <'a, T> Iterator for Columns<'a, T> {
 }
 
 pub struct Column<'a, T> {
-    x: usize,
-    current_y: usize,
-    board: &'a Board<T>
+    board: &'a Board<T>,
+    position_iter: PositionIter
 }
 
 impl<'a, T> Column<'a, T> {
-    fn new(x: usize, board: &'a Board<T>) -> Self {
+    fn new(board: &'a Board<T>, current_x: usize) -> Self {
         Column {
-            x,
-            current_y: 0,
-            board
+            board,
+            position_iter: p!(current_x, 0).iter_to(p!(current_x, board.height - 1))
         }
     }
 }
@@ -362,12 +360,9 @@ impl<'a, T> Iterator for Column<'a, T> {
     type Item = &'a T;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.current_y == self.board.height {
-            None
-        } else {
-            let next = self.board.get_tile(p!(self.x, self.current_y));
-            self.current_y += 1;
-            next
+        match self.position_iter.next() {
+            Some(pos) => self.board.get_tile(pos),
+            None => None,
         }
     }
 }
