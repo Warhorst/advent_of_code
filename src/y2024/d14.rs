@@ -139,8 +139,8 @@ pub fn solve_b(input: &str) -> usize {
             positions.iter().copied(),
             dim.0 as usize,
             dim.1 as usize,
-            true,
-            false
+            || true,
+            || false
         );
 
         if board.contains_shape(&tree, true) {
@@ -186,7 +186,7 @@ fn tree_shape() -> Shape {
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     "};
 
-    Shape::from_string(tree_string)
+    Shape::from(tree_string)
 }
 
 struct Robot {

@@ -4,7 +4,7 @@ use rayon::iter::ParallelIterator;
 use rayon::iter::ParallelBridge;
 
 pub fn solve_a(input: &str) -> usize {
-    let (board, guardians) = Board::board_and_specials_from_text(input, |c, pos| match c {
+    let (board, guardians) = Board::board_and_specials_from_str(input, |c, pos| match c {
         '^' => Some((Guardian::new(pos), Tile::Free)),
         _ => None
     });
@@ -26,7 +26,7 @@ pub fn solve_a(input: &str) -> usize {
 }
 
 pub fn solve_b(input: &str) -> usize {
-    let (board, guardians) = Board::board_and_specials_from_text(input, |c, pos| match c {
+    let (board, guardians) = Board::board_and_specials_from_str(input, |c, pos| match c {
         '^' => Some((Guardian::new(pos), Tile::Free)),
         _ => None
     });

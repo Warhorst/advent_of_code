@@ -4,9 +4,9 @@ use Tile::*;
 use pathfinding::prelude::astar;
 
 pub fn solve_a(input: &str) -> usize {
-    let board = Board::<Tile>::from_text(input);
-    let start = (board.get_position_of(&Start).unwrap(), XP);
-    let goal = board.get_position_of(&End).unwrap();
+    let board = Board::<Tile>::from(input);
+    let start = (board.get_positions_of(&Start).into_iter().next().unwrap(), XP);
+    let goal = board.get_positions_of(&End).into_iter().next().unwrap();
 
     let (_path, cost) = astar(
         &start,
@@ -36,9 +36,9 @@ pub fn solve_a(input: &str) -> usize {
 }
 
 pub fn solve_b(input: &str) -> usize {
-    let board = Board::<Tile>::from_text(input);
-    let start = (board.get_position_of(&Start).unwrap(), XP);
-    let goal = board.get_position_of(&End).unwrap();
+    let board = Board::<Tile>::from(input);
+    let start = (board.get_positions_of(&Start).into_iter().next().unwrap(), XP);
+    let goal = board.get_positions_of(&End).into_iter().next().unwrap();
 
     // same as A, but I now collect all shortest paths using the astar_bag
     // what a cool crate!

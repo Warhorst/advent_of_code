@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::aoc_lib::*;
 
 pub fn solve_a(input: &str) -> usize {
-    let board = Board::<Tile>::from_text(input);
+    let board = Board::<Tile>::from(input);
     // group positions by frequency
     let mut freq_pos_map = HashMap::new();
     board
@@ -35,7 +35,7 @@ pub fn solve_a(input: &str) -> usize {
 }
 
 pub fn solve_b(input: &str) -> usize {
-    let board = Board::<Tile>::from_text(input);
+    let board = Board::<Tile>::from(input);
     // group positions by frequency
     let mut freq_pos_map = HashMap::new();
     board

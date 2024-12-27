@@ -8,10 +8,10 @@ pub fn solve_a(input: &str) -> usize {
     // I added the target threshold to the puzzle input
     let threshold = parse(input.lines().next().unwrap());
     let board_input = input.lines().skip(1).map(|line|line).join("\n");
-    let board = Board::<Tile>::from_text(&board_input);
+    let board = Board::<Tile>::from(board_input.as_str());
 
-    let start = board.get_position_of(&Start).unwrap();
-    let goal = board.get_position_of(&End).unwrap();
+    let start = board.get_positions_of(&Start).into_iter().next().unwrap();
+    let goal = board.get_positions_of(&End).into_iter().next().unwrap();
 
     // get the best path and its len when using no cheats
     let (path, len) = astar(
@@ -37,9 +37,9 @@ pub fn solve_b(input: &str) -> usize {
     // I added the target threshold to the puzzle input
     let threshold = parse(input.lines().next().unwrap());
     let board_input = input.lines().skip(1).map(|line|line).join("\n");
-    let board = Board::<Tile>::from_text(&board_input);
-    let start = board.get_position_of(&Start).unwrap();
-    let goal = board.get_position_of(&End).unwrap();
+    let board = Board::<Tile>::from(board_input.as_str());
+    let start = board.get_positions_of(&Start).into_iter().next().unwrap();
+    let goal = board.get_positions_of(&End).into_iter().next().unwrap();
 
     // get the best path and its len when using no cheats
     let (path, len) = astar(

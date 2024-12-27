@@ -11,7 +11,7 @@ pub fn solve_a(input: &str) -> usize {
     };
     // create a board with the given dimension (+1, as dimension 6 would go from 0 to 5)
     // with only free tiles
-    let mut board = Board::<Tile>::from_width_height(dimension + 1, dimension + 1, Free);
+    let mut board = Board::<Tile>::new(dimension + 1, dimension + 1, || Free);
 
     // add the bytes until the amount of fallen bytes is reached
     lines
@@ -20,7 +20,7 @@ pub fn solve_a(input: &str) -> usize {
             let mut split = line.split(",");
             p!(parse::<isize>(split.next().unwrap()), parse::<isize>(split.next().unwrap()))
         })
-        .for_each(|pos| board.set_tile(pos, Corrupted));
+        .for_each(|pos| board.set_tile(pos, Corrupted).unwrap());
 
     let start = p!(0, 0);
     let goal = p!(dimension, dimension);
@@ -50,7 +50,7 @@ pub fn solve_b(input: &str) -> String {
         let mut split = lines.next().unwrap().split(" ");
         (parse::<usize>(split.next().unwrap()), parse::<usize>(split.next().unwrap()))
     };
-    let mut board = Board::<Tile>::from_width_height(dimension + 1, dimension + 1, Free);
+    let mut board = Board::<Tile>::new(dimension + 1, dimension + 1, || Free);
 
     let mut positions = lines
         .map(|line| {
@@ -64,7 +64,7 @@ pub fn solve_b(input: &str) -> String {
 
     while let Some(pos) = positions.next() {
         // add corrupted tiles in a loop
-        board.set_tile(pos, Corrupted);
+        board.set_tile(pos, Corrupted).unwrap();
         count += 1;
 
         // small optimization: until fallen_bytes is exceeded, it is

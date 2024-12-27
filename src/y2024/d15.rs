@@ -6,8 +6,8 @@ pub fn solve_a(input: &str) -> usize {
 
     let mut split = input.split("\n\n");
 
-    let mut board = Board::<TileA>::from_text(split.next().unwrap());
-    let mut bot_pos = board.get_position_of(&Bot).unwrap();
+    let mut board = Board::<TileA>::from(split.next().unwrap());
+    let mut bot_pos = board.get_positions_of(&Bot).into_iter().next().unwrap();
 
     split
         .next()
@@ -36,11 +36,11 @@ pub fn solve_a(input: &str) -> usize {
                                     board.set_tile(
                                         bot_pos.position_in_direction(dir, i),
                                         board.get_tile(bot_pos.position_in_direction(dir, i - 1)).copied().unwrap(),
-                                    );
+                                    ).unwrap();
                                     board.set_tile(
                                         bot_pos.position_in_direction(dir, i - 1),
                                         Free,
-                                    );
+                                    ).unwrap();
                                 }
 
                                 bot_pos = pos_in_dir;
@@ -56,8 +56,8 @@ pub fn solve_a(input: &str) -> usize {
                 Wall => {}
                 // free, just move there and free the current position
                 Free => {
-                    board.set_tile(bot_pos, Free);
-                    board.set_tile(pos_in_dir, Bot);
+                    board.set_tile(bot_pos, Free).unwrap();
+                    board.set_tile(pos_in_dir, Bot).unwrap();
                     bot_pos = pos_in_dir;
                 }
                 // only one bot exists
@@ -99,8 +99,8 @@ pub fn solve_b(input: &str) -> usize {
         )
         .join("\n");
 
-    let mut board = Board::<TileB>::from_text(&expanded_input);
-    let mut bot_pos = board.get_position_of(&Bot).unwrap();
+    let mut board = Board::<TileB>::from(expanded_input.as_str());
+    let mut bot_pos = board.get_positions_of(&Bot).into_iter().next().unwrap();
 
     split
         .next()
@@ -131,11 +131,11 @@ pub fn solve_b(input: &str) -> usize {
                                             board.set_tile(
                                                 bot_pos.position_in_direction(dir, i),
                                                 board.get_tile(bot_pos.position_in_direction(dir, i - 1)).copied().unwrap(),
-                                            );
+                                            ).unwrap();
                                             board.set_tile(
                                                 bot_pos.position_in_direction(dir, i - 1),
                                                 Free,
-                                            );
+                                            ).unwrap();
                                         }
 
                                         bot_pos = pos_in_dir;
@@ -156,13 +156,13 @@ pub fn solve_b(input: &str) -> usize {
                                 .collect::<Vec<_>>();
 
                             // clear all the current box positions by setting them to Free
-                            boards_and_tiles.iter().for_each(|(pos, _)| board.set_tile(*pos, Free));
+                            boards_and_tiles.iter().for_each(|(pos, _)| board.set_tile(*pos, Free).unwrap());
                             // put all the box tiles one up or down, depending on the direction
-                            boards_and_tiles.iter().for_each(|(pos, tile)| board.set_tile(pos.position_in_direction(dir, 1), *tile));
+                            boards_and_tiles.iter().for_each(|(pos, tile)| board.set_tile(pos.position_in_direction(dir, 1), *tile).unwrap());
 
                             // finally, also move the bot in the direction and update its current position
-                            board.set_tile(bot_pos, Free);
-                            board.set_tile(pos_in_dir, Bot);
+                            board.set_tile(bot_pos, Free).unwrap();
+                            board.set_tile(pos_in_dir, Bot).unwrap();
                             bot_pos = pos_in_dir;
                         },
                         _ => unreachable!()
@@ -172,8 +172,8 @@ pub fn solve_b(input: &str) -> usize {
                 Wall => {}
                 // free, just move there and free the current position
                 Free => {
-                    board.set_tile(bot_pos, Free);
-                    board.set_tile(pos_in_dir, Bot);
+                    board.set_tile(bot_pos, Free).unwrap();
+                    board.set_tile(pos_in_dir, Bot).unwrap();
                     bot_pos = pos_in_dir;
                 }
                 // only one bot exists
