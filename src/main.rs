@@ -10,6 +10,7 @@ mod y2023;
 mod y2024;
 #[allow(dead_code)]
 mod aoc_lib;
+mod y2022;
 
 fn main() {
     execute!();
