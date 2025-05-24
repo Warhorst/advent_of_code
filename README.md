@@ -15,10 +15,11 @@ A '-' means a puzzle did not require special techniques to be solved
 
 ### Techniques used in puzzle solutions
 - 2022
-  - [1](https://adventofcode.com/2022/day/1): -
-  - [2](https://adventofcode.com/2022/day/2): -
-  - [3](https://adventofcode.com/2022/day/3): 
-    - [Set Operations](#set-operations): Find the common element in 3 sets
+  - [1](https://adventofcode.com/2022/day/1) ([Code](./src/y2022/d1.rs)): -
+  - [2](https://adventofcode.com/2022/day/2) ([Code](./src/y2022/d2.rs)): -
+  - [3](https://adventofcode.com/2022/day/3) ([Code](./src/y2022/d3.rs)): 
+    - [Set Operations](#set-operations): Find the common element in 3 sets using intersections
+  - [4](https://adventofcode.com/2022/day/4) ([Code](./src/y2022/d4.rs)): -
 
 ### Techniques Explained
 #### Set Operations
