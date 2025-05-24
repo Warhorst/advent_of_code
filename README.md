@@ -15,5 +15,20 @@ A '-' means a puzzle did not require special techniques to be solved
 
 ### Techniques used in puzzle solutions
 - 2022
-  - 1: -
-  - 2: -
+  - [1](https://adventofcode.com/2022/day/1): -
+  - [2](https://adventofcode.com/2022/day/2): -
+  - [3](https://adventofcode.com/2022/day/3): 
+    - [Set Operations](#set-operations): Find the common element in 3 sets
+
+### Techniques Explained
+#### Set Operations
+The solution involves transforming the input into sets and performing
+[basic set operations](https://en.wikipedia.org/wiki/Set_(mathematics)#Basic_operations) on them to solve the problem.
+
+Rust and its HashSet provide methods and operators to perform set operations:
+- Union: union or |
+- Intersection: intersection or &
+- Difference: difference or -
+- Symmetric Difference: symmetric_difference or ^
+
+Note that the methods will return iterators while the operators will return newly allocated sets.
