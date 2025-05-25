@@ -16,9 +16,9 @@ fn main() {
     execute!();
 }
 
-trait PuzzleResult: Debug + PartialEq + FromStr<Err: Debug> + Debug {}
+trait PuzzleResult: Debug + PartialEq + FromStr<Err: Debug> {}
 
-impl<T> PuzzleResult for T where T: Debug + PartialEq + FromStr<Err: Debug> + Debug {}
+impl<T> PuzzleResult for T where T: Debug + PartialEq + FromStr<Err: Debug> {}
 
 fn solve<
     A: PuzzleResult,

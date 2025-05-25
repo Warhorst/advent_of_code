@@ -21,8 +21,40 @@ A '-' means a puzzle did not require special techniques to be solved
   - [3](https://adventofcode.com/2022/day/3) ([Code](./src/y2022/d3.rs)): 
     - [Set Operations](#set-operations): Find the common element in 3 sets using intersections
   - [4](https://adventofcode.com/2022/day/4) ([Code](./src/y2022/d4.rs)): -
+  - [5](https://adventofcode.com/2022/day/5) ([Code](./src/y2022/d5.rs)):
+    - [Complex Input Parsing](#complex-input-parsing)
+    - [Regexes](#regexes)
 
 ### Techniques Explained
+#### Complex Input Parsing
+The solution involves parsing a rather complex text input, like an ASCII drawing of some scene or plan. 
+The challenge is to quickly find an algorithm to transform the input into domain data, using some implementation of From<&str>.
+
+Transforming the input by hand is not considered a valid solution in my opinion, as this is against the spirit of the challenge.
+
+How to approach this depends on the puzzle, but here are some strategies used in the solutions:
+- if the input consists of multiple blocks representing different kinds of input, use ``input.split("\n\n")`` to split and process them separately
+- sometimes the input contains junk data, just to make it look cooler, so use ``line.replace(to_replace, replacement)`` to transform the text into a more processable form
+- sometimes the order of the lines is not optimal, so use ``input.lines().rev()`` to process them from bottom to top
+- sometimes the lines themselves consist of blocks, so use ``line.chars().windows(block_size).step_by(step_size)`` to process them
+
+#### Regexes
+The solution involves using regexes to extract relevant data from the input.
+
+For convenience, I created the ``regex_captures`` function to easily process all captures returned from a regex process.
+It returns an iterator over all matches of the regex and provides a closure processing the captures in the finding (which are just an array of &str)
+
+```rust
+let input = "move 2 from 1 to 3";
+let regex = Regex::new(r"move (\d+) from (\d+) to (\d+)").unwrap();
+
+regex_captures(
+  value,
+  &regex,
+  |caps| format!("move: {}, from: {}, to: {}", caps[0], caps[1], caps[2])
+)
+```
+
 #### Set Operations
 The solution involves transforming the input into sets and performing
 [basic set operations](https://en.wikipedia.org/wiki/Set_(mathematics)#Basic_operations) on them to solve the problem.
