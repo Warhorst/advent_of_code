@@ -24,6 +24,7 @@ A '-' means a puzzle did not require special techniques to be solved
   - [5](https://adventofcode.com/2022/day/5) ([Code](./src/y2022/d5.rs)):
     - [Complex Input Parsing](#complex-input-parsing)
     - [Regexes](#regexes)
+  - [6](https://adventofcode.com/2022/day/6) ([Code](./src/y2022/d6.rs)): -
 
 ### Techniques Explained
 #### Complex Input Parsing
