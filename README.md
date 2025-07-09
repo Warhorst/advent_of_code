@@ -25,6 +25,9 @@ A '-' means a puzzle did not require special techniques to be solved
     - [Complex Input Parsing](#complex-input-parsing)
     - [Regexes](#regexes)
   - [6](https://adventofcode.com/2022/day/6) ([Code](./src/y2022/d6.rs)): -
+  - [7](https://adventofcode.com/2022/day/6) ([Code](./src/y2022/d7.rs)):
+    - [State Machine](#state-machine): Keeping track of directory sizes using console like output (this might also been solvable with a tree)
+    - [Regexes](#regexes): Console-output to enum parsing
 
 ### Techniques Explained
 #### Complex Input Parsing
@@ -84,3 +87,10 @@ let symmetric_difference = &set_a ^ &set_b;
 ```
 
 Note that the methods will return iterators while the operators will return newly allocated sets.
+
+
+#### State Machine
+The solution involves parsing the input into a chain of actions and performing an associated
+action in a state machine, mutating its state and returning it as the solution, or as part
+of the solution. This might involve parsing the input to enum variants and using pattern
+matching.
