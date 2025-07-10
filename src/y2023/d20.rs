@@ -96,7 +96,7 @@ impl Configuration {
                 .iter()
                 .map(|dest| (destination.clone(), input_pulse, dest.clone()))
                 .collect(),
-            FlipFlop { ref mut is_on } => match input_pulse {
+            FlipFlop { is_on } => match input_pulse {
                 Low => {
                     *is_on = !*is_on;
                     module.destinations
@@ -109,7 +109,7 @@ impl Configuration {
                 }
                 High => vec![] // nothing happens
             }
-            Conjunction { ref mut last_pulses } => {
+            Conjunction { last_pulses } => {
                 last_pulses.insert(sender, input_pulse);
                 let all_high = last_pulses.values().all(|val| *val == High);
 

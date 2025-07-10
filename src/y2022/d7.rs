@@ -1,18 +1,12 @@
-use regex::Regex;
+use crate::aoc_lib::FromRegex;
+use proc_macros::FromRegex;
 use std::collections::HashMap;
-use std::sync::LazyLock;
 use Line::*;
-
-static CD_DIR_REG: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"\$ cd ([a-z/]+)"#).unwrap());
-static CD_UP_REG: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"\$ cd \.\."#).unwrap());
-static LS_REG: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"\$ ls"#).unwrap());
-static DIR_REG: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"dir [a-z/]+"#).unwrap());
-static FILE_REG: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(\d+) [a-z.]+"#).unwrap());
 
 pub fn solve_a(input: &str) -> usize {
     let lines = input
         .lines()
-        .map(Line::from)
+        .map(Line::from_regex)
         .collect::<Vec<_>>();
     
     let state_machine = StateMachine::new(lines);
@@ -27,7 +21,7 @@ pub fn solve_a(input: &str) -> usize {
 pub fn solve_b(input: &str) -> usize {
     let lines = input
         .lines()
-        .map(Line::from)
+        .map(Line::from_regex)
         .collect::<Vec<_>>();
 
     let state_machine = StateMachine::new(lines);
@@ -109,39 +103,16 @@ impl Path {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, FromRegex)]
 enum Line {
+    #[reg(r#"\$ cd ([a-z/]+)"#)]
     CdDir(String),
+    #[reg(r#"\$ cd \.\."#)]
     CdUp,
+    #[reg(r#"\$ ls"#)]
     Ls,
+    #[reg(r#"dir [a-z/]+"#)]
     Dir,
+    #[reg(r#"(\d+) [a-z.]+"#)]
     File(usize),
-}
-
-impl From<&str> for Line {
-    fn from(value: &str) -> Self {
-        if let Some(capture) = CD_DIR_REG.captures(value) {
-            return CdDir(capture.get(1).unwrap().as_str().into());
-        }
-
-        if CD_UP_REG.is_match(value) {
-            return CdUp;
-        }
-
-        if LS_REG.is_match(value) {
-            return Ls;
-        }
-
-        if DIR_REG.is_match(value) {
-            return Dir;
-        }
-
-        if let Some(capture) = FILE_REG.captures(value) {
-            return File(
-                capture.get(1).unwrap().as_str().parse::<usize>().unwrap(),
-            );
-        }
-
-        panic!("Could not parse line '{value}'")
-    }
 }

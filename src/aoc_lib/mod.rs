@@ -9,8 +9,10 @@ pub use tile_map::*;
 pub use run_with_cycle::*;
 pub use regex_captures::*;
 pub use parse_to_num::*;
+pub use from_regex::*;
 
 mod tile_map;
 mod run_with_cycle;
 mod regex_captures;
 mod parse_to_num;
+mod from_regex;
