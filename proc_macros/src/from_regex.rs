@@ -1,7 +1,7 @@
 use proc_macro::TokenStream;
 use quote::{format_ident, quote};
 use syn::spanned::Spanned;
-use syn::{parse_macro_input, Attribute, Fields, Item, LitStr};
+use syn::{parse_macro_input, Attribute, Fields, Item, ItemEnum, LitStr, Variant};
 // the plan:
 // #[derive(FromRegex)]
 // enum MyVariants {
@@ -48,21 +48,13 @@ pub (crate)fn create(input: TokenStream) -> TokenStream {
             ).to_compile_error().into()
     };
 
-    // create lazy lock regex statics
-    let static_regexes = item_enum.variants
-        .iter()
-        .map(|variant|{
-            let ident = format_ident!(
-                "{}_{}_REGEX", item_enum.ident.to_string().to_uppercase(),
-                variant.ident.to_string().to_uppercase()
-            );
-            let regex = get_regex_from_attributes(&variant.attrs).expect("Failed to get regex literal from attributes");
-            quote! {static #ident: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| regex::Regex::new(#regex).unwrap());}
-        });
+    let static_regexes = match create_static_regexes_from_variants(&item_enum) {
+        Ok(sr) => sr,
+        Err(err) => return err
+    };
 
     let enum_ident = &item_enum.ident;
 
-    // create the trait implementation
     let calls = item_enum.variants
         .iter()
         .map(|variant| {
@@ -130,7 +122,7 @@ pub (crate)fn create(input: TokenStream) -> TokenStream {
         );
 
     quote!{
-        #(#static_regexes)*
+        #static_regexes
 
         #cleaned_enum
         
@@ -142,6 +134,28 @@ pub (crate)fn create(input: TokenStream) -> TokenStream {
             }
         }
     }.into()
+}
+
+fn create_static_regexes_from_variants(item_enum: &ItemEnum) -> Result<proc_macro2::TokenStream, TokenStream> {
+    let regexes = item_enum.variants
+        .iter()
+        .map(|variant| {
+            let ident = format_ident!(
+                "{}_{}_REGEX", item_enum.ident.to_string().to_uppercase(),
+                variant.ident.to_string().to_uppercase()
+            );
+
+            match get_regex_from_attributes(&variant.attrs) {
+                Some(regex) => Ok(quote! {static #ident: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| regex::Regex::new(#regex).unwrap());}),
+                None => Err(syn::Error::new(
+                    variant.span(),
+                    format!("The variant {} does not have the reg attribute defined!", variant.ident),
+                ).to_compile_error().into())
+            }
+        })
+        .collect::<Result<Vec<_>, TokenStream>>()?;
+
+    Ok(quote! {#(#regexes)*})
 }
 
 fn get_regex_from_attributes<'a>(attrs: impl IntoIterator<Item=&'a Attribute>) -> Option<LitStr> {
