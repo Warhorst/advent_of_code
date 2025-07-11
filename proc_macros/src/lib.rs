@@ -1,5 +1,6 @@
 mod from_regex;
 mod execute;
+mod tile;
 
 use proc_macro::TokenStream;
 
@@ -16,6 +17,14 @@ use proc_macro::TokenStream;
 #[proc_macro]
 pub fn execute(_item: TokenStream) -> TokenStream {
     execute::create()
+}
+
+/// Generates implementations for unit like enums to be used as tiles in a Board.
+/// Generates From<char>, Into<char> and Display. Adds derives for Clone, Copy, Debug, Eq, Hash and PartialEq.
+/// The char to use is specified by the t-attribute, like #[t('#')]
+#[proc_macro_attribute]
+pub fn tile(_attributes: TokenStream, item: TokenStream) -> TokenStream {
+    tile::create(item)
 }
 
 #[proc_macro_attribute]

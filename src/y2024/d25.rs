@@ -1,6 +1,6 @@
 use crate::aoc_lib::*;
 use Tile::*;
-use tile_macro::tile;
+use proc_macros::tile;
 
 pub fn solve_a(input: &str) -> usize {
     let mut locks = vec![];

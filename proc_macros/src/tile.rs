@@ -1,13 +1,9 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::*;
+use syn::{parse_macro_input, ItemEnum, LitChar, Meta, Token};
 use syn::punctuated::Punctuated;
 
-/// Generates implementations for unit like enums to be used as tiles in a Board.
-/// Generates From<char>, Into<char> and Display. Adds derives for Clone, Copy, Debug, Eq, Hash and PartialEq.
-/// The char to use is specified by the t-attribute, like #[t('#')]
-#[proc_macro_attribute]
-pub fn tile(_attributes: TokenStream, item: TokenStream) -> TokenStream {
+pub (crate) fn create(item: TokenStream) -> TokenStream {
     let item_enum = parse_macro_input!(item as ItemEnum);
     let ident = &item_enum.ident;
 
