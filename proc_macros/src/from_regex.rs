@@ -1,7 +1,7 @@
 use proc_macro::TokenStream;
 use quote::{format_ident, quote};
-use syn::{parse_macro_input, Attribute, Data, DeriveInput, Fields, LitStr};
-
+use syn::spanned::Spanned;
+use syn::{parse_macro_input, Attribute, Fields, Item, LitStr};
 // the plan:
 // #[derive(FromRegex)]
 // enum MyVariants {
@@ -38,39 +38,36 @@ use syn::{parse_macro_input, Attribute, Data, DeriveInput, Fields, LitStr};
 //  and implement this for structs too
 
 pub (crate)fn create(input: TokenStream) -> TokenStream {
-    // todo DeriveInput is not 100% correct, but works as long as I only use the macro on structs and enums
-    //  I should check what I am dealing with and only then continue (for example by matching against syn::Item)
-    let derive_input = parse_macro_input!(input as DeriveInput);
+    let item = parse_macro_input!(input as Item);
 
-    let data_enum = if let Data::Enum(data_enum) = &derive_input.data {
-        data_enum
-    } else {
-        return syn::Error::new(
-            derive_input.ident.span(),
-            "Only enums for now"
-        ).to_compile_error().into()
+    let item_enum = match item {
+        Item::Enum(item_enum) => item_enum,
+        _ => return syn::Error::new(
+                item.span(),
+                "Only enums for now"
+            ).to_compile_error().into()
     };
 
     // create lazy lock regex statics
-    let static_regexes = data_enum.variants
+    let static_regexes = item_enum.variants
         .iter()
         .map(|variant|{
             let ident = format_ident!(
-                "{}_{}_REGEX", derive_input.ident.to_string().to_uppercase(),
+                "{}_{}_REGEX", item_enum.ident.to_string().to_uppercase(),
                 variant.ident.to_string().to_uppercase()
             );
             let regex = get_regex_from_attributes(&variant.attrs).expect("Failed to get regex literal from attributes");
             quote! {static #ident: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| regex::Regex::new(#regex).unwrap());}
         });
 
-    let enum_ident = &derive_input.ident;
+    let enum_ident = &item_enum.ident;
 
     // create the trait implementation
-    let calls = data_enum.variants
+    let calls = item_enum.variants
         .iter()
         .map(|variant| {
             let static_ident = format_ident!(
-                "{}_{}_REGEX", derive_input.ident.to_string().to_uppercase(),
+                "{}_{}_REGEX", item_enum.ident.to_string().to_uppercase(),
                 variant.ident.to_string().to_uppercase()
             );
 
@@ -122,21 +119,20 @@ pub (crate)fn create(input: TokenStream) -> TokenStream {
         });
 
     // remove the custom helper attributes from the original input
-    let mut cleaned_input = derive_input.clone();
-    if let Data::Enum(data_enum) = &mut cleaned_input.data {
-        data_enum.variants
-            .iter_mut()
-            .for_each(|variant| variant.attrs = variant.attrs
-                .iter()
-                .filter(|attr| !attr.path().is_ident("reg"))
-                .cloned()
-                .collect());
-    }
+    let mut cleaned_enum = item_enum.clone();
+    cleaned_enum.variants
+        .iter_mut()
+        .for_each(|variant| variant.attrs = variant.attrs
+            .iter()
+            .filter(|attr| !attr.path().is_ident("reg"))
+            .cloned()
+            .collect()
+        );
 
     quote!{
         #(#static_regexes)*
 
-        #cleaned_input
+        #cleaned_enum
         
         impl #enum_ident {
             fn from_regex(haystack: &str) -> Self {
