@@ -10,7 +10,6 @@ geo = "0.27.0"
 pathfinding = "4.12.0"
 itertools = "0.13.0"
 colored = "2.1.0"
-execute_proc_macro = { path = "execute_proc_macro" }
 proc_macros = { path = "proc_macros" }
 tile_macro = { path = "tile_proc_macro" }
 pad = { git = "https://github.com/Warhorst/pad.git" }
@@ -19,7 +18,6 @@ indoc = "2.0.5"
 
 [workspace]
 members = [
-    "execute_proc_macro",
     "proc_macros",
     "tile_proc_macro"
 ]

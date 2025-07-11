@@ -4,7 +4,7 @@ use std::str::FromStr;
 
 use colored::Colorize;
 use itertools::Itertools;
-use execute_proc_macro::execute;
+use proc_macros::execute;
 
 mod y2023;
 mod y2024;
