@@ -37,17 +37,18 @@ use syn::{parse_macro_input, Attribute, Data, DeriveInput, Fields, LitStr};
 // todo refactoring (for example don't panic, but create compiler errors on failure)
 //  and implement this for structs too
 
-#[proc_macro_derive(FromRegex, attributes(reg))]
-pub fn derive_from_regex(input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as DeriveInput);
+#[proc_macro_attribute]
+pub fn from_regex(_attr: TokenStream, input: TokenStream) -> TokenStream {
+    // DeriveInput is not 100% correct, but works as long as I only use the macro on structs and enums
+    let derive_input = parse_macro_input!(input as DeriveInput);
     
-    let data_enum = if let Data::Enum(data_enum) = input.data {
+    let data_enum = if let Data::Enum(data_enum) = &derive_input.data {
         data_enum
     } else {
-        return TokenStream::from(syn::Error::new(
-            input.ident.span(),
+        return syn::Error::new(
+            derive_input.ident.span(),
             "Only enums for now"
-        ).to_compile_error())
+        ).to_compile_error().into()
     };
     
     // create lazy lock regex statics
@@ -55,21 +56,21 @@ pub fn derive_from_regex(input: TokenStream) -> TokenStream {
         .iter()
         .map(|variant|{
             let ident = format_ident!(
-                "{}_{}_REGEX", input.ident.to_string().to_uppercase(),
+                "{}_{}_REGEX", derive_input.ident.to_string().to_uppercase(),
                 variant.ident.to_string().to_uppercase()
             );
             let regex = get_regex_from_attributes(&variant.attrs).expect("Failed to get regex literal from attributes");
             quote! {static #ident: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| regex::Regex::new(#regex).unwrap());}
         });
     
-    let enum_ident = &input.ident;
+    let enum_ident = &derive_input.ident;
     
     // create the trait implementation
     let calls = data_enum.variants
         .iter()
         .map(|variant| {
             let static_ident = format_ident!(
-                "{}_{}_REGEX", input.ident.to_string().to_uppercase(),
+                "{}_{}_REGEX", derive_input.ident.to_string().to_uppercase(),
                 variant.ident.to_string().to_uppercase()
             );
             
@@ -119,18 +120,32 @@ pub fn derive_from_regex(input: TokenStream) -> TokenStream {
                 }
             }
         });
-    
-    TokenStream::from(quote!{
+   
+    // remove the custom helper attributes from the original input
+    let mut cleaned_input = derive_input.clone();
+    if let Data::Enum(data_enum) = &mut cleaned_input.data {
+        data_enum.variants
+            .iter_mut()
+            .for_each(|variant| variant.attrs = variant.attrs
+                .iter()
+                .filter(|attr| !attr.path().is_ident("reg"))
+                .cloned()
+                .collect());
+    }
+
+    quote!{
         #(#static_regexes)*
+
+        #cleaned_input
         
-        impl crate::aoc_lib::FromRegex for #enum_ident {
+        impl #enum_ident {
             fn from_regex(haystack: &str) -> Self {
                 #(#calls)*
-                
+
                 panic!("ahh!")
             }
         }
-    })
+    }.into()
 }
 
 fn get_regex_from_attributes<'a>(attrs: impl IntoIterator<Item=&'a Attribute>) -> Option<LitStr> {

@@ -1,5 +1,4 @@
-use crate::aoc_lib::FromRegex;
-use proc_macros::FromRegex;
+use proc_macros::from_regex;
 use std::collections::HashMap;
 use Line::*;
 
@@ -103,7 +102,8 @@ impl Path {
     }
 }
 
-#[derive(Debug, FromRegex)]
+#[derive(Debug)]
+#[from_regex]
 enum Line {
     #[reg(r#"\$ cd ([a-z/]+)"#)]
     CdDir(String),
