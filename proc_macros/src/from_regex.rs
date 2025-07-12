@@ -1,7 +1,8 @@
 use proc_macro::TokenStream;
+use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use syn::spanned::Spanned;
-use syn::{parse_macro_input, Attribute, Fields, Item, ItemEnum, LitStr, Variant};
+use syn::{parse_macro_input, Attribute, Fields, FieldsNamed, FieldsUnnamed, Item, ItemEnum, LitStr, Variant};
 // the plan:
 // #[derive(FromRegex)]
 // enum MyVariants {
@@ -37,7 +38,7 @@ use syn::{parse_macro_input, Attribute, Fields, Item, ItemEnum, LitStr, Variant}
 // todo refactoring (for example don't panic, but create compiler errors on failure)
 //  and implement this for structs too
 
-pub (crate)fn create(input: TokenStream) -> TokenStream {
+pub(crate) fn create(input: TokenStream) -> TokenStream {
     let item = parse_macro_input!(input as Item);
 
     let item_enum = match item {
@@ -53,62 +54,7 @@ pub (crate)fn create(input: TokenStream) -> TokenStream {
         Err(err) => return err
     };
 
-    let enum_ident = &item_enum.ident;
-
-    let calls = item_enum.variants
-        .iter()
-        .map(|variant| {
-            let static_ident = format_ident!(
-                "{}_{}_REGEX", item_enum.ident.to_string().to_uppercase(),
-                variant.ident.to_string().to_uppercase()
-            );
-
-            match &variant.fields {
-                Fields::Named(f) => {
-                    let ident = &variant.ident;
-                    let params = f.named
-                        .iter()
-                        .enumerate()
-                        .map(|(i, f)| {
-                            let ident = f.ident.as_ref().unwrap();
-                            let ty = &f.ty;
-                            quote! { #ident: capture.get(#i).unwrap().as_str().parse::<#ty>().unwrap() }
-                        });
-                    quote! {
-                        if let Some(capture) = #static_ident.captures(haystack) {
-                            return #enum_ident::#ident {
-                                #(#params),*
-                            }
-                        }
-                    }
-                }
-                Fields::Unnamed(f) => {
-                    let ident = &variant.ident;
-                    let params = f.unnamed
-                        .iter()
-                        .enumerate()
-                        .map(|(i, f)| {
-                            let i = i + 1;
-                            let ty = &f.ty;
-                            quote! { capture.get(#i).unwrap().as_str().parse::<#ty>().unwrap() }
-                        });
-
-                    quote! {
-                        if let Some(capture) = #static_ident.captures(haystack) {
-                            return #enum_ident::#ident(#(#params),*)
-                        }
-                    }
-                }
-                Fields::Unit => {
-                    let ident = &variant.ident;
-                    quote! {
-                        if #static_ident.is_match(haystack) {
-                            return #enum_ident::#ident;
-                        }
-                    }
-                }
-            }
-        });
+    let from_regex_implementation = create_from_regex_implementation(&item_enum);
 
     // remove the custom helper attributes from the original input
     let mut cleaned_enum = item_enum.clone();
@@ -122,17 +68,11 @@ pub (crate)fn create(input: TokenStream) -> TokenStream {
         );
 
     quote!{
+        #cleaned_enum
+
         #static_regexes
 
-        #cleaned_enum
-        
-        impl #enum_ident {
-            fn from_regex(haystack: &str) -> Self {
-                #(#calls)*
-
-                panic!("ahh!")
-            }
-        }
+        #from_regex_implementation
     }.into()
 }
 
@@ -161,12 +101,99 @@ fn create_static_regexes_from_variants(item_enum: &ItemEnum) -> Result<proc_macr
 fn get_regex_from_attributes<'a>(attrs: impl IntoIterator<Item=&'a Attribute>) -> Option<LitStr> {
     let regex_attribute = attrs
         .into_iter()
-        .find(|attr| {
-            match attr.path().segments.last() {
-                Some(path) => path.ident.to_string() == "reg".to_string(),
-                None => false
-            }
-        })?;
+        .find(|attr| attr.path().is_ident("reg"))?;
 
     regex_attribute.parse_args::<LitStr>().ok()
+}
+
+fn create_from_regex_implementation(item_enum: &ItemEnum) -> proc_macro2::TokenStream {
+    let enum_ident = &item_enum.ident;
+    let generics = &item_enum.generics;
+    let where_clause = &generics.where_clause;
+
+    let ifs = item_enum.variants
+        .iter()
+        .map(|variant| {
+            let static_ident = format_ident!(
+                "{}_{}_REGEX", item_enum.ident.to_string().to_uppercase(),
+                variant.ident.to_string().to_uppercase()
+            );
+
+            match &variant.fields {
+                Fields::Named(f) => create_named_variant_if(enum_ident, &static_ident, variant, f),
+                Fields::Unnamed(f) => create_unnamed_variant_if(enum_ident, &static_ident, variant, f),
+                Fields::Unit => create_unit_variant_if(enum_ident, &static_ident, variant)
+            }
+        });
+
+    quote! {
+        impl #generics #enum_ident #generics #where_clause {
+            fn from_regex(haystack: &str) -> Self {
+                #(#ifs)*
+
+                panic!("None of the variant regexes matches the haystack '{haystack}!'")
+            }
+        }
+    }
+}
+
+fn create_named_variant_if(
+    enum_ident: &Ident,
+    static_ident: &Ident,
+    variant: &Variant,
+    f: &FieldsNamed
+)  -> proc_macro2::TokenStream {
+    let ident = &variant.ident;
+    let params = f.named
+        .iter()
+        .enumerate()
+        .map(|(i, f)| {
+            let ident = f.ident.as_ref().unwrap();
+            let ty = &f.ty;
+            quote! { #ident: capture.get(#i).unwrap().as_str().parse::<#ty>().unwrap() }
+        });
+
+    quote! {
+        if let Some(capture) = #static_ident.captures(haystack) {
+            return #enum_ident::#ident {
+                #(#params),*
+            }
+        }
+    }
+}
+
+fn create_unnamed_variant_if(
+    enum_ident: &Ident,
+    static_ident: &Ident,
+    variant: &Variant,
+    f: &FieldsUnnamed
+) -> proc_macro2::TokenStream {
+    let ident = &variant.ident;
+    let params = f.unnamed
+        .iter()
+        .enumerate()
+        .map(|(i, f)| {
+            let i = i + 1;
+            let ty = &f.ty;
+            quote! { capture.get(#i).unwrap().as_str().parse::<#ty>().unwrap() }
+        });
+
+    quote! {
+        if let Some(capture) = #static_ident.captures(haystack) {
+            return #enum_ident::#ident(#(#params),*)
+        }
+    }
+}
+
+fn create_unit_variant_if(
+    enum_ident: &Ident,
+    static_ident: &Ident,
+    variant: &Variant
+) -> proc_macro2::TokenStream {
+    let ident = &variant.ident;
+    quote! {
+        if #static_ident.is_match(haystack) {
+            return #enum_ident::#ident;
+        }
+    }
 }
