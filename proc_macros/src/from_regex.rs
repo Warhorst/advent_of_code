@@ -3,37 +3,6 @@ use proc_macro2::Ident;
 use quote::{format_ident, quote};
 use syn::spanned::Spanned;
 use syn::{parse_macro_input, Attribute, Fields, FieldsNamed, FieldsUnnamed, Item, ItemEnum, ItemStruct, LitStr, Variant};
-// the plan:
-// #[derive(FromRegex)]
-// enum MyVariants {
-//      #[reg(r#".*foo.*"#)] no values, only match
-//      Foo,
-//      #[reg(r#"bar(\d): ([a-z]+)"#)] has values, so use captures in the order of the fields
-//      Bar(usize, String)
-//      #[reg(r#"(\d):baz"#)]
-//      Baz { some_value: usize }
-// }
-
-// creates something like this:
-// // first, lazy lock regex initializations
-// static MYVARIANTS_FOO_REGEX = ...
-// ... same for the other variants
-//
-// from_regex(haystack: &str) -> Self {
-//      if MYVARIANTS_FOO_REGEX.is_match(haystack) {
-//          return Foo;
-//      }
-//      
-//      if let Some(capture) = MYVARIANTS_BAR_REGEX.captures(haystack) {
-//          return Bar(capture.get(1).unwrap().as_str().parse::<usize>().unwrap(), ...)
-//      }
-// 
-//      if let Some(capture) = MYVARIANTS_BAZ_REGEX.captures(haystack) {
-//          return Baz { some_value: ... }
-//      }
-//      
-//      panic!("Could not parse from input '{haystack}'")
-// }
 
 pub(crate) fn create(input: TokenStream) -> TokenStream {
     let item = parse_macro_input!(input as Item);
