@@ -148,9 +148,16 @@ fn create_named_variant_if(
         .iter()
         .enumerate()
         .map(|(i, f)| {
+            let i = i + 1;
             let ident = f.ident.as_ref().unwrap();
             let ty = &f.ty;
-            quote! { #ident: capture.get(#i).unwrap().as_str().parse::<#ty>().unwrap() }
+            quote! { #ident: capture
+                .get(#i)
+                .expect(&format!("Expected {} capture in the haystack", #i))
+                .as_str()
+                .parse::<#ty>()
+                .expect(&format!("Failed to parse '{}' as {}", capture.get(#i).unwrap().as_str(), stringify!(#ty)))
+            }
         });
 
     quote! {
@@ -175,7 +182,13 @@ fn create_unnamed_variant_if(
         .map(|(i, f)| {
             let i = i + 1;
             let ty = &f.ty;
-            quote! { capture.get(#i).unwrap().as_str().parse::<#ty>().unwrap() }
+            quote! { capture
+                .get(#i)
+                .expect(&format!("Expected {} capture in the haystack", #i))
+                .as_str()
+                .parse::<#ty>()
+                .expect(&format!("Failed to parse '{}' as {}", capture.get(#i).unwrap().as_str(), stringify!(#ty)))
+            }
         });
 
     quote! {

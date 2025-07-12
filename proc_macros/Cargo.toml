@@ -10,3 +10,7 @@ proc-macro = true
 syn = { version = "2.0.104", features = ["full", "parsing"] }
 quote = "1.0.40"
 proc-macro2 = "1.0.95"
+
+[dev-dependencies]
+# required for from_regex tests
+regex = "1.11.1"
