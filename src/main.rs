@@ -6,11 +6,11 @@ use colored::Colorize;
 use itertools::Itertools;
 use proc_macros::execute;
 
+mod y2022;
 mod y2023;
 mod y2024;
 #[allow(dead_code)]
 mod aoc_lib;
-mod y2022;
 
 fn main() {
     execute!();
@@ -43,7 +43,7 @@ fn solve<
             if expectation == result {
                 println!("{}", "Example A works".green())
             } else {
-                println!("{}", format!("Example A failed. Expected was {:?}, but result was {:?}.", expectation, result).red());
+                println!("{}", format!("Example A failed. Expected was {expectation:?}, but result was {result:?}.").red());
                 return;
             }
         }
@@ -57,7 +57,7 @@ fn solve<
             if expectation == result {
                 println!("{}", "Example B works".green())
             } else {
-                println!("{}", format!("Example B failed. Expected was {:?}, but result was {:?}.", expectation, result).red());
+                println!("{}", format!("Example B failed. Expected was {expectation:?}, but result was {result:?}.").red());
                 return;
             }
         }
@@ -66,8 +66,28 @@ fn solve<
     match input.puzzle_input {
         None => println!("the puzzle input does not exist yet, skipping it"),
         Some(text) => {
-            println!("Solution A: {:?}", a_solver(&text));
-            println!("Solution B: {:?}", b_solver(&text));
+            let solution_a = a_solver(&text);
+            let solution_b = b_solver(&text);
+
+            match input.puzzle_solution {
+                Some((expected_a, expected_b)) => {
+                    if expected_a == solution_a {
+                       println!("{}", "Puzzle A works".green())
+                    } else {
+                       println!("{}", format!("Puzzle A failed. Expected {expected_a:?}, but result was {solution_a:?}").red())
+                    }
+
+                    if expected_b == solution_b {
+                        println!("{}", "Puzzle B works".green())
+                    } else {
+                        println!("{}", format!("Puzzle B failed. Expected {expected_b:?}, but result was {solution_b:?}").red())
+                    }
+                }
+                None => {
+                    println!("Solution A: {:?}", solution_a);
+                    println!("Solution B: {:?}", solution_b);
+                }
+            }
         }
     }
 }
@@ -79,6 +99,7 @@ struct Input<A: PuzzleResult, B: PuzzleResult> {
     pub example_a: Option<(String, A)>,
     /// Input and expected result of example B, if present
     pub example_b: Option<(String, B)>,
+    pub puzzle_solution: Option<(A, B)>
 }
 
 impl<A: PuzzleResult, B: PuzzleResult> Input<A, B> {
@@ -94,10 +115,16 @@ impl<A: PuzzleResult, B: PuzzleResult> Input<A, B> {
             .ok()
             .map(Self::parse_text_to_result_and_text::<B>);
 
+        let puzzle_solution = match read_to_string(format!("./input/{year}/{day}/s.txt")) {
+            Ok(text) => Some(Self::pars_text_to_given_solution(text)),
+            Err(_) => None
+        };
+
         Input {
             puzzle_input,
             example_a,
             example_b,
+            puzzle_solution
         }
     }
 
@@ -107,5 +134,13 @@ impl<A: PuzzleResult, B: PuzzleResult> Input<A, B> {
         // use the remaining text as input, but make sure to keep the new lines
         let text = s.lines().skip(1).join("\n");
         (text, result)
+    }
+
+    fn pars_text_to_given_solution<T: PuzzleResult, U: PuzzleResult>(s: String) -> (T, U) {
+        let mut lines = s.lines();
+        let first = lines.next().expect("text should not be empty").parse::<T>().expect("the first line should be the the first solution");
+        let second = lines.next().expect("there should be 2 lines").parse::<U>().expect("the second line should be the the second solution");
+
+        (first, second)
     }
 }
