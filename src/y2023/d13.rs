@@ -1,10 +1,11 @@
+use proc_macros::tile;
 use Tile::*;
 
 use crate::aoc_lib::*;
 
 pub fn solve_a(input: &str) -> usize {
     let blocks = input
-        .split("\r\n\r\n")
+        .split("\n\n")
         .map(TileMap::<Tile>::from)
         .collect::<Vec<_>>();
 
@@ -69,27 +70,10 @@ fn get_value(tile_map: TileMap<Tile>) -> usize {
         .unwrap() * 100
 }
 
-#[derive(Copy, Clone, Debug, Hash, Eq, PartialEq)]
+#[tile]
 enum Tile {
+    #[t('.')]
     Ash,
+    #[t('#')]
     Rock,
-}
-
-impl From<char> for Tile {
-    fn from(c: char) -> Self {
-        match c {
-            '.' => Ash,
-            '#' => Rock,
-            _ => panic!("invalid char")
-        }
-    }
-}
-
-impl Into<char> for Tile {
-    fn into(self) -> char {
-        match self {
-            Ash => '.',
-            Rock => '#'
-        }
-    }
 }

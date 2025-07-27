@@ -22,6 +22,20 @@ pub fn execute(_item: TokenStream) -> TokenStream {
 /// Generates implementations for unit like enums to be used as tiles in a Board.
 /// Generates From<char>, Into<char> and Display. Adds derives for Clone, Copy, Debug, Eq, Hash and PartialEq.
 /// The char to use is specified by the t-attribute, like #[t('#')]
+///
+/// Example:
+///
+/// ```
+/// #[tile]
+/// enum ChessPiece {
+///     #[t('K')]
+///     King,
+///     #[t('P')]
+///     Pawn,
+///     #[t('R')]
+///     Rook
+/// }
+/// ```
 #[proc_macro_attribute]
 pub fn tile(_attributes: TokenStream, item: TokenStream) -> TokenStream {
     tile::create(item)
