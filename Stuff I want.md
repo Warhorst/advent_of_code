@@ -2,6 +2,5 @@
 Ideas for tools that could speed up the puzzles
 
 ## Enum Tools
-- parse enums from different regexes, see 2022 day 7
-- parse enums from single chars and auto implement methods to print them as these chars
+- allow to provide known puzzle solutions to automatically check if a puzzle is still working (this must be optional)
 - return all the variants of a unit type enum

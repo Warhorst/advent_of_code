@@ -9,7 +9,7 @@ pub fn solve_a(input: &str) -> usize {
     input
         .split("\n\n")
         .map(|block| Board::<Tile>::from(block))
-        .for_each(|board| match board.rows().next().unwrap().all(|t| *t == Filled) {
+        .for_each(|board| match board.rows().next().unwrap().all(|(_, t)| *t == Filled) {
             true => locks.push(Lock(column_counts(&board))),
             false => keys.push(Key(column_counts(&board)))
         });
@@ -28,7 +28,7 @@ pub fn solve_b(_input: &str) -> usize {
 fn column_counts(board: &Board<Tile>) -> [usize; 5] {
     let mut iter = board
         .columns()
-        .map(|col| col.filter(|t| **t == Filled).count() - 1);
+        .map(|col| col.filter(|(_, t)| **t == Filled).count() - 1);
 
     [
         iter.next().unwrap(),

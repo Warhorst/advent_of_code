@@ -25,9 +25,11 @@ A '-' means a puzzle did not require special techniques to be solved
     - [Complex Input Parsing](#complex-input-parsing)
     - [Regexes](#regexes)
   - [6](https://adventofcode.com/2022/day/6) ([Code](./src/y2022/d6.rs)): -
-  - [7](https://adventofcode.com/2022/day/6) ([Code](./src/y2022/d7.rs)):
+  - [7](https://adventofcode.com/2022/day/7) ([Code](./src/y2022/d7.rs)):
     - [State Machine](#state-machine): Keeping track of directory sizes using console like output (this might also been solvable with a tree)
     - [Regexes](#regexes): Console-output to enum parsing
+  - [8](https://adventofcode.com/2022/day/8) ([Code](./src/y2022/d8.rs))
+    - [Board](#board): Transform the input into a board and solve the puzzle using board operations
 
 ### Techniques Explained
 #### Complex Input Parsing
@@ -94,3 +96,11 @@ The solution involves parsing the input into a chain of actions and performing a
 action in a state machine, mutating its state and returning it as the solution, or as part
 of the solution. This might involve parsing the input to enum variants and using pattern
 matching.
+
+
+#### Board
+The solution involves transforming the input into a Board data structure and perform operations on it using the Board methods.
+Examples for this are:
+- moving a piece from a game or simulation around
+- iterating over all the board positions/rows/columns
+- accessing board values, given a position
