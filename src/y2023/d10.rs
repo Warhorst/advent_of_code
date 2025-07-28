@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 use geo::{Contains, Coord, LineString, point, Polygon};
-use pad::{Direction, p, Position};
-use pad::Direction::*;
+use crate::aoc_lib::*;
 use Tile::*;
 
 pub fn solve_a(input: &str) -> usize {

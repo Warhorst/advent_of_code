@@ -1,11 +1,8 @@
 use std::collections::HashSet;
-
-use pad::{Direction, p, Position};
-use pad::Direction::*;
+use crate::aoc_lib::*;
 use rayon::iter::ParallelIterator;
 use rayon::prelude::IntoParallelIterator;
 
-use crate::aoc_lib::*;
 use crate::y2023::d16::Tile::*;
 
 pub fn solve_a(input: &str) -> usize {

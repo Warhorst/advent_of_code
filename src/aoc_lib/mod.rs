@@ -1,7 +1,10 @@
-pub use pad::*;
-pub use pad::Direction::*;
+pub use pad::p;
+pub use pad::position::*;
+pub use pad::direction::Direction;
+pub use pad::direction::Direction::*;
 pub use pad::board::*;
 pub use pad::shape::*;
+pub use pad::bounds::*;
 pub use pathfinding::prelude::*;
 pub use colored::*;
 

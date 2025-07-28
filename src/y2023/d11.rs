@@ -1,5 +1,5 @@
 use itertools::Itertools;
-use pad::{p, Position};
+use crate::aoc_lib::*;
 use pathfinding::prelude::astar;
 use rayon::iter::ParallelIterator;
 use rayon::prelude::IntoParallelIterator;

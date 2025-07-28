@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
+use crate::aoc_lib::*;
 
 use itertools::Itertools;
-use pad::{p, Position};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct TileMap<T> {

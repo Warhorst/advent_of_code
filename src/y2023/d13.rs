@@ -1,5 +1,4 @@
 use proc_macros::tile;
-use Tile::*;
 
 use crate::aoc_lib::*;
 

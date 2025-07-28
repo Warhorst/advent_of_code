@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use pad::{p, Position};
+use crate::aoc_lib::*;
 
 pub fn solve_a(input: &str) -> usize {
     let pos_char_map = create_pos_char_map(input);
