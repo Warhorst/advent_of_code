@@ -72,13 +72,13 @@ fn solve<
             match input.puzzle_solution {
                 Some((expected_a, expected_b)) => {
                     if expected_a == solution_a {
-                       println!("{}", "Puzzle A works".green())
+                       println!("{}", format!("Puzzle A works, returning {expected_a:?} as expected").green())
                     } else {
                        println!("{}", format!("Puzzle A failed. Expected {expected_a:?}, but result was {solution_a:?}").red())
                     }
 
                     if expected_b == solution_b {
-                        println!("{}", "Puzzle B works".green())
+                        println!("{}", format!("Puzzle B works, returning {expected_b:?} as expected").green())
                     } else {
                         println!("{}", format!("Puzzle B failed. Expected {expected_b:?}, but result was {solution_b:?}").red())
                     }

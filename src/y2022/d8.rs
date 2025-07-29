@@ -60,24 +60,14 @@ fn visible_trees_in_direction(
     pos: Position,
     dir: Direction
 ) -> usize {
-    let height = board.get_tile(pos).unwrap();
-    let mut current = pos;
+    let height = *board.get_tile(pos).unwrap();
     let mut amount = 0;
 
-    loop {
-        let next = current.position_in_direction(dir, 1);
+    // skip the first entry in the line, as it is the start itself
+    for (_, value) in board.line_to_border(pos, dir).unwrap().skip(1) {
+        amount += 1;
 
-        if board.pos_in_bounds(next) {
-            let next_value = board.get_tile(next).unwrap();
-
-            amount += 1;
-
-            if next_value < height {
-                current = next;
-            } else {
-                break
-            }
-        } else {
+        if *value >= height {
             break
         }
     }
