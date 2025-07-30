@@ -30,6 +30,7 @@ A '-' means a puzzle did not require special techniques to be solved
     - [Regexes](#regexes): Console-output to enum parsing
   - [8](https://adventofcode.com/2022/day/8) ([Code](./src/y2022/d8.rs))
     - [Board](#board): Transform the input into a board and solve the puzzle using board operations
+  - [9](https://adventofcode.com/2022/day/9) ([Code](./src/y2022/d9.rs)): Move a snake like structure across a board
 
 ### Techniques Explained
 #### Complex Input Parsing
