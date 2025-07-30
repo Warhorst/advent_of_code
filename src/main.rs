@@ -104,18 +104,18 @@ struct Input<A: PuzzleResult, B: PuzzleResult> {
 
 impl<A: PuzzleResult, B: PuzzleResult> Input<A, B> {
     fn load_input(day: u8, year: u16) -> Self {
-        let puzzle_input = read_to_string(format!("./input/{year}/{day}/p.txt"))
+        let puzzle_input = read_to_string(format!("./input/{year}/{day}/p"))
             .ok()
             .map(|s| s.replace("\r\n", "\n")); // replace line endings to resolve regex issues
-        let example_a = read_to_string(format!("./input/{year}/{day}/ea.txt"))
+        let example_a = read_to_string(format!("./input/{year}/{day}/ea"))
             .ok()
             .map(Self::parse_text_to_result_and_text::<A>);
 
-        let example_b = read_to_string(format!("./input/{year}/{day}/eb.txt"))
+        let example_b = read_to_string(format!("./input/{year}/{day}/eb"))
             .ok()
             .map(Self::parse_text_to_result_and_text::<B>);
 
-        let puzzle_solution = match read_to_string(format!("./input/{year}/{day}/s.txt")) {
+        let puzzle_solution = match read_to_string(format!("./input/{year}/{day}/s")) {
             Ok(text) => Some(Self::pars_text_to_given_solution(text)),
             Err(_) => None
         };
