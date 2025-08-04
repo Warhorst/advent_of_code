@@ -109,11 +109,11 @@ impl<A: PuzzleResult, B: PuzzleResult> Input<A, B> {
             .map(|s| s.replace("\r\n", "\n")); // replace line endings to resolve regex issues
         let example_a = read_to_string(format!("./input/{year}/{day}/ea"))
             .ok()
-            .map(Self::parse_text_to_result_and_text::<A>);
+            .map(Self::parse_example_input::<A>);
 
         let example_b = read_to_string(format!("./input/{year}/{day}/eb"))
             .ok()
-            .map(Self::parse_text_to_result_and_text::<B>);
+            .map(Self::parse_example_input::<B>);
 
         let puzzle_solution = match read_to_string(format!("./input/{year}/{day}/s")) {
             Ok(text) => Some(Self::pars_text_to_given_solution(text)),
@@ -128,11 +128,16 @@ impl<A: PuzzleResult, B: PuzzleResult> Input<A, B> {
         }
     }
 
-    fn parse_text_to_result_and_text<T: PuzzleResult>(s: String) -> (String, T) {
-        // the first line should be the expected result of the example
-        let result = s.lines().next().expect("text should not be empty").parse::<T>().expect("first line should be the expected result");
-        // use the remaining text as input, but make sure to keep the new lines
-        let text = s.lines().skip(1).join("\n");
+    fn parse_example_input<T: PuzzleResult>(s: String) -> (String, T) {
+        // Unify the line endings
+        let s = s.replace("\r\n", "\n");
+        let mut split = s.split("\n\n");
+
+        // the example solution is the first block before the double new line
+        let result = split.next().expect("Result and input must be separated by one double new line").parse::<T>().expect("first line should be the expected result");
+        // join the remaining block(s) back together using double new lines again
+        let text = split.join("\n\n");
+
         (text, result)
     }
 
