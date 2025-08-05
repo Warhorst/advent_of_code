@@ -71,6 +71,18 @@ pub (crate) fn create(item: TokenStream) -> TokenStream {
             }
         }
 
+        impl<'a> Into<char> for &'a #ident {
+            fn into(self) -> char {
+                (*self).into()
+            }
+        }
+
+        impl<'a> Into<char> for &'a mut #ident {
+            fn into(self) -> char {
+                (*self).into()
+            }
+        }
+
         impl std::fmt::Display for #ident {
             fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                 write!(f, "{}", Into::<char>::into(*self))

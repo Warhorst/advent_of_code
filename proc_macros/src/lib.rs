@@ -20,8 +20,8 @@ pub fn execute(_item: TokenStream) -> TokenStream {
 }
 
 /// Generates implementations for unit like enums to be used as tiles in a Board.
-/// Generates From<char>, Into<char> and Display. Adds derives for Clone, Copy, Debug, Eq, Hash and PartialEq.
-/// The char to use is specified by the t-attribute, like #[t('#')]
+/// Generates From<char>, Into<char> (also for references) and Display. Adds derives for Clone, Copy, Debug, Eq, Hash and PartialEq.
+/// The char to use is specified by the t-attribute, like #[t('#')].
 ///
 /// Example:
 ///
