@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use crate::aoc_lib::*;
 
 pub fn solve_a(input: &str) -> usize {
-    let board = Board::from_str_using_mapping(input, |c| c.to_digit(10).unwrap() as usize);
+    let board = Board::from_str_using_mapping(input, |c| c.to_digit(10).unwrap() as usize).unwrap();
 
     let mut visible = HashSet::new();
 
@@ -35,7 +35,7 @@ fn add_visible<'a>(
 }
 
 pub fn solve_b(input: &str) -> usize {
-    let board = Board::from_str_using_mapping(input, |c| c.to_digit(10).unwrap() as usize);
+    let board = Board::from_str_using_mapping(input, |c| c.to_digit(10).unwrap() as usize).unwrap();
 
     let mut max_score = 0;
 

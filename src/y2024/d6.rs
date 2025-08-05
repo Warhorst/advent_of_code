@@ -7,7 +7,7 @@ pub fn solve_a(input: &str) -> usize {
     let (board, guardians) = Board::board_and_specials_from_str(input, |c, pos| match c {
         '^' => Some((Guardian::new(pos), Tile::Free)),
         _ => None
-    });
+    }).unwrap();
 
     let mut guardian = guardians[0];
     let mut visited_positions = HashSet::with_capacity(board.len());
@@ -29,7 +29,7 @@ pub fn solve_b(input: &str) -> usize {
     let (board, guardians) = Board::board_and_specials_from_str(input, |c, pos| match c {
         '^' => Some((Guardian::new(pos), Tile::Free)),
         _ => None
-    });
+    }).unwrap();
 
     let guardian = guardians[0];
 

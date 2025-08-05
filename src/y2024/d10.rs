@@ -2,7 +2,7 @@ use crate::aoc_lib::*;
 use std::collections::HashSet;
 
 pub fn solve_a(input: &str) -> usize {
-    let board = Board::<usize>::from_str_using_mapping(input, |c| c.to_digit(10).unwrap() as usize);
+    let board = Board::<usize>::from_str_using_mapping(input, |c| c.to_digit(10).unwrap() as usize).unwrap();
     board
         .tiles_and_positions()
         .into_iter()
@@ -42,7 +42,7 @@ fn add_reachable_ends(
 }
 
 pub fn solve_b(input: &str) -> usize {
-    let board = Board::<usize>::from_str_using_mapping(input, |c| c.to_digit(10).unwrap() as usize);
+    let board = Board::<usize>::from_str_using_mapping(input, |c| c.to_digit(10).unwrap() as usize).unwrap();
     board
         .tiles_and_positions()
         .into_iter()
