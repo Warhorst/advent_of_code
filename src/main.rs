@@ -116,7 +116,7 @@ impl<A: PuzzleResult, B: PuzzleResult> Input<A, B> {
             .map(Self::parse_example_input::<B>);
 
         let puzzle_solution = match read_to_string(format!("./input/{year}/{day}/s")) {
-            Ok(text) => Some(Self::pars_text_to_given_solution(text)),
+            Ok(text) => Some(Self::parse_text_to_given_solution(text)),
             Err(_) => None
         };
 
@@ -141,10 +141,22 @@ impl<A: PuzzleResult, B: PuzzleResult> Input<A, B> {
         (text, result)
     }
 
-    fn pars_text_to_given_solution<T: PuzzleResult, U: PuzzleResult>(s: String) -> (T, U) {
-        let mut lines = s.lines();
-        let first = lines.next().expect("text should not be empty").parse::<T>().expect("the first line should be the the first solution");
-        let second = lines.next().expect("there should be 2 lines").parse::<U>().expect("the second line should be the the second solution");
+    fn parse_text_to_given_solution<T: PuzzleResult, U: PuzzleResult>(s: String) -> (T, U) {
+        // Unify the line endings
+        let s = s.replace("\r\n", "\n");
+        let mut solutions = s.split("\n\n");
+
+        let first = solutions
+            .next()
+            .expect("text should not be empty")
+            .parse::<T>()
+            .expect("The first block should be the first solution");
+
+        let second = solutions
+            .next()
+            .expect("text should contain 2 blocks")
+            .parse::<U>()
+            .expect("The second block should be second solution");
 
         (first, second)
     }
