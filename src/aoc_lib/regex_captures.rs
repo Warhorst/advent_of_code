@@ -6,8 +6,8 @@ const MAX_CAPTURES: usize = 8;
 pub type Caps<'a> = [&'a str; MAX_CAPTURES];
 
 /// Parses a multi line puzzle input to an iter of items of type T by
-/// using a regex and the provided mapper.
-/// The captures are stored in an array with fixes size MAX_CAPTURES, so the regex
+/// using a [Regex] and the provided mapper.
+/// The captures are stored in an array with fixes size MAX_CAPTURES, so the [Regex]
 /// can at max have this amount of captures or this call will crash.
 /// Important: The first default capture group is ignored and the captures are still zero-based.
 pub fn regex_captures<'a, T>(
@@ -18,9 +18,9 @@ pub fn regex_captures<'a, T>(
     regex
         .captures_iter(input)
         .map(|cap| {
-            let mut caps = [EMPTY; 8];
+            let mut caps = [EMPTY; MAX_CAPTURES];
 
-            // skipping the first capture, as it contains the whole line which
+            // Skipping the first capture, as it contains the whole line which
             // we are not interested in.
             for (i, c) in cap.iter().skip(1).enumerate() {
                 if let Some(m) = c {

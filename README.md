@@ -28,9 +28,12 @@ A '-' means a puzzle did not require special techniques to be solved
   - [7](https://adventofcode.com/2022/day/7) ([Code](./src/y2022/d7.rs)):
     - [State Machine](#state-machine): Keeping track of directory sizes using console like output (this might also been solvable with a tree)
     - [Regexes](#regexes): Console-output to enum parsing
-  - [8](https://adventofcode.com/2022/day/8) ([Code](./src/y2022/d8.rs))
+  - [8](https://adventofcode.com/2022/day/8) ([Code](./src/y2022/d8.rs)):
     - [Board](#board): Transform the input into a board and solve the puzzle using board operations
   - [9](https://adventofcode.com/2022/day/9) ([Code](./src/y2022/d9.rs)): Move a snake like structure across a board
+  - [10](https://adventofcode.com/2022/day/10) ([Code](./src/y2022/d10.rs)): Simulate a computer and computer screen
+    - [Regexes](#regexes): Parse a given list of commands
+    - [State Machine](#state-machine): Update the state based on commands and move a cursor around to draw onto a screen
 
 ### Techniques Explained
 #### Complex Input Parsing
@@ -46,20 +49,45 @@ How to approach this depends on the puzzle, but here are some strategies used in
 - sometimes the lines themselves consist of blocks, so use ``line.chars().windows(block_size).step_by(step_size)`` to process them
 
 #### Regexes
-The solution involves using regexes to extract relevant data from the input.
+The solution involves using [regexes](https://en.wikipedia.org/wiki/Regular_expression) to extract relevant data from the input.
 
 For convenience, I created the ``regex_captures`` function to easily process all captures returned from a regex process.
-It returns an iterator over all matches of the regex and provides a closure processing the captures in the finding (which are just an array of &str)
+It returns an iterator over all matches of the regex and provides a closure processing the captures in the finding (which is just an array of &str):
 
 ```rust
 let input = "move 2 from 1 to 3";
 let regex = Regex::new(r"move (\d+) from (\d+) to (\d+)").unwrap();
 
 regex_captures(
-  value,
+  input,
   &regex,
   |caps| format!("move: {}, from: {}, to: {}", caps[0], caps[1], caps[2])
 )
+```
+
+To easily parse a list of strings to a specific type using regexes, I created the the ``from_regex`` proc macro attribute. It
+can be used on structs and enums and generates a method ``from_regex``, which takes a string (the haystack) and creates the
+type instance from it. More information can be found in the macros doc. Example:
+
+A list of instructions like this
+
+```
+addx 13
+addx 4
+noop
+```
+
+can be parsed to the type `Instruction` like this
+
+```rust
+#[derive(Clone, Copy, Debug)]
+#[from_regex]
+enum Instruction {
+    #[reg(r#"noop"#)]
+    Noop,
+    #[reg(r#"addx (-*\d+)"#)]
+    Add(isize)
+}  
 ```
 
 #### Set Operations
