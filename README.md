@@ -34,6 +34,9 @@ A '-' means a puzzle did not require special techniques to be solved
   - [10](https://adventofcode.com/2022/day/10) ([Code](./src/y2022/d10.rs)): Simulate a computer and computer screen
     - [Regexes](#regexes): Parse a given list of commands
     - [State Machine](#state-machine): Update the state based on commands and move a cursor around to draw onto a screen
+  - [11](https://adventofcode.com/2022/day/11) ([Code](./src/y2022/d11.rs)):
+    - [Complex Input Parsing](#complex-input-parsing)
+    - [Modular Arithmetic](#modular-arithmethic): Perform addition and multiplication to increase numbers indefinitily, but only their remainders are important. This puzzle also requires the use of multiple different divisors.
 
 ### Techniques Explained
 #### Complex Input Parsing
@@ -133,3 +136,7 @@ Examples for this are:
 - moving a piece from a game or simulation around
 - iterating over all the board positions/rows/columns
 - accessing board values, given a position
+
+#### Modular Arithmethic
+The solution has something to do with modulus calculations, like `num % 5`. If only the modulus is the interesting part of the puzzle,
+it might be possible to apply properties of the [Modular Arithmethic](https://en.wikipedia.org/wiki/Modular_arithmetic) to it.
