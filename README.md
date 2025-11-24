@@ -37,6 +37,8 @@ A '-' means a puzzle did not require special techniques to be solved
   - [11](https://adventofcode.com/2022/day/11) ([Code](./src/y2022/d11.rs)):
     - [Complex Input Parsing](#complex-input-parsing)
     - [Modular Arithmetic](#modular-arithmethic): Perform addition and multiplication to increase numbers indefinitily, but only their remainders are important. This puzzle also requires the use of multiple different divisors.
+  - [12](https://adventofcode.com/2022/day/12) ([Code](./src/y2022/d12.rs)):
+    - [Pathfinding](#pathfinding): Find the shortest path up a mountain using a given heightmap
 
 ### Techniques Explained
 #### Complex Input Parsing
@@ -137,6 +139,38 @@ Examples for this are:
 - iterating over all the board positions/rows/columns
 - accessing board values, given a position
 
+
 #### Modular Arithmethic
 The solution has something to do with modulus calculations, like `num % 5`. If only the modulus is the interesting part of the puzzle,
 it might be possible to apply properties of the [Modular Arithmethic](https://en.wikipedia.org/wiki/Modular_arithmetic) to it.
+
+
+#### Pathfinding
+The solution involves determining the shortest path from one given point to another. Most of the times, a [Board](#board) is involved,
+as it contains the actual tiles which are part of the pathfinding problem.
+
+The easiest way to solve this is the [pathfinding](https://github.com/evenfurther/pathfinding) crate and its A* implementation.
+A simple example which also uses a board:
+
+```rust
+let board = Board::<Tile>::from(input);
+let start = p!(0, 0);
+let end = p!(32, 32);
+
+let path_res = pathfinding::prelude::astar(
+  // The start position
+  &start,
+  // The successor function which tells what other positions are reachable from the current one and with what weight
+  |pos| pos.cardinal_neighbours().filter(|p| board.pos_in_bounds(*p)).map(|p| (p, board.get_tile(*p).unwrap().weight())),
+  // The heuristic function, which gives an approximation of the distance from the current position to the goal
+  |pos| pos.manhattan_distance(&end),
+  // The function which checks if the current position has reached the goal
+  |pos| *pos == end
+);
+
+match path_res {
+  // path.0 are all the positions in the path and path.1 is the length of the path
+  Some(path) => println!("Path found"),
+  None => println!("Path not found :(")
+}
+```
