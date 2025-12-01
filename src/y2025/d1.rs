@@ -8,9 +8,9 @@ pub fn solve_a(input: &str) -> usize {
         .lines()
         .map(|line| {
             if line.contains("L") {
-                -parse::<isize>(line.split("L").skip(1).next().unwrap())
+                -parse::<isize>(remove_prefix(line, "L"))
             } else {
-                parse::<isize>(line.split("R").skip(1).next().unwrap())
+                parse::<isize>(remove_prefix(line, "R"))
             }
         })
         .for_each(|num| {
@@ -40,9 +40,9 @@ pub fn solve_b(input: &str) -> usize {
         .lines()
         .map(|line| {
             if line.contains("L") {
-                -parse::<isize>(line.split("L").skip(1).next().unwrap())
+                -parse::<isize>(remove_prefix(line, "L"))
             } else {
-                parse::<isize>(line.split("R").skip(1).next().unwrap())
+                parse::<isize>(remove_prefix(line, "R"))
             }
         })
         .for_each(|num| {
