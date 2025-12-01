@@ -39,6 +39,8 @@ A '-' means a puzzle did not require special techniques to be solved
     - [Modular Arithmetic](#modular-arithmethic): Perform addition and multiplication to increase numbers indefinitily, but only their remainders are important. This puzzle also requires the use of multiple different divisors.
   - [12](https://adventofcode.com/2022/day/12) ([Code](./src/y2022/d12.rs)):
     - [Pathfinding](#pathfinding): Find the shortest path up a mountain using a given heightmap
+- 2025
+  - [1](https://adventofcode.com/2025/day/1) ([Code](./src/y2025/d1.rs)): Simulate a safe dial
 
 ### Techniques Explained
 #### Complex Input Parsing
