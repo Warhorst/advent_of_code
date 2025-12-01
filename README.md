@@ -18,27 +18,27 @@ A '-' means a puzzle did not require special techniques to be solved
 - 2022
   - [1](https://adventofcode.com/2022/day/1) ([Code](./src/y2022/d1.rs)): -
   - [2](https://adventofcode.com/2022/day/2) ([Code](./src/y2022/d2.rs)): -
-  - [3](https://adventofcode.com/2022/day/3) ([Code](./src/y2022/d3.rs)): 
-    - [Set Operations](#set-operations): Find the common element in 3 sets using intersections
+  - [3](https://adventofcode.com/2022/day/3) ([Code](./src/y2022/d3.rs)): Find the common element in 3 sets using intersections
+    - [Set Operations](#set-operations)
   - [4](https://adventofcode.com/2022/day/4) ([Code](./src/y2022/d4.rs)): -
   - [5](https://adventofcode.com/2022/day/5) ([Code](./src/y2022/d5.rs)):
     - [Complex Input Parsing](#complex-input-parsing)
     - [Regexes](#regexes)
   - [6](https://adventofcode.com/2022/day/6) ([Code](./src/y2022/d6.rs)): -
-  - [7](https://adventofcode.com/2022/day/7) ([Code](./src/y2022/d7.rs)):
-    - [State Machine](#state-machine): Keeping track of directory sizes using console like output (this might also been solvable with a tree)
-    - [Regexes](#regexes): Console-output to enum parsing
-  - [8](https://adventofcode.com/2022/day/8) ([Code](./src/y2022/d8.rs)):
-    - [Board](#board): Transform the input into a board and solve the puzzle using board operations
+  - [7](https://adventofcode.com/2022/day/7) ([Code](./src/y2022/d7.rs)): Keeping track of directory sizes using console like output (this might also been solvable with a tree) 
+    - [State Machine](#state-machine)
+    - [Regexes](#regexes)
+  - [8](https://adventofcode.com/2022/day/8) ([Code](./src/y2022/d8.rs)): Transform the input into a board and solve the puzzle using board operations 
+    - [Board](#board)
   - [9](https://adventofcode.com/2022/day/9) ([Code](./src/y2022/d9.rs)): Move a snake like structure across a board
-  - [10](https://adventofcode.com/2022/day/10) ([Code](./src/y2022/d10.rs)): Simulate a computer and computer screen
-    - [Regexes](#regexes): Parse a given list of commands
-    - [State Machine](#state-machine): Update the state based on commands and move a cursor around to draw onto a screen
-  - [11](https://adventofcode.com/2022/day/11) ([Code](./src/y2022/d11.rs)):
+  - [10](https://adventofcode.com/2022/day/10) ([Code](./src/y2022/d10.rs)): Simulate a computer and computer screen by parsing a list of commands, updating the state based on them and move a cursor to draw on the screen
+    - [Regexes](#regexes)
+    - [State Machine](#state-machine)
+  - [11](https://adventofcode.com/2022/day/11) ([Code](./src/y2022/d11.rs)): Perform addition and multiplication to increase numbers indefinitily, but only their remainders are important. This puzzle also requires the use of multiple different divisors. 
     - [Complex Input Parsing](#complex-input-parsing)
-    - [Modular Arithmetic](#modular-arithmethic): Perform addition and multiplication to increase numbers indefinitily, but only their remainders are important. This puzzle also requires the use of multiple different divisors.
-  - [12](https://adventofcode.com/2022/day/12) ([Code](./src/y2022/d12.rs)):
-    - [Pathfinding](#pathfinding): Find the shortest path up a mountain using a given heightmap
+    - [Modular Arithmetic](#modular-arithmethic) 
+  - [12](https://adventofcode.com/2022/day/12) ([Code](./src/y2022/d12.rs)): Find the shortest path up a mountain using a given heightmap
+    - [Pathfinding](#pathfinding)
 - 2025
   - [1](https://adventofcode.com/2025/day/1) ([Code](./src/y2025/d1.rs)): Simulate a safe dial
 
