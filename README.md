@@ -12,7 +12,7 @@ The following techniques are used in almost every puzzle and therefore apply glo
 - Iterator Operations: Using Rusts iterator implementations (and maybe extended functions provided by itertools) to solve the puzzle
 - Range Operations: Using Rusts build in range types to solve puzzles using range operations
 
-A '-' means a puzzle did not require special techniques to be solved
+A '-' means a puzzle had no extraordinary problem or required special techniques to be solved.
 
 ### Techniques used in puzzle solutions
 - 2022
@@ -39,6 +39,18 @@ A '-' means a puzzle did not require special techniques to be solved
     - [Modular Arithmetic](#modular-arithmethic) 
   - [12](https://adventofcode.com/2022/day/12) ([Code](./src/y2022/d12.rs)): Find the shortest path up a mountain using a given heightmap
     - [Pathfinding](#pathfinding)
+- 2024
+  - [1](https://adventofcode.com/2024/day/1) ([Code](./src/y2024/d1.rs)): -
+  - [2](https://adventofcode.com/2024/day/2) ([Code](./src/y2024/d2.rs)): -
+  - [3](https://adventofcode.com/2024/day/3) ([Code](./src/y2024/d3.rs)): Extract and parse commands from a string and perform the commands to multiply numbers.
+    - [Regexes](#regexes)
+  - [4](https://adventofcode.com/2024/day/4) ([Code](./src/y2024/d4.rs)): Given a 2D array of letters, a word and shape search must be performed.
+    - [Board](#board)
+  - [5](https://adventofcode.com/2024/day/5) ([Code](./src/y2024/d5.rs)): Check if a sequence of numbers is correctly ordered, based on a set of rules. Later, sort incorrect sequences using these rules.
+    - [Complex Input Parsing](#complex-input-parsing)
+  - [6](https://adventofcode.com/2024/day/6) ([Code](./src/y2024/d6.rs)): Simulate a robot moving around a board until it leaves the area. Afterwards, find all positions which would cause the robot to get stuck in a loop.
+    - [Board](#board)
+    - [State Machine](#state-machine)
 - 2025
   - [1](https://adventofcode.com/2025/day/1) ([Code](./src/y2025/d1.rs)): Simulate a safe dial
 
