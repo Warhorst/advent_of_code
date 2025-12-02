@@ -51,6 +51,10 @@ A '-' means a puzzle had no extraordinary problem or required special techniques
   - [6](https://adventofcode.com/2024/day/6) ([Code](./src/y2024/d6.rs)): Simulate a robot moving around a board until it leaves the area. Afterwards, find all positions which would cause the robot to get stuck in a loop.
     - [Board](#board)
     - [State Machine](#state-machine)
+  - [7](https://adventofcode.com/2024/day/7) ([Code](./src/y2024/d7.rs)): Find the operators which fulfill a given equation.
+    - [Permutations](#permutations)
+  - [8](https://adventofcode.com/2024/day/8) ([Code](./src/y2024/d8.rs)): Handle relations between antennas on a map
+    - [Board](#board)
 - 2025
   - [1](https://adventofcode.com/2025/day/1) ([Code](./src/y2025/d1.rs)): Simulate a safe dial
   - [2](https://adventofcode.com/2025/day/2) ([Code](./src/y2025/d2.rs)): Determine if a string consists of repeating patterns
@@ -189,3 +193,14 @@ match path_res {
   None => println!("Path not found :(")
 }
 ```
+
+#### Permutations
+The solutions involves finding a specific value or values in a given permutation. The problem is that the permutation
+could contain millions or even billions of values.
+
+General strategies:
+- Don't try them all. The easier puzzles might be solvable by just iterating over all values, but the harder ones require special tricks
+which depend on the puzzle. Often, there is some criteria which filters many of them out.
+- Be really fast. Sometimes, even large permutations can be iterated through in acceptable time if the performed operation can be executed quickly.
+Using libraries like [rayon](https://github.com/rayon-rs/rayon) can also help to increase throughput.
+
