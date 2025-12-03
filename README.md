@@ -1,10 +1,9 @@
 # advent_of_code
-Solvers for [advent of code](https://adventofcode.com/) puzzles
+Solves for [advent of code](https://adventofcode.com/) puzzles.
 
-## Puzzle Solution Categories
-### Introduction
+## Introduction
 A (WIP) listing of the puzzles and the techniques / technologies used to solve them. This should help me find similar
-solutions to former puzzles, which might help to solver newer ones faster.
+solutions to former puzzles, which might help to solve newer ones faster.
 
 The following techniques are used in almost every puzzle and therefore apply globally:
 - Text Parsing: Transforming the text input into domain specific data
@@ -14,7 +13,9 @@ The following techniques are used in almost every puzzle and therefore apply glo
 
 A '-' means a puzzle had no extraordinary problem or required special techniques to be solved.
 
-### Techniques used in puzzle solutions
+In rare cases, I needed external help to solve a puzzle. I credit the source in a code comment on the puzzle solver.
+
+## Puzzle Solutions
 - 2022
   - [1](https://adventofcode.com/2022/day/1) ([Code](./src/y2022/d1.rs)): -
   - [2](https://adventofcode.com/2022/day/2) ([Code](./src/y2022/d2.rs)): -
@@ -61,8 +62,8 @@ A '-' means a puzzle had no extraordinary problem or required special techniques
   - [3](https://adventofcode.com/2025/day/3) ([Code](./src/y2025/d3.rs)): Find the combination of digits which form the largest value
     - [Permutations](#permutations)
 
-### Techniques Explained
-#### Complex Input Parsing
+## Problems and Techniques Explained
+### Complex Input Parsing
 The solution involves parsing a rather complex text input, like an ASCII drawing of some scene or plan. 
 The challenge is to quickly find an algorithm to transform the input into domain data, using some implementation of From<&str>.
 
@@ -74,7 +75,7 @@ How to approach this depends on the puzzle, but here are some strategies used in
 - sometimes the order of the lines is not optimal, so use ``input.lines().rev()`` to process them from bottom to top
 - sometimes the lines themselves consist of blocks, so use ``line.chars().windows(block_size).step_by(step_size)`` to process them
 
-#### Regexes
+### Regexes
 The solution involves using [regexes](https://en.wikipedia.org/wiki/Regular_expression) to extract relevant data from the input.
 
 For convenience, I created the ``regex_captures`` function to easily process all captures returned from a regex process.
@@ -116,7 +117,7 @@ enum Instruction {
 }  
 ```
 
-#### Set Operations
+### Set Operations
 The solution involves transforming the input into sets and performing
 [basic set operations](https://en.wikipedia.org/wiki/Set_(mathematics)#Basic_operations) on them to solve the problem.
 
@@ -146,14 +147,14 @@ let symmetric_difference = &set_a ^ &set_b;
 Note that the methods will return iterators while the operators will return newly allocated sets.
 
 
-#### State Machine
+### State Machine
 The solution involves parsing the input into a chain of actions and performing an associated
 action in a state machine, mutating its state and returning it as the solution, or as part
 of the solution. This might involve parsing the input to enum variants and using pattern
 matching.
 
 
-#### Board
+### Board
 The solution involves transforming the input into a Board data structure and perform operations on it using the Board methods.
 Examples for this are:
 - moving a piece from a game or simulation around
@@ -161,12 +162,12 @@ Examples for this are:
 - accessing board values, given a position
 
 
-#### Modular Arithmethic
+### Modular Arithmethic
 The solution has something to do with modulus calculations, like `num % 5`. If only the modulus is the interesting part of the puzzle,
 it might be possible to apply properties of the [Modular Arithmethic](https://en.wikipedia.org/wiki/Modular_arithmetic) to it.
 
 
-#### Pathfinding
+### Pathfinding
 The solution involves determining the shortest path from one given point to another. Most of the times, a [Board](#board) is involved,
 as it contains the actual tiles which are part of the pathfinding problem.
 
@@ -196,7 +197,7 @@ match path_res {
 }
 ```
 
-#### Permutations
+### Permutations
 The solutions involves finding a specific value or values in a given permutation. The problem is that the permutation
 could contain millions or even billions of values.
 
@@ -204,5 +205,5 @@ General strategies:
 - Don't try them all. The easier puzzles might be solvable by just iterating over all values, but the harder ones require special tricks
 which depend on the puzzle. Often, there is some criteria which filters many of them out.
 - Be really fast. Sometimes, even large permutations can be iterated through in acceptable time if the performed operation can be executed quickly.
-Using libraries like [rayon](https://github.com/rayon-rs/rayon) can also help to increase throughput.
+Using libraries like [rayon](https://github.com/rayon-rs/rayon) can also help to increase parallelization.
 
