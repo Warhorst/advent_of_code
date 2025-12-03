@@ -58,6 +58,8 @@ A '-' means a puzzle had no extraordinary problem or required special techniques
 - 2025
   - [1](https://adventofcode.com/2025/day/1) ([Code](./src/y2025/d1.rs)): Simulate a safe dial
   - [2](https://adventofcode.com/2025/day/2) ([Code](./src/y2025/d2.rs)): Determine if a string consists of repeating patterns
+  - [3](https://adventofcode.com/2025/day/3) ([Code](./src/y2025/d3.rs)): Find the combination of digits which form the largest value
+    - [Permutations](#permutations)
 
 ### Techniques Explained
 #### Complex Input Parsing
