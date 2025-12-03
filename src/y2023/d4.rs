@@ -41,7 +41,7 @@ struct Card {
 impl Card {
     fn from_line(line: &str) -> Self {
         let number = line.split(":").next().unwrap().replace("Card", "").trim().parse::<usize>().unwrap();
-        let right_side = line.split(":").skip(1).next().unwrap();
+        let right_side = line.split(":").nth(1).unwrap();
         let numbers = right_side.split("|").collect::<Vec<_>>();
         let winning_numbers = numbers[0]
             .trim()

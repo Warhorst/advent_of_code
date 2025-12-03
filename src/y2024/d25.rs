@@ -8,7 +8,7 @@ pub fn solve_a(input: &str) -> usize {
 
     input
         .split("\n\n")
-        .map(|block| Board::<Tile>::from(block))
+        .map(Board::<Tile>::from)
         .for_each(|board| match board.rows().next().unwrap().all(|(_, t)| *t == Filled) {
             true => locks.push(Lock(column_counts(&board))),
             false => keys.push(Key(column_counts(&board)))

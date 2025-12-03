@@ -82,7 +82,7 @@ pub fn solve_b(input: &str) -> u128 {
             let start = pair[0];
             let goal = pair[1];
 
-            let (x_diff, y_diff) = ((start.x - goal.x).abs() as usize, (start.y - goal.y).abs() as usize);
+            let (x_diff, y_diff) = ((start.x - goal.x).unsigned_abs(), (start.y - goal.y).unsigned_abs());
 
             let empty_rows_between = if start.y < goal.y {
                 start.y..goal.y
@@ -118,9 +118,8 @@ fn expand_space(space: &mut Vec<Vec<Tile>>) {
     }
 }
 
-fn find_empty_rows_and_columns(space: &Vec<Vec<Tile>>) -> (Vec<usize>, Vec<usize>) {
+fn find_empty_rows_and_columns(space: &[Vec<Tile>]) -> (Vec<usize>, Vec<usize>) {
     let width = space[0].len();
-    let height = space.len();
 
     let mut rows = vec![];
     let mut columns = vec![];
@@ -131,8 +130,8 @@ fn find_empty_rows_and_columns(space: &Vec<Vec<Tile>>) -> (Vec<usize>, Vec<usize
         }
     }
 
-    for i in 0..height {
-        if space[i].iter().all(|t| *t == Nothing) {
+    for (i, s) in space.iter().enumerate() {
+        if s.iter().all(|t| *t == Nothing) {
             rows.push(i)
         }
     }

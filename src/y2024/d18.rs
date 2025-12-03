@@ -52,7 +52,7 @@ pub fn solve_b(input: &str) -> String {
     };
     let mut board = Board::<Tile>::new(dimension + 1, dimension + 1, || Free);
 
-    let mut positions = lines
+    let positions = lines
         .map(|line| {
             let mut split = line.split(",");
             p!(parse::<isize>(split.next().unwrap()), parse::<isize>(split.next().unwrap()))
@@ -62,7 +62,7 @@ pub fn solve_b(input: &str) -> String {
     let goal = p!(dimension, dimension);
     let mut count = 0;
 
-    while let Some(pos) = positions.next() {
+    for pos in positions {
         // add corrupted tiles in a loop
         board.set_tile(pos, Corrupted).unwrap();
         count += 1;
@@ -105,20 +105,3 @@ enum Tile {
     Free,
     Corrupted,
 }
-
-impl Into<char> for Tile {
-    fn into(self) -> char {
-        match self {
-            Free => '.',
-            Corrupted => '#'
-        }
-    }
-}
-
-//impl From<char> for Tile {
-//    fn from(value: char) -> Self {
-//        match value {
-//            '.' => Free
-//        }
-//    }
-//}

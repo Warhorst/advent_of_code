@@ -46,7 +46,6 @@ impl Stacks {
 
     fn apply_9001(&mut self, command: Command) {
         let removed = (0..command.amount)
-            .into_iter()
             .map(|_| self.0[command.from - 1].pop().unwrap())
             .collect::<Vec<_>>();
 

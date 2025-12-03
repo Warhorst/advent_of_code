@@ -39,7 +39,7 @@ impl Device {
             .last()
             .unwrap()
             .split(",")
-            .map(|s| parse::<usize>(s))
+            .map(parse::<usize>)
             .collect::<Vec<_>>();
         let instructions = original_instructions
             .windows(2)
@@ -66,13 +66,13 @@ impl Device {
 
         while let Some(ins) = self.instructions.get(self.ins_pointer) {
             match ins {
-                Adv(op) => self.reg_a = self.reg_a / 2_usize.pow(self.combo_value(*op) as u32),
-                Bxl(op) => self.reg_b = self.reg_b ^ op,
+                Adv(op) => self.reg_a /= 2_usize.pow(self.combo_value(*op) as u32),
+                Bxl(op) => self.reg_b ^= op,
                 Bst(op) => self.reg_b = self.combo_value(*op) % 8,
                 Jnz(op) => if self.reg_a != 0 {
                     self.ins_pointer = *op / 2
                 }
-                Bxc(_) => self.reg_b = self.reg_b ^ self.reg_c,
+                Bxc(_) => self.reg_b ^= self.reg_c,
                 Out(op) => output.push(self.combo_value(*op) % 8),
                 Bdv(op) => self.reg_b = self.reg_a / 2_usize.pow(self.combo_value(*op) as u32),
                 Cdv(op) => self.reg_c = self.reg_a / 2_usize.pow(self.combo_value(*op) as u32)
@@ -114,7 +114,7 @@ impl Device {
             let result = self.run_with_a(a);
             let expected = &self.original_instructions[(index - 1)..];
 
-            if &result == expected {
+            if result == expected {
                 match self.find_a_producing_input_inner(index - 1, selection) {
                     Some(a) => return Some(a),
                     None => {

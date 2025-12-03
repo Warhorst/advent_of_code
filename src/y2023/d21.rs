@@ -65,14 +65,3 @@ impl From<char> for Tile {
         }
     }
 }
-
-impl Into<char> for Tile {
-    fn into(self) -> char {
-        match self {
-            Start => 'S',
-            Plot => '.',
-            Rock => '#',
-            Visited => 'O'
-        }
-    }
-}

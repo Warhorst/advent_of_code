@@ -25,14 +25,14 @@ fn get_numerical_part(line: &str) -> usize {
 }
 
 fn get_required_inputs_for_keypad(mut keypad_inputs: Vec<KeypadButton>) -> Vec<ControlButton> {
-    keypad_inputs.insert(0, KBA);
+    keypad_inputs.insert(0, Kba);
 
     let res = keypad_inputs
         .windows(2)
         .flat_map(|w| get_keypad_inputs_from_to(w[0], w[1]))
         .collect();
 
-    println!("{:?}", res);
+    println!("{res:?}");
 
     res
 }
@@ -54,32 +54,32 @@ fn get_keypad_inputs_from_to(current: KeypadButton, target: KeypadButton) -> Vec
 
     if x_diff < 0 && current_pos + (x_diff, 0) == p!(0, 0) {
         match y_diff {
-            yd if y_diff > 0 => (0..yd).into_iter().for_each(|_| inputs.push(Up)),
-            yd if y_diff < 0 => (0..yd.abs()).into_iter().for_each(|_| inputs.push(Down)),
+            yd if y_diff > 0 => (0..yd).for_each(|_| inputs.push(Up)),
+            yd if y_diff < 0 => (0..yd.abs()).for_each(|_| inputs.push(Down)),
             _ => {}
         }
-        (0..x_diff.abs()).into_iter().for_each(|_| inputs.push(Left));
+        (0..x_diff.abs()).for_each(|_| inputs.push(Left));
     } else if x_diff < 0 {
-        (0..x_diff.abs()).into_iter().for_each(|_| inputs.push(Left));
+        (0..x_diff.abs()).for_each(|_| inputs.push(Left));
         match y_diff {
-            yd if y_diff > 0 => (0..yd).into_iter().for_each(|_| inputs.push(Up)),
-            yd if y_diff < 0 => (0..yd.abs()).into_iter().for_each(|_| inputs.push(Down)),
+            yd if y_diff > 0 => (0..yd).for_each(|_| inputs.push(Up)),
+            yd if y_diff < 0 => (0..yd.abs()).for_each(|_| inputs.push(Down)),
             _ => {}
         }
     } else if current_pos + (0, y_diff) == p!(0, 0) {
-        (0..x_diff).into_iter().for_each(|_| inputs.push(Right));
+        (0..x_diff).for_each(|_| inputs.push(Right));
         match y_diff {
-            yd if y_diff > 0 => (0..yd).into_iter().for_each(|_| inputs.push(Up)),
-            yd if y_diff < 0 => (0..yd.abs()).into_iter().for_each(|_| inputs.push(Down)),
+            yd if y_diff > 0 => (0..yd).for_each(|_| inputs.push(Up)),
+            yd if y_diff < 0 => (0..yd.abs()).for_each(|_| inputs.push(Down)),
             _ => {}
         }
     } else {
         match y_diff {
-            yd if y_diff > 0 => (0..yd).into_iter().for_each(|_| inputs.push(Up)),
-            yd if y_diff < 0 => (0..yd.abs()).into_iter().for_each(|_| inputs.push(Down)),
+            yd if y_diff > 0 => (0..yd).for_each(|_| inputs.push(Up)),
+            yd if y_diff < 0 => (0..yd.abs()).for_each(|_| inputs.push(Down)),
             _ => {}
         }
-        (0..x_diff).into_iter().for_each(|_| inputs.push(Right))
+        (0..x_diff).for_each(|_| inputs.push(Right))
     }
 
     inputs.push(Activate);
@@ -95,7 +95,7 @@ fn get_required_inputs_for_control(mut control_inputs: Vec<ControlButton>) -> Ve
         .flat_map(|w| get_control_inputs_from_to(w[0], w[1]))
         .collect();
 
-    println!("{:?}", res);
+    println!("{res:?}");
 
     res
 }
@@ -121,16 +121,16 @@ fn get_control_inputs_from_to(current: ControlButton, target: ControlButton) -> 
             _ if y_diff < 0 => inputs.push(Down),
             _ => {}
         }
-        (0..x_diff.abs()).into_iter().for_each(|_| inputs.push(Left));
+        (0..x_diff.abs()).for_each(|_| inputs.push(Left));
     } else if x_diff < 0 {
-        (0..x_diff.abs()).into_iter().for_each(|_| inputs.push(Left));
+        (0..x_diff.abs()).for_each(|_| inputs.push(Left));
         match y_diff {
             _ if y_diff > 0 => inputs.push(Up),
             _ if y_diff < 0 => inputs.push(Down),
             _ => {}
         }
     } else if current_pos + (0, y_diff) == p!(0, 1) {
-        (0..x_diff).into_iter().for_each(|_| inputs.push(Right));
+        (0..x_diff).for_each(|_| inputs.push(Right));
 
         match y_diff {
             _ if y_diff > 0 => inputs.push(Up),
@@ -143,7 +143,7 @@ fn get_control_inputs_from_to(current: ControlButton, target: ControlButton) -> 
             _ if y_diff < 0 => inputs.push(Down),
             _ => {}
         }
-        (0..x_diff).into_iter().for_each(|_| inputs.push(Right))
+        (0..x_diff).for_each(|_| inputs.push(Right))
     }
 
     inputs.push(Activate);
@@ -177,7 +177,7 @@ fn get_num_keypad_presses(inputs: Vec<KeypadButton>, depth: usize) -> usize {
     let inputs = get_required_inputs_for_keypad(inputs);
     let mut cache = HashMap::new();
 
-    println!("{:?}", inputs);
+    println!("{inputs:?}");
 
     //inputs.insert(0, Activate);
 
@@ -218,7 +218,7 @@ fn get_num_control_presses(
                     get_control_inputs_from_to(current, target)
                 };
 
-                println!("({:?} to {:?}), Inputs: {:?}, Depth: {current_depth}", current, target, inputs);
+                println!("({current:?} to {target:?}), Inputs: {inputs:?}, Depth: {current_depth}");
 
                 inputs.len()
             } else {
@@ -232,7 +232,7 @@ fn get_num_control_presses(
                     get_control_inputs_from_to(current, target)
                 };
 
-                println!("({:?} to {:?}), Inputs: {:?}, Depth: {current_depth}", current, target, inputs);
+                println!("({current:?} to {target:?}), Inputs: {inputs:?}, Depth: {current_depth}");
 
                 // todo breaks when input is only one element long
 
@@ -272,7 +272,7 @@ enum KeypadButton {
     KB7,
     KB8,
     KB9,
-    KBA,
+    Kba,
 }
 
 impl KeypadButton {
@@ -288,7 +288,7 @@ impl KeypadButton {
             KB7 => p!(0, 3),
             KB8 => p!(1, 3),
             KB9 => p!(2, 3),
-            KBA => p!(2, 0),
+            Kba => p!(2, 0),
         }
     }
 }
@@ -306,7 +306,7 @@ impl From<char> for KeypadButton {
             '7' => KB7,
             '8' => KB8,
             '9' => KB9,
-            'A' => KBA,
+            'A' => Kba,
             _ => unreachable!()
         }
     }

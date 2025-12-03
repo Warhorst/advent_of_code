@@ -16,7 +16,7 @@ pub fn solve_a(input: &str) -> usize {
         .sum()
 }
 
-fn amount_xmas_at_position(tiles: &Vec<Vec<char>>, pos: Position) -> usize {
+fn amount_xmas_at_position(tiles: &[Vec<char>], pos: Position) -> usize {
     // expects that the char at pos is an 'X', the caller must guarantee this
 
     let mut amount = 0;
@@ -48,7 +48,7 @@ pub fn solve_b(input: &str) -> usize {
         .count()
 }
 
-fn is_x_mas_at_position(tiles: &Vec<Vec<char>>, pos: Position) -> Option<()> {
+fn is_x_mas_at_position(tiles: &[Vec<char>], pos: Position) -> Option<()> {
     // I return Option<()> rather than bool just to make the code more elegant
     // expects that the char at pos is an 'A', the caller must guarantee this
 
@@ -71,6 +71,6 @@ fn is_x_mas_at_position(tiles: &Vec<Vec<char>>, pos: Position) -> Option<()> {
     }
 }
 
-fn get_char_at_pos(tiles: &Vec<Vec<char>>, pos: Position) -> Option<char> {
+fn get_char_at_pos(tiles: &[Vec<char>], pos: Position) -> Option<char> {
     tiles.get(pos.y as usize)?.get(pos.x as usize).copied()
 }

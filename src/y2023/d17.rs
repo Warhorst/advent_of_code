@@ -71,10 +71,7 @@ fn successors<'a>(
                 _ => new_prevs.push(dir)
             };
 
-            match tilemap.try_get(pos_in_dir) {
-                Some(t) => Some(((pos_in_dir, new_prevs), t.0)),
-                None => None
-            }
+            tilemap.try_get(pos_in_dir).map(|t| ((pos_in_dir, new_prevs), t.0))
         })
 }
 
@@ -90,7 +87,7 @@ fn successors_ultra<'a>(
             }
 
             if let Some(w) = prev_dirs.windows(4).last() {
-                if w.into_iter().any(|wd| *wd != w[3]) && w[3] != dir {
+                if w.iter().any(|wd| *wd != w[3]) && w[3] != dir {
                     return None
                 }
             } else if let Some(d) = prev_dirs.last() {
@@ -114,15 +111,12 @@ fn successors_ultra<'a>(
                 _ => new_prevs.push(dir)
             };
 
-            match tilemap.try_get(pos_in_dir) {
-                Some(t) => Some(((pos_in_dir, new_prevs), t.0)),
-                None => None
-            }
+            tilemap.try_get(pos_in_dir).map(|t| ((pos_in_dir, new_prevs), t.0))
         })
 }
 
 fn distance(pos: Position, goal: Position) -> usize {
-    (pos.x - goal.x).abs() as usize + (pos.y - goal.y).abs() as usize
+    (pos.x - goal.x).unsigned_abs() + (pos.y - goal.y).unsigned_abs()
 }
 
 /// For debugging
@@ -164,8 +158,8 @@ impl From<char> for Tile {
     }
 }
 
-impl Into<char> for Tile {
-    fn into(self) -> char {
-        char::from_digit(self.0 as u32, 10).unwrap()
+impl From<Tile> for char {
+    fn from(value: Tile) -> Self {
+        char::from_digit(value.0 as u32, 10).unwrap()
     }
 }

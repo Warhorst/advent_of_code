@@ -124,13 +124,3 @@ impl From<char> for Tile {
         }
     }
 }
-
-impl Into<char> for Tile {
-    fn into(self) -> char {
-        match self {
-            Round => 'O',
-            Cube => '#',
-            Empty => '.'
-        }
-    }
-}

@@ -26,10 +26,7 @@ fn create_for_struct(item_struct: ItemStruct) -> TokenStream {
     let regex_implementation = create_from_regex_struct_implementation(&item_struct);
 
     let mut cleaned_struct = item_struct.clone();
-    cleaned_struct.attrs = cleaned_struct.attrs
-        .into_iter()
-        .filter(|attr| !attr.path().is_ident("reg"))
-        .collect();
+    cleaned_struct.attrs.retain(|attr| !attr.path().is_ident("reg"));
 
     quote! {
         #cleaned_struct

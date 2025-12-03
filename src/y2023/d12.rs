@@ -49,9 +49,7 @@ impl Row {
 
     fn create_bit_representations(num_unknown_springs: usize) -> impl IntoIterator<Item=Vec<u32>> {
         (0..2_u32.pow(num_unknown_springs as u32))
-            .into_iter()
             .map(move |x| (0..num_unknown_springs)
-                .into_iter()
                 .map(|n| (x >> n) & 1)
                 .collect::<Vec<_>>())
     }

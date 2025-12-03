@@ -39,7 +39,7 @@ fn extrapolate(differences: Vec<Vec<isize>>) -> isize {
         .into_iter()
         .rev()
         .map(|v| v[v.len() - 1])
-        .fold(0, |acc, val| acc + val)
+        .sum::<isize>()
 }
 
 fn extrapolate_backwards(differences: Vec<Vec<isize>>) -> isize {

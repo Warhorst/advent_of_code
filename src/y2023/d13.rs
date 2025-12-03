@@ -25,7 +25,6 @@ fn get_value(tile_map: TileMap<Tile>) -> usize {
         .collect::<Vec<_>>();
 
     let column_opt = (0..columns.len() - 1)
-        .into_iter()
         .flat_map(|i| {
             let mut depth = 0;
 
@@ -41,8 +40,8 @@ fn get_value(tile_map: TileMap<Tile>) -> usize {
         })
         .next();
 
-    if column_opt.is_some() {
-        return column_opt.unwrap()
+    if let Some(val) = column_opt {
+        return val
     }
 
     let rows = tile_map
@@ -51,7 +50,6 @@ fn get_value(tile_map: TileMap<Tile>) -> usize {
         .collect::<Vec<_>>();
 
     (0..rows.len() - 1)
-        .into_iter()
         .flat_map(|i| {
             let mut depth = 0;
 

@@ -12,7 +12,7 @@ pub fn solve_a(input: &str) -> usize {
 }
 
 fn invalid_ids(range: (usize, usize)) -> impl Iterator<Item = usize> {
-    (range.0..=range.1).into_iter().filter(|num| {
+    (range.0..=range.1).filter(|num| {
         let string = num.to_string();
         let split = string.split_at(string.len() / 2);
         split.0 == split.1
@@ -31,7 +31,7 @@ pub fn solve_b(input: &str) -> usize {
 }
 
 fn invalid_ids_b(range: (usize, usize)) -> impl Iterator<Item = usize> {
-    (range.0..=range.1).into_iter().filter(|num| {
+    (range.0..=range.1).filter(|num| {
         let string = num.to_string();
 
         // At most the half of the string can be a repeating pattern
@@ -44,7 +44,6 @@ fn invalid_ids_b(range: (usize, usize)) -> impl Iterator<Item = usize> {
             let part = string.chars().take(i).collect::<String>();
 
             let new_string = (0..string.len() / i)
-                .into_iter()
                 .map(|_| part.as_str())
                 .collect::<String>();
 

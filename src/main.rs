@@ -85,8 +85,8 @@ fn solve<
                     }
                 }
                 None => {
-                    println!("Solution A: {:?}", solution_a);
-                    println!("Solution B: {:?}", solution_b);
+                    println!("Solution A: {solution_a:?}");
+                    println!("Solution B: {solution_b:?}");
                 }
             }
         }

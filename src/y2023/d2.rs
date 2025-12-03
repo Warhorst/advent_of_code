@@ -30,7 +30,7 @@ impl Game {
         let mut max_green = 0;
 
         let split = line.split(":").collect::<Vec<_>>();
-        let id = split[0].split(" ").skip(1).next().unwrap().parse::<usize>().unwrap();
+        let id = split[0].split(" ").nth(1).unwrap().parse::<usize>().unwrap();
 
         for list in split[1].split(";") {
             for num_color in list.split(",") {

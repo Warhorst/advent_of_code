@@ -85,9 +85,9 @@ pub fn solve_b(input: &str) -> u128 {
         sum += ((pos.y + next_pos.y) * (pos.x - next_pos.x)) as i128
     }
 
-    positions.iter().for_each(|pos| println!("{:?}", pos));
+    positions.iter().for_each(|pos| println!("{pos:?}"));
 
-    (sum / 2).abs() as u128
+    (sum / 2).unsigned_abs()
 }
 
 #[derive(Debug)]
@@ -146,15 +146,6 @@ impl From<char> for Tile {
             '#' => Trench(Black),
             '.' => Ground,
             _ => panic!("invalid")
-        }
-    }
-}
-
-impl Into<char> for Tile {
-    fn into(self) -> char {
-        match self {
-            Trench(_) => '#',
-            Ground => '.'
         }
     }
 }

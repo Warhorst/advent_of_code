@@ -85,7 +85,7 @@ fn parse_input(input: &str) -> Vec<Direction> {
                 _ => panic!("invalid char")
             };
 
-            (0..amount).into_iter().map(move |_| dir)
+            (0..amount).map(move |_| dir)
         })
         .collect()
 }

@@ -10,8 +10,8 @@ pub fn solve_a(input: &str) -> usize {
     for line in input.lines().skip(2) {
         let split = line.split(" = ").collect::<Vec<_>>();
         let key = split[0].to_string();
-        let foo = split[1].replace("(", "").replace(")", "");
-        let values = foo.split(", ").collect::<Vec<_>>();
+        let cleaned = split[1].replace("(", "").replace(")", "");
+        let values = cleaned.split(", ").collect::<Vec<_>>();
         key_ways_map.insert(key, (values[0].to_string(), values[1].to_string()));
     }
 
@@ -29,7 +29,7 @@ pub fn solve_a(input: &str) -> usize {
 
             count += 1;
 
-            if current == "ZZZ".to_string() {
+            if current == "ZZZ" {
                 break 'outer;
             }
         }
@@ -46,8 +46,8 @@ pub fn solve_b(input: &str) -> usize {
     for line in input.lines().skip(2) {
         let split = line.split(" = ").collect::<Vec<_>>();
         let key = split[0].to_string();
-        let foo = split[1].replace("(", "").replace(")", "");
-        let values = foo.split(", ").collect::<Vec<_>>();
+        let cleaned = split[1].replace("(", "").replace(")", "");
+        let values = cleaned.split(", ").collect::<Vec<_>>();
         key_ways_map.insert(key, (values[0].to_string(), values[1].to_string()));
     }
 

@@ -5,8 +5,8 @@ use pathfinding::prelude::astar;
 
 pub fn solve_a(input: &str) -> usize {
     let board = Board::<Tile>::from(input);
-    let start = (board.get_positions_of(&Start).into_iter().next().unwrap(), XP);
-    let goal = board.get_positions_of(&End).into_iter().next().unwrap();
+    let start = (board.get_positions_of(&Start).next().unwrap(), XP);
+    let goal = board.get_positions_of(&End).next().unwrap();
 
     let (_path, cost) = astar(
         &start,
@@ -37,8 +37,8 @@ pub fn solve_a(input: &str) -> usize {
 
 pub fn solve_b(input: &str) -> usize {
     let board = Board::<Tile>::from(input);
-    let start = (board.get_positions_of(&Start).into_iter().next().unwrap(), XP);
-    let goal = board.get_positions_of(&End).into_iter().next().unwrap();
+    let start = (board.get_positions_of(&Start).next().unwrap(), XP);
+    let goal = board.get_positions_of(&End).next().unwrap();
 
     // same as A, but I now collect all shortest paths using the astar_bag
     // what a cool crate!
@@ -85,17 +85,6 @@ impl From<char> for Tile {
             '#' => Wall,
             '.' => Free,
             _ => unreachable!()
-        }
-    }
-}
-
-impl Into<char> for Tile {
-    fn into(self) -> char {
-        match self {
-            Start => 'S',
-            End => 'E',
-            Wall => '#',
-            Free => '.'
         }
     }
 }

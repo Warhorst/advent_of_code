@@ -193,19 +193,13 @@ impl Hand {
 
 impl Ord for Hand {
     fn cmp(&self, other: &Self) -> Ordering {
-        self.partial_cmp(other).unwrap()
-    }
-}
-
-impl PartialOrd for Hand {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         let self_type = self.get_hand_type();
         let other_type = other.get_hand_type();
 
         if self_type > other_type {
-            return Some(Ordering::Greater);
+            return Ordering::Greater;
         } else if self_type < other_type {
-            return Some(Ordering::Less);
+            return Ordering::Less;
         }
 
         let self_values = self.get_card_values();
@@ -213,13 +207,19 @@ impl PartialOrd for Hand {
 
         for (i, val) in self_values.into_iter().enumerate() {
             if val > other_values[i] {
-                return Some(Ordering::Greater);
+                return Ordering::Greater;
             } else if val < other_values[i] {
-                return Some(Ordering::Less);
+                return Ordering::Less;
             }
         }
 
-        Some(Ordering::Equal)
+        Ordering::Equal
+    }
+}
+
+impl PartialOrd for Hand {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
     }
 }
 
@@ -242,6 +242,6 @@ impl Ord for HandType {
 
 impl PartialOrd for HandType {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        (*self as u8).partial_cmp(&(*other as u8))
+        Some(self.cmp(other))
     }
 }

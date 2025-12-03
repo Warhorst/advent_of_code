@@ -22,8 +22,8 @@ pub fn solve_b(input: &str) -> usize {
     println!("Sum: {sum}");
     let current_z = device.calculate_z();
     println!("Z: {current_z}");
-    println!("Sum Binary: {:#046b}", sum);
-    println!("Z   Binary: {:#046b}", current_z);
+    println!("Sum Binary: {sum:#046b}");
+    println!("Z   Binary: {current_z:#046b}");
 
     let all_gates = device
         .z_targets()
@@ -36,7 +36,7 @@ pub fn solve_b(input: &str) -> usize {
 
             println!("{target}");
             for i in 0..grouped.len() {
-                grouped.get(&i).unwrap().iter().for_each(|gate| print!("{}    ", gate));
+                grouped.get(&i).unwrap().iter().for_each(|gate| print!("{gate}    "));
                 println!()
             }
 
@@ -87,7 +87,7 @@ impl Device {
         let initial_values = regex_captures(
             split.next().unwrap(),
             &initial_values_regex,
-            |caps| (caps[0].to_string(), if parse::<usize>(caps[1]) == 1 { true } else { false }),
+            |caps| (caps[0].to_string(), parse::<usize>(caps[1]) == 1),
         )
             .into_iter()
             .collect::<HashMap<_, _>>();

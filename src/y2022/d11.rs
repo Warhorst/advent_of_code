@@ -8,7 +8,7 @@ use crate::aoc_lib::*;
 pub fn solve_a(input: &str) -> usize {
     let mut monkeys = input
         .split("\n\n")
-        .map(|s| Monkey::from(s))
+        .map(Monkey::from)
         .collect::<Vec<_>>();
 
     for _ in 0..20 {
@@ -56,7 +56,7 @@ pub fn solve_a(input: &str) -> usize {
 pub fn solve_b(input: &str) -> u128 {
     let monkeys = input
         .split("\n\n")
-        .map(|s| Monkey::from(s))
+        .map(Monkey::from)
         .collect::<Vec<_>>();
 
     let divisors = monkeys.iter().map(|m| m.test_div).collect::<HashSet<_>>();
@@ -125,40 +125,35 @@ impl From<&str> for Monkey {
 
         let items = split[1]
             .split("Starting items: ")
-            .skip(1)
-            .next()
+            .nth(1)
             .unwrap()
             .split(", ")
-            .map(|s| parse::<u128>(s))
+            .map(parse::<u128>)
             .collect();
 
         let operation = Operation::from(
             split[2]
                 .split("Operation: new = old ")
-                .skip(1)
-                .next()
+                .nth(1)
                 .unwrap(),
         );
 
         let test_div = parse::<u128>(
             split[3]
                 .split("Test: divisible by ")
-                .skip(1)
-                .next()
+                .nth(1)
                 .unwrap(),
         );
         let if_true = parse::<usize>(
             split[4]
                 .split("If true: throw to monkey ")
-                .skip(1)
-                .next()
+                .nth(1)
                 .unwrap(),
         );
         let if_false = parse::<usize>(
             split[5]
                 .split("If false: throw to monkey ")
-                .skip(1)
-                .next()
+                .nth(1)
                 .unwrap(),
         );
 

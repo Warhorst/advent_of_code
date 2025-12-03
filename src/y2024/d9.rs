@@ -10,7 +10,7 @@ pub fn solve_a(input: &str) -> usize {
             true => File(i / 2),
             false => Empty
         }, amount))
-        .flat_map(|(entry, amount)| (0..amount).into_iter().map(move |_| entry))
+        .flat_map(|(entry, amount)| (0..amount).map(move |_| entry))
         .collect::<Vec<_>>();
 
     compress(&mut file_system);
@@ -26,7 +26,7 @@ pub fn solve_a(input: &str) -> usize {
         .sum()
 }
 
-fn compress(file_system: &mut Vec<Entry>) {
+fn compress(file_system: &mut [Entry]) {
     let mut head = 0;
     let mut tail = file_system.len() - 1;
 
@@ -62,7 +62,7 @@ pub fn solve_b(input: &str) -> usize {
 
     file_system
         .into_iter()
-        .flat_map(|(entry, amount)| (0..amount).into_iter().map(move |_| entry))
+        .flat_map(|(entry, amount)| (0..amount).map(move |_| entry))
         .enumerate()
         .filter_map(|(i, e)| match e {
             File(id) => Some((i, id)),
@@ -86,7 +86,6 @@ fn compress_whole_files(file_system: &mut Vec<(Entry, usize)>) {
 
         // find an empty spot from the beginning of the file system with enough space for the current file block
         let index_opt = (0..cur_file_index)
-            .into_iter()
             .find(|i| if let ((Empty, amount_a), (File(_), amount_b)) = (file_system[*i], file_system[cur_file_index]) {
                 amount_a >= amount_b
             } else {

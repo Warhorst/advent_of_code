@@ -107,7 +107,7 @@ impl Plot {
             .flat_map(|pos| pos
                 .cardinal_neighbours_with_directions()
                 .into_iter()
-                .filter(|(n, _)| !self.positions.contains(&n))
+                .filter(|(n, _)| !self.positions.contains(n))
                 .map(|(n, d)| Side::new(d, n))
             )
             .collect::<Vec<_>>();

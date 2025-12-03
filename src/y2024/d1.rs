@@ -24,7 +24,7 @@ pub fn solve_a(input: &str) -> isize {
     right.sort();
 
     left.into_iter()
-        .zip(right.into_iter())
+        .zip(right)
         .map(|(l, r)| (l - r).abs())
         .sum()
 }

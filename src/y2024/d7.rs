@@ -8,7 +8,7 @@ pub fn solve_a(input: &str) -> usize {
     input
         .lines()
         .map(|line| Input::from_str(line).unwrap())
-        .filter(|input| fulfills_equation_2_ops(input))
+        .filter(fulfills_equation_2_ops)
         .map(|input| input.result)
         .sum()
 }
@@ -51,7 +51,7 @@ pub fn solve_b(input: &str) -> usize {
         .lines()
         .par_bridge() // rayon for speed
         .map(|line| Input::from_str(line).unwrap())
-        .filter(|input| fulfills_equation_3_ops(input))
+        .filter(fulfills_equation_3_ops)
         .map(|input| input.result)
         .sum()
 }
@@ -118,7 +118,7 @@ impl FromStr for Input {
             .split(" ")
             .map(|s| s.trim())
             .filter(|s| !s.is_empty())
-            .map(|s| parse(s))
+            .map(parse)
             .collect();
 
         Ok(Input {

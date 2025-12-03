@@ -54,9 +54,7 @@ impl <T> From<&str> for TileMap<T> where T: From<char> {
 impl <T> Display for TileMap<T> where T: Copy + Into<char> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let content = (0..self.height)
-            .into_iter()
             .map(|y| (0..self.width)
-                .into_iter()
                 .map(|x| self.get(p!(x, y)))
                 .map(Into::into)
                 .join("")
@@ -74,9 +72,7 @@ impl <T> TileMap<T> where T: Copy {
         height: usize
     ) -> Self {
         let tiles = (0..width)
-            .into_iter()
             .flat_map(|x| (0..height)
-                .into_iter()
                 .map(move |y| (p!(x, y), init))
             )
             .collect();
@@ -87,18 +83,16 @@ impl <T> TileMap<T> where T: Copy {
     }
 
     pub fn get(&self, pos: Position) -> T {
-        *self.tiles.get(&pos).expect(format!("The tile at position {:?} should exist", pos).as_str())
+        *self.tiles.get(&pos).unwrap_or_else(|| panic!("The tile at position {pos:?} should exist"))
     }
 
     pub fn try_get(&self, pos: Position) -> Option<T> {
-        self.tiles.get(&pos).map(|t| *t)
+        self.tiles.get(&pos).copied()
     }
 
     pub fn rows(&self) -> impl IntoIterator<Item=Line<T>> + '_ {
         (0..self.height)
-            .into_iter()
             .map(|y| Line::new((0..self.width)
-                .into_iter()
                 .map(|x| self.get(p!(x, y)))
                 .collect())
             )
@@ -106,9 +100,7 @@ impl <T> TileMap<T> where T: Copy {
 
     pub fn columns(&self) -> impl IntoIterator<Item=Line<T>> + '_ {
         (0..self.width)
-            .into_iter()
             .map(|x| Line::new((0..self.height)
-                .into_iter()
                 .map(|y| self.get(p!(x, y)))
                 .collect())
             )
@@ -164,20 +156,9 @@ mod tests {
         }
     }
 
-    impl Into<char> for Tile {
-        fn into(self) -> char {
-            match self {
-                A => 'A',
-                B => 'B',
-                C => 'C'
-            }
-        }
-    }
-
     #[test]
     fn works() {
         let s  = "ABA\nBAC\nCAB";
-        let board = TileMap::<Tile>::from(s);
-        println!("{board}")
+        let _ = TileMap::<Tile>::from(s);
     }
 }

@@ -11,8 +11,7 @@ pub fn solve_a(input: &str) -> usize {
 
     let distances = input
         .lines()
-        .skip(1)
-        .next()
+        .nth(1)
         .unwrap()
         .replace("Distance:", "")
         .split(" ")
@@ -46,8 +45,7 @@ pub fn solve_b(input: &str) -> usize {
 
     let distance = input
         .lines()
-        .skip(1)
-        .next()
+        .nth(1)
         .unwrap()
         .replace("Distance:", "")
         .split(" ")

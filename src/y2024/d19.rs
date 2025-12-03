@@ -148,7 +148,7 @@ impl Pattern {
 
     fn index_matches_towel(&self, index: usize, towel: &Towel) -> bool {
         if index + towel.len() <= self.len() {
-            (0..towel.len()).into_iter().all(|i| self.colors[index + i] == towel.colors[i])
+            (0..towel.len()).all(|i| self.colors[index + i] == towel.colors[i])
         } else {
             false
         }

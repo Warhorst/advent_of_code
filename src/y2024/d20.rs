@@ -7,11 +7,11 @@ use rayon::prelude::*;
 pub fn solve_a(input: &str) -> usize {
     // I added the target threshold to the puzzle input
     let threshold = parse(input.lines().next().unwrap());
-    let board_input = input.lines().skip(1).map(|line|line).join("\n");
+    let board_input = input.lines().skip(1).join("\n");
     let board = Board::<Tile>::from(board_input.as_str());
 
-    let start = board.get_positions_of(&Start).into_iter().next().unwrap();
-    let goal = board.get_positions_of(&End).into_iter().next().unwrap();
+    let start = board.get_positions_of(&Start).next().unwrap();
+    let goal = board.get_positions_of(&End).next().unwrap();
 
     // get the best path and its len when using no cheats
     let (path, len) = astar(
@@ -36,10 +36,10 @@ pub fn solve_a(input: &str) -> usize {
 pub fn solve_b(input: &str) -> usize {
     // I added the target threshold to the puzzle input
     let threshold = parse(input.lines().next().unwrap());
-    let board_input = input.lines().skip(1).map(|line|line).join("\n");
+    let board_input = input.lines().skip(1).join("\n");
     let board = Board::<Tile>::from(board_input.as_str());
-    let start = board.get_positions_of(&Start).into_iter().next().unwrap();
-    let goal = board.get_positions_of(&End).into_iter().next().unwrap();
+    let start = board.get_positions_of(&Start).next().unwrap();
+    let goal = board.get_positions_of(&End).next().unwrap();
 
     // get the best path and its len when using no cheats
     let (path, len) = astar(
@@ -63,7 +63,7 @@ pub fn solve_b(input: &str) -> usize {
 
 fn count_cheats(
     shortest_path_len: usize,
-    shortest_path: &Vec<Position>,
+    shortest_path: &[Position],
     max_cheat_len: usize,
     threshold: usize,
 ) -> usize {
@@ -79,7 +79,6 @@ fn count_cheats(
 
     // go from the min cheat length (always 2) to the max cheat length provided by the caller
     (2..=max_cheat_len)
-        .into_iter()
         // rayon for speed
         .par_bridge()
         // iterate over the whole shortest path
@@ -88,7 +87,6 @@ fn count_cheats(
             .enumerate()
             // look ahead from the current position
             .flat_map(|(i, pos)| ((i + 1)..shortest_path.len())
-                .into_iter()
                 .map(|j| (j, shortest_path[j]))
                 // only consider positions which have a manhattan distance of cheat
                 .filter(move |(_, path_pos)| (pos.manhattan_distance(path_pos) as usize) == cheat)

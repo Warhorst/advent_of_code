@@ -35,7 +35,6 @@ pub fn solve_a(input: &str) -> usize {
     )
         .into_iter()
         .map(|r| (0..100)
-            .into_iter()
             .fold(r.start, |acc, _| {
                 let mut new_pos = acc + r.vel;
 

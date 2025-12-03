@@ -23,8 +23,8 @@ pub fn solve_a(input: &str) -> usize {
         .cardinal_neighbours_with_directions()
         .into_iter()
         .filter(|(pos, _)| position_in_bounds(*pos, width, height))
-        .filter(|(pos, dir)| tile_map.get(&pos).unwrap().next_direction(*dir).is_some())
-        .next().unwrap();
+        .find(|(pos, dir)| tile_map.get(pos).unwrap().next_direction(*dir).is_some())
+        .unwrap();
 
     let mut count = 1;
 
@@ -35,8 +35,8 @@ pub fn solve_a(input: &str) -> usize {
             .filter(|(pos, _)| position_in_bounds(*pos, width, height))
             .filter(|(_, dir)| tile_map.get(&current_pos).unwrap().possible_directions().contains(dir))
             .filter(|(_, dir)| reverse(dir) != current_direction)
-            .filter(|(pos, dir)| tile_map.get(&pos).unwrap().next_direction(*dir).is_some())
-            .next().unwrap();
+            .find(|(pos, dir)| tile_map.get(pos).unwrap().next_direction(*dir).is_some())
+            .unwrap();
 
         count += 1
     }
@@ -66,8 +66,8 @@ pub fn solve_b(input: &str) -> usize {
         .cardinal_neighbours_with_directions()
         .into_iter()
         .filter(|(pos, _)| position_in_bounds(*pos, width, height))
-        .filter(|(pos, dir)| tile_map.get(&pos).unwrap().next_direction(*dir).is_some())
-        .next().unwrap();
+        .find(|(pos, dir)| tile_map.get(pos).unwrap().next_direction(*dir).is_some())
+        .unwrap();
 
     loop_positions.push(current_pos);
 
@@ -78,8 +78,8 @@ pub fn solve_b(input: &str) -> usize {
             .filter(|(pos, _)| position_in_bounds(*pos, width, height))
             .filter(|(_, dir)| tile_map.get(&current_pos).unwrap().possible_directions().contains(dir))
             .filter(|(_, dir)| reverse(dir) != current_direction)
-            .filter(|(pos, dir)| tile_map.get(&pos).unwrap().next_direction(*dir).is_some())
-            .next().unwrap();
+            .find(|(pos, dir)| tile_map.get(pos).unwrap().next_direction(*dir).is_some())
+            .unwrap();
 
         loop_positions.push(current_pos);
     }

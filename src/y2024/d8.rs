@@ -8,7 +8,6 @@ pub fn solve_a(input: &str) -> usize {
     let mut freq_pos_map = HashMap::new();
     board
         .tiles_and_positions()
-        .into_iter()
         .filter_map(|(tile, pos)| match tile {
             Tile::Antenna(freq) => Some((*freq, pos)),
             Tile::Empty => None
@@ -40,7 +39,6 @@ pub fn solve_b(input: &str) -> usize {
     let mut freq_pos_map = HashMap::new();
     board
         .tiles_and_positions()
-        .into_iter()
         .filter_map(|(tile, pos)| match tile {
             Tile::Antenna(freq) => Some((*freq, pos)),
             Tile::Empty => None

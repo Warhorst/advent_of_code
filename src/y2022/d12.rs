@@ -33,7 +33,7 @@ pub fn solve_b(input: &str) -> usize {
     let board = Board::<Tile>::from(input);
 
     board
-        .get_positions_of(&Tile::Step('a' as u8))
+        .get_positions_of(&Tile::Step(b'a'))
         .filter_map(|start| {
             let end = board.get_positions_of(&Tile::End).next().unwrap();
 
@@ -75,9 +75,9 @@ enum Tile {
 impl Tile {
     fn height(&self) -> u8 {
         match self {
-            Tile::Start => 'a' as u8 - 1,
+            Tile::Start => b'a' - 1,
             Tile::Step(v) => *v,
-            Tile::End => 'z' as u8 + 1,
+            Tile::End => b'z' + 1,
         }
     }
 }

@@ -5,7 +5,7 @@ use Instruction::*;
 pub fn solve_a(input: &str) -> isize {
     let mut instructions = input
         .lines()
-        .map(|line| Instruction::from_regex(line))
+        .map(Instruction::from_regex)
         .collect::<Vec<_>>();
     instructions.reverse();
 
@@ -42,7 +42,7 @@ pub fn solve_a(input: &str) -> isize {
 pub fn solve_b(input: &str) -> Board<Tile> {
     let mut instructions = input
         .lines()
-        .map(|line| Instruction::from_regex(line))
+        .map(Instruction::from_regex)
         .collect::<Vec<_>>();
     let mut board: Board<Tile> = Board::new(40, 6, || Tile::Dark);
     instructions.reverse();

@@ -7,7 +7,7 @@ pub fn solve_a(input: &str) -> usize {
     let mut split = input.split("\n\n");
 
     let mut board = Board::<TileA>::from(split.next().unwrap());
-    let mut bot_pos = board.get_positions_of(&Bot).into_iter().next().unwrap();
+    let mut bot_pos = board.get_positions_of(&Bot).next().unwrap();
 
     split
         .next()
@@ -67,7 +67,6 @@ pub fn solve_a(input: &str) -> usize {
 
     board
         .tiles_and_positions()
-        .into_iter()
         .filter_map(|(t, p)| match *t == Box {
             true => Some(p),
             false => None
@@ -100,7 +99,7 @@ pub fn solve_b(input: &str) -> usize {
         .join("\n");
 
     let mut board = Board::<TileB>::from(expanded_input.as_str());
-    let mut bot_pos = board.get_positions_of(&Bot).into_iter().next().unwrap();
+    let mut bot_pos = board.get_positions_of(&Bot).next().unwrap();
 
     split
         .next()
@@ -183,7 +182,6 @@ pub fn solve_b(input: &str) -> usize {
 
     board
         .tiles_and_positions()
-        .into_iter()
         .filter_map(|(t, p)| match *t == BoxL {
             true => Some(p),
             false => None
@@ -320,20 +318,6 @@ impl From<char> for TileB {
             '#' => Wall,
             '.' => Free,
             _ => unreachable!()
-        }
-    }
-}
-
-impl Into<char> for TileB {
-    fn into(self) -> char {
-        use TileB::*;
-
-        match self {
-            Bot => '@',
-            BoxL => '[',
-            BoxR => ']',
-            Wall => '#',
-            Free => '.',
         }
     }
 }

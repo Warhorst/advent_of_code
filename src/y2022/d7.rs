@@ -54,9 +54,7 @@ impl StateMachine {
     }
     
     fn get_dir_sizes(mut self) -> HashMap<Path, usize> {
-        while !self.lines.is_empty() {
-            let line = self.lines.pop().unwrap();
-            
+        while let Some(line) = self.lines.pop() {
             match line {
                 CdDir(dir) => {
                     if dir.contains("/") {

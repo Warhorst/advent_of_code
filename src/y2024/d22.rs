@@ -4,8 +4,8 @@ use std::collections::HashMap;
 pub fn solve_a(input: &str) -> usize {
     input
         .lines()
-        .map(|line| parse::<usize>(line))
-        .map(|num| (0..2000).into_iter().fold(num, |acc, _| calculate_next_number(acc)))
+        .map(parse::<usize>)
+        .map(|num| (0..2000).fold(num, |acc, _| calculate_next_number(acc)))
         .sum()
 }
 
@@ -15,10 +15,9 @@ pub fn solve_b(input: &str) -> usize {
 
     input
         .lines()
-        .map(|line| parse::<usize>(line))
+        .map(parse::<usize>)
         // calculate the next 2000 numbers, prices and the diffs
         .map(|num| (0..2000)
-            .into_iter()
             .fold((num, vec![get_price(num)], vec![]), |(current_num, mut prices, mut diffs), _| {
                 let next = calculate_next_number(current_num);
                 prices.push(get_price(next));
@@ -35,10 +34,8 @@ pub fn solve_b(input: &str) -> usize {
             .enumerate()
             .fold(HashMap::new(), |mut map, (i, pattern)| {
                 // use this map to only use the first occurrence
-                if !map.contains_key(&pattern) {
-                    // the price index is 3 (the index of the end of the window) + 1 (because the diffs are one element shorter than the prices)
-                    map.insert(pattern, prices[i + 4]);
-                }
+                // the price index is 3 (the index of the end of the window) + 1 (because the diffs are one element shorter than the prices)
+                map.entry(pattern).or_insert(prices[i + 4]);
                 map
             })
         )
@@ -57,8 +54,7 @@ pub fn solve_b(input: &str) -> usize {
 fn calculate_next_number(current: usize) -> usize {
     let a = prune(mix(current * 64, current));
     let b = prune(mix(a / 32, a));
-    let c = prune(mix(b * 2048, b));
-    c
+    prune(mix(b * 2048, b))
 }
 
 fn mix(a: usize, b: usize) -> usize {

@@ -18,7 +18,7 @@ pub fn solve_a(input: &str) -> usize {
 
     updates
         .lines()
-        .map(|line| line.split(",").map(|e| parse::<usize>(e)).collect::<Vec<_>>())
+        .map(|line| line.split(",").map(parse::<usize>).collect::<Vec<_>>())
         .filter(|update| correctly_ordered(&orderings, update))
         .map(|update| update[update.len() / 2])
         .sum()
@@ -41,7 +41,7 @@ pub fn solve_b(input: &str) -> usize {
 
     updates
         .lines()
-        .map(|line| line.split(",").map(|e| parse::<usize>(e)).collect::<Vec<_>>())
+        .map(|line| line.split(",").map(parse::<usize>).collect::<Vec<_>>())
         .filter(|update| !correctly_ordered(&orderings, update))
         .map(|mut update| {
             update.sort_by(|a, b| {

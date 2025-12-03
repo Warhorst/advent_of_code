@@ -18,7 +18,7 @@ pub fn solve_b(input: &str) -> u128 {
             prize_location: (10000000000000 + i.prize_location.0, 10000000000000 + i.prize_location.1)
         })
         .map(|i| i.min_tokens_to_win_b())
-        .fold(0, |acc, item| acc + item)
+        .sum::<u128>()
 }
 
 fn parse_input(input: &str) -> Vec<Input> {
@@ -64,8 +64,7 @@ struct Input {
 impl Input {
     fn min_tokens_to_win_a(&self) -> Option<usize> {
         (0..=100)
-            .into_iter()
-            .flat_map(|a| (0..=100).into_iter().map(move |b| (a, b)))
+            .flat_map(|a| (0..=100).map(move |b| (a, b)))
             .filter(|(a, b)| a * self.button_a.0 + b * self.button_b.0 == self.prize_location.0)
             .filter(|(a, b)| a * self.button_a.1 + b * self.button_b.1 == self.prize_location.1)
             .map(|(a, b)| a * 3 + b)

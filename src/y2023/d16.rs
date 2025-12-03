@@ -17,10 +17,8 @@ pub fn solve_b(input: &str) -> usize {
     let tile_map = TileMap::<Tile>::from(input);
 
     let positions_and_directions = (0..tile_map.width)
-        .into_iter()
         .flat_map(|x| [(p!(x, 0), YP), (p!(x, tile_map.height - 1), YM)])
         .chain((0..tile_map.height)
-            .into_iter()
             .flat_map(|y| [(p!(0, y), XP), (p!(tile_map.width - 1, y), XM)])
         )
         .collect::<Vec<_>>();
@@ -253,18 +251,6 @@ impl From<char> for Tile {
             '-' => HSplitter,
             '|' => VSplitter,
             _ => panic!("invalid char")
-        }
-    }
-}
-
-impl Into<char> for Tile {
-    fn into(self) -> char {
-        match self {
-            Empty => '.',
-            RMirror => '/',
-            LMirror => '\\',
-            HSplitter => '-',
-            VSplitter => '|'
         }
     }
 }

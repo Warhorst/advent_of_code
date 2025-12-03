@@ -15,7 +15,7 @@ pub fn solve_a(input: &str) -> usize {
                 .any(|b| *a == b)
             )
         )
-        .map(|c| value(c))
+        .map(value)
         .sum()
 }
 
@@ -32,7 +32,7 @@ pub fn solve_b(input: &str) -> usize {
             // bitwise & is the intersection operator
             (&(&a & &b) & &c).into_iter().next().unwrap()
         })
-        .map(|c| value(c))
+        .map(value)
         .sum()
 }
 

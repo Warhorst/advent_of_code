@@ -7,9 +7,9 @@ pub fn solve_a(input: &str) -> usize {
     input
         .split(" ")
         .filter(|s| !s.trim().is_empty())
-        .map(|s| parse::<usize>(s))
+        .map(parse::<usize>)
         .map(|num| get_resulting_amount(num, 25, &mut cache))
-        .fold(0usize, |acc, item| acc + item)
+        .sum::<usize>()
 }
 
 /// From Past-Me: The trick to solving this one was to ask myself "how many different numbers do actually occur?",
@@ -21,7 +21,7 @@ pub fn solve_b(input: &str) -> u128 {
     input
         .split(" ")
         .filter(|s| !s.trim().is_empty())
-        .map(|s| parse::<usize>(s))
+        .map(parse::<usize>)
         .map(|num| get_resulting_amount(num, 75, &mut cache))
         .fold(0u128, |acc, item| acc + item as u128)
 }

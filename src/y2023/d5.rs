@@ -47,7 +47,6 @@ fn collect_mappings(input: &str) -> Vec<Mapping> {
 
     input
         .lines()
-        .into_iter()
         .skip(2)
         .for_each(|line| {
             if line.is_empty() {
@@ -65,7 +64,7 @@ fn collect_mappings(input: &str) -> Vec<Mapping> {
     mappings
 }
 
-fn get_destination(mappings: &Vec<Mapping>, seed: usize) -> usize {
+fn get_destination(mappings: &[Mapping], seed: usize) -> usize {
     let mut destination = seed;
 
     mappings.iter().for_each(|map| destination = map.map_source(destination));

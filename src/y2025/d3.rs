@@ -1,14 +1,14 @@
 pub fn solve_a(input: &str) -> usize {
     input
         .lines()
-        .map(|line| largest_line_value::<2>(line))
+        .map(largest_line_value::<2>)
         .sum()
 }
 
 pub fn solve_b(input: &str) -> usize {
     input
         .lines()
-        .map(|line| largest_line_value::<12>(line))
+        .map(largest_line_value::<12>)
         .sum()
 }
 
@@ -20,9 +20,8 @@ fn largest_line_value<const C: usize>(line: &str) -> usize {
 
     let mut selection = [0; C];
     let mut current_index = 0;
-    let mut count = 0;
 
-    for i in (1..=C).rev() {
+    for (count, i) in (1..=C).rev().enumerate() {
         let (index, digit) = digits
             .iter()
             .enumerate()
@@ -32,7 +31,6 @@ fn largest_line_value<const C: usize>(line: &str) -> usize {
             .unwrap();
 
         selection[count] = *digit;
-        count += 1;
         current_index = index + 1;
     }
 

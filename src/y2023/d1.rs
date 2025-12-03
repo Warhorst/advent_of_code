@@ -14,7 +14,7 @@ pub fn solve_a(input: &str) -> usize {
 pub fn solve_b(input: &str) -> usize {
     input
         .lines()
-        .map(|line| get_line_numbers(line))
+        .map(get_line_numbers)
         .map(|numbers| format!("{}{}", numbers.first().unwrap(), numbers.last().unwrap()).parse::<usize>().unwrap())
         .sum()
 }

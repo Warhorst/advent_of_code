@@ -19,9 +19,9 @@ pub fn solve_a(input: &str) -> usize {
             dial += num;
 
             if dial < 0 {
-                dial = dial + 100;
+                dial += 100;
             } else if dial > 99 {
-                dial = dial - 100;
+                dial -= 100;
             }
 
             if dial == 0 {
