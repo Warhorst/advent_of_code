@@ -56,6 +56,11 @@ In rare cases, I needed external help to solve a puzzle. I credit the source in 
     - [Permutations](#permutations)
   - [8](https://adventofcode.com/2024/day/8) ([Code](./src/y2024/d8.rs)): Handle relations between antennas on a map
     - [Board](#board)
+  - [9](https://adventofcode.com/2024/day/9) ([Code](./src/y2024/d9.rs)): Compress and create the checksum of a "file system" based on a disk map
+  - [10](https://adventofcode.com/2024/day/10) ([Code](./src/y2024/d10.rs)): Find trails on a mountain based on a heightmap
+    - [Board](#board)
+  - [11](https://adventofcode.com/2024/day/11) ([Code](./src/y2024/d11.rs)): Count the number of stones which multiply after each iteration based on a set of rules
+    - [Dynamic Programming](#dynamic-programming)
 - 2025
   - [1](https://adventofcode.com/2025/day/1) ([Code](./src/y2025/d1.rs)): Simulate a safe dial
   - [2](https://adventofcode.com/2025/day/2) ([Code](./src/y2025/d2.rs)): Determine if a string consists of repeating patterns
@@ -209,3 +214,9 @@ which depend on the puzzle. Often, there is some criteria which filters many of 
 - Be really fast. Sometimes, even large permutations can be iterated through in acceptable time if the performed operation can be executed quickly.
 Using libraries like [rayon](https://github.com/rayon-rs/rayon) can also help to increase parallelization.
 
+
+### Dynamic Programming
+The solution involves the usage of [Dynamic Programming](https://en.wikipedia.org/wiki/Dynamic_programming), which means splitting the problem
+into sub-problems and solving them recursively.
+
+This is often acompanied by [Memoization](https://en.wikipedia.org/wiki/Memoization), which is just a fancy term for "storing interim results in a cache (like a HashMap)".
