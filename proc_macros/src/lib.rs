@@ -2,6 +2,8 @@ mod from_regex;
 mod execute;
 mod tile;
 
+// todo cool idea: create a memoize macro which transforms a function into a memoized version (and maybe apply this macro on 2024 d11)
+
 use proc_macro::TokenStream;
 
 /// This macro generates and executes code to run the puzzle for the given day.
