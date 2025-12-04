@@ -61,6 +61,8 @@ In rare cases, I needed external help to solve a puzzle. I credit the source in 
   - [2](https://adventofcode.com/2025/day/2) ([Code](./src/y2025/d2.rs)): Determine if a string consists of repeating patterns
   - [3](https://adventofcode.com/2025/day/3) ([Code](./src/y2025/d3.rs)): Find the combination of digits which form the largest value
     - [Permutations](#permutations)
+  - [4](https://adventofcode.com/2025/day/4) ([Code](./src/y2025/d4.rs)): Filter tiles on a board based on their neighbours
+    - [Board](#board)
 
 ## Problems and Techniques Explained
 ### Complex Input Parsing
