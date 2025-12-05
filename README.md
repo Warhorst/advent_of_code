@@ -61,6 +61,11 @@ In rare cases, I needed external help to solve a puzzle. I credit the source in 
     - [Board](#board)
   - [11](https://adventofcode.com/2024/day/11) ([Code](./src/y2024/d11.rs)): Count the number of stones which multiply after each iteration based on a set of rules
     - [Dynamic Programming](#dynamic-programming)
+  - [12](https://adventofcode.com/2024/day/12) ([Code](./src/y2024/d12.rs)): Determine the sides of randomly shaped areas (might also be solvable with polygons)
+  - [13](https://adventofcode.com/2024/day/13) ([Code](./src/y2024/d13.rs)): Solve a given set of linear equations (If I understand this one day, I could create a section regarding linear algebra)
+  - [14](https://adventofcode.com/2024/day/14) ([Code](./src/y2024/d14.rs)): Move robots around a board based on a given set of parameters
+    - [Board](#board)
+    - [Visualization](#visualization)
 - 2025
   - [1](https://adventofcode.com/2025/day/1) ([Code](./src/y2025/d1.rs)): Simulate a safe dial
   - [2](https://adventofcode.com/2025/day/2) ([Code](./src/y2025/d2.rs)): Determine if a string consists of repeating patterns
@@ -221,3 +226,23 @@ The solution involves the usage of [Dynamic Programming](https://en.wikipedia.or
 into sub-problems and solving them recursively.
 
 This is often acompanied by [Memoization](https://en.wikipedia.org/wiki/Memoization), which is just a fancy term for "storing interim results in a cache (like a HashMap)".
+
+
+### Visualization
+The solution involves rendering something and observing the solution or parts of the solution. Examples are:
+- rendering ascii art to the console
+- rendering a graph, shape, etc. using external software
+
+There are rare cases where the puzzle expects the human solving it to interpret the visualized output and create the solution input from it. For example,
+one puzzle renders letters to the console, and the puzzle expects the rendered output interpreted as a string.
+
+These puzzles can be hard to automate. One (really slow) approach is to use the contains_shape method of the Board:
+
+```rust
+let shape = Shape::from(shape_string);
+
+if board.contains_shape(shape) {
+  // solved
+}
+  
+```
