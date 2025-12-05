@@ -1,7 +1,4 @@
-use colored::Color::Black;
 use geo::{Contains, Coord, LineString, point, Polygon};
-
-use Tile::*;
 
 use crate::aoc_lib::*;
 
@@ -130,22 +127,6 @@ impl Dig {
 
         Dig {
             length, direction
-        }
-    }
-}
-
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-enum Tile {
-    Trench(Color),
-    Ground,
-}
-
-impl From<char> for Tile {
-    fn from(value: char) -> Self {
-        match value {
-            '#' => Trench(Black),
-            '.' => Ground,
-            _ => panic!("invalid")
         }
     }
 }
