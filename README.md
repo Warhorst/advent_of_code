@@ -68,6 +68,7 @@ In rare cases, I needed external help to solve a puzzle. I credit the source in 
     - [Permutations](#permutations)
   - [4](https://adventofcode.com/2025/day/4) ([Code](./src/y2025/d4.rs)): Filter tiles on a board based on their neighbours
     - [Board](#board)
+  - [5](https://adventofcode.com/2025/day/5) ([Code](./src/y2025/d5.rs)): Return the amount of elements in a given list of ranges
 
 ## Problems and Techniques Explained
 ### Complex Input Parsing
