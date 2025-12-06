@@ -58,7 +58,7 @@ fn get_resulting_amount(num: usize, current_depth: usize, cache: &mut HashMap<(u
 fn try_split_num(num: usize) -> Option<(usize, usize)> {
     let places = num.checked_ilog10().unwrap_or(0) + 1;
 
-    if places % 2 == 0 {
+    if places.is_multiple_of(2) {
         let pow = 10_usize.pow(places / 2);
         let left = num / pow;
         let right = num % pow;

@@ -90,10 +90,8 @@ fn successors_ultra<'a>(
                 if w.iter().any(|wd| *wd != w[3]) && w[3] != dir {
                     return None
                 }
-            } else if let Some(d) = prev_dirs.last() {
-                if *d != dir {
-                    return None
-                }
+            } else if let Some(d) = prev_dirs.last() && *d != dir {
+                return None
             }
 
             if prev_dirs.len() == 10 && prev_dirs.iter().all(|pd| *pd == dir) {

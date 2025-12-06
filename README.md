@@ -74,6 +74,9 @@ In rare cases, I needed external help to solve a puzzle. I credit the source in 
   - [4](https://adventofcode.com/2025/day/4) ([Code](./src/y2025/d4.rs)): Filter tiles on a board based on their neighbours
     - [Board](#board)
   - [5](https://adventofcode.com/2025/day/5) ([Code](./src/y2025/d5.rs)): Return the amount of elements in a given list of ranges
+  - [6](https://adventofcode.com/2025/day/6) ([Code](./src/y2025/d6.rs)): Perform a math calculation based on a given equation. Part 2 is solved by transforming the input into a board and reading the columns.
+    - [Complex Input Parsing](#complex-input-parsing)
+    - [Board](#board)
 
 ## Problems and Techniques Explained
 ### Complex Input Parsing
