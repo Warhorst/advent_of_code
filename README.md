@@ -80,6 +80,8 @@ In rare cases, I needed external help to solve a puzzle. I credit the source in 
   - [7](https://adventofcode.com/2025/day/7) ([Code](./src/y2025/d7.rs)): Count the times a beam can split when shot through a map and how many different possibilities exist for the beam to travel
     - [Board](#board)
     - [Dynamic Programming](#dynamic-programming)
+  - [8](https://adventofcode.com/2025/day/8) ([Code](./src/y2025/d8.rs)): Find the shortest connections between a given set of positions
+    - [Graph](#graph) (Kruskal's Algorithm)
 
 ## Problems and Techniques Explained
 ### Complex Input Parsing
@@ -252,3 +254,30 @@ if board.contains_shape(shape) {
 }
   
 ```
+### Graph
+The solutions involves interpreting the input as a graph and analyzing it, mostly by using graph algorithms.
+
+The (currently not used) [petgraph](https://docs.rs/petgraph/latest/petgraph/) library might be usable in the future to work with graphs.
+
+The following sections contain some algorithms which are currently used in puzzle solutions.
+
+#### Edges of an undirected graph (without self loops)
+The following code shows how all edges of an undirected graph with no self loops can be determined:
+
+```rust
+let vertices: Vec<Vertex> = ...;
+let num_vertices = vertices.len();
+let num_edges = (num_vertices * (num_vertices - 1)) / 2;
+
+let mut edges = Vec::with_capacity(num_vertices);
+
+for i in 0..num_vertices {
+    for j in i + 1..num_vertices {
+        edges.push((vertices[i], vertices[j]));
+    }
+}
+  
+```
+
+#### Kruskal's Algorithm
+[Kruskal's Algorithm](https://en.wikipedia.org/wiki/Kruskal%27s_algorithm) can be used to find the minimum spanning tree of a graph.
