@@ -1,141 +1,127 @@
-use std::collections::{HashMap, HashSet};
+use std::{cmp::Ordering, collections::HashSet};
 
 use crate::aoc_lib::*;
 
 pub fn solve_a(input: &str) -> usize {
+    // Kruskals algorithm, but limit it to a specific number of iterations (10 in the example, 1000 in the puzzle)
+
     let positions = input.lines().map(Pos::new).collect::<Vec<_>>();
 
-    let mut all_distances = positions
-        .iter()
-        .flat_map(|pos| positions.iter().map(|p| (*pos, *p)))
-        .filter(|pair| pair.0 != pair.1)
-        .map(|pair| (pair, pair.0.distance(&pair.1)))
-        .collect::<HashMap<_, _>>();
+    let mut edges = Vec::with_capacity((positions.len() * (positions.len() - 1)) / 2);
+    for i in 0..positions.len() {
+        for j in i + 1..positions.len() {
+            edges.push((positions[i], positions[j]));
+        }
+    }
+    edges.sort_by(|a, b| a.0.distance(&a.1).partial_cmp(&b.0.distance(&b.1)).unwrap());
 
     let mut circuits: Vec<HashSet<Pos>> = vec![];
-
     for pos in &positions {
         let mut c = HashSet::new();
         c.insert(*pos);
         circuits.push(c);
     }
 
-    // todo add the number of iterations as part of the puzzle input
-    // todo pretty slow
-    for _ in 0..positions.len() {
-        let pair = all_distances
-            .iter()
-            .map(|val| (*val.0, *val.1))
-            .min_by(|a, b| a.1.partial_cmp(&b.1).unwrap())
-            .unwrap()
-            .0;
+    let iterations = if positions.len() == 1000 {
+        // Puzzle
+        1000
+    } else {
+        // example A
+        10
+    };
 
-        all_distances.remove(&pair);
-        all_distances.remove(&(pair.1, pair.0));
-
-        let already_contained = circuits
-            .iter()
-            .any(|c| c.contains(&pair.0) && c.contains(&pair.1));
-
-        if already_contained {
-            continue;
-        }
-
+    for edge in edges.into_iter().take(iterations) {
         let ia = circuits
             .iter()
             .enumerate()
-            .find_map(|(i, c)| if c.contains(&pair.0) { Some(i) } else { None })
+            .find_map(|(i, c)| if c.contains(&edge.0) { Some(i) } else { None })
             .unwrap();
         let ib = circuits
             .iter()
             .enumerate()
-            .find_map(|(i, c)| if c.contains(&pair.1) { Some(i) } else { None })
+            .find_map(|(i, c)| if c.contains(&edge.1) { Some(i) } else { None })
             .unwrap();
 
-        if ia > ib {
-            let a = circuits.remove(ia);
-            let b = circuits.remove(ib);
-            circuits.push(&a | &b);
-        } else {
-            let b = circuits.remove(ib);
-            let a = circuits.remove(ia);
-            circuits.push(&a | &b);
+        match ia.cmp(&ib) {
+            Ordering::Less => {
+                let b = circuits.remove(ib);
+                let a = circuits.get_mut(ia).unwrap();
+                b.into_iter().for_each(|p| {
+                    a.insert(p);
+                });
+            }
+            Ordering::Equal => continue,
+            Ordering::Greater => {
+                let a = circuits.remove(ia);
+                let b = circuits.get_mut(ib).unwrap();
+                a.into_iter().for_each(|p| {
+                    b.insert(p);
+                });
+            }
         }
     }
-
-    // circuits.iter().for_each(|c| println!("{}: {c:?}", c.len()));
 
     let mut lens = circuits.into_iter().map(|c| c.len()).collect::<Vec<_>>();
     lens.sort_by(|a, b| b.cmp(a));
     lens[0] * lens[1] * lens[2]
-    // 42
 }
 
 pub fn solve_b(input: &str) -> usize {
+    // Just Kruskals algorithm
+
     let positions = input.lines().map(Pos::new).collect::<Vec<_>>();
 
-    let mut all_distances = positions
-        .iter()
-        .flat_map(|pos| positions.iter().map(|p| (*pos, *p)))
-        .filter(|pair| pair.0 != pair.1)
-        .map(|pair| (pair, pair.0.distance(&pair.1)))
-        .collect::<HashMap<_, _>>();
+    let mut edges = Vec::with_capacity((positions.len() * (positions.len() - 1)) / 2);
+    for i in 0..positions.len() {
+        for j in i + 1..positions.len() {
+            edges.push((positions[i], positions[j]));
+        }
+    }
+    edges.sort_by(|a, b| a.0.distance(&a.1).partial_cmp(&b.0.distance(&b.1)).unwrap());
 
     let mut circuits: Vec<HashSet<Pos>> = vec![];
-
     for pos in &positions {
         let mut c = HashSet::new();
         c.insert(*pos);
         circuits.push(c);
     }
 
-    // todo holy shit this is even slower
-    let pair = loop {
-        let pair = all_distances
-            .iter()
-            .map(|val| (*val.0, *val.1))
-            .min_by(|a, b| a.1.partial_cmp(&b.1).unwrap())
-            .unwrap()
-            .0;
-
-        all_distances.remove(&pair);
-        all_distances.remove(&(pair.1, pair.0));
-
-        let already_contained = circuits
-            .iter()
-            .any(|c| c.contains(&pair.0) && c.contains(&pair.1));
-
-        if already_contained {
-            continue;
-        }
-
+    for edge in edges {
         let ia = circuits
             .iter()
             .enumerate()
-            .find_map(|(i, c)| if c.contains(&pair.0) { Some(i) } else { None })
+            .find_map(|(i, c)| if c.contains(&edge.0) { Some(i) } else { None })
             .unwrap();
         let ib = circuits
             .iter()
             .enumerate()
-            .find_map(|(i, c)| if c.contains(&pair.1) { Some(i) } else { None })
+            .find_map(|(i, c)| if c.contains(&edge.1) { Some(i) } else { None })
             .unwrap();
 
-        if ia > ib {
-            let a = circuits.remove(ia);
-            let b = circuits.remove(ib);
-            circuits.push(&a | &b);
-        } else {
-            let b = circuits.remove(ib);
-            let a = circuits.remove(ia);
-            circuits.push(&a | &b);
+        match ia.cmp(&ib) {
+            Ordering::Less => {
+                let b = circuits.remove(ib);
+                let a = circuits.get_mut(ia).unwrap();
+                b.into_iter().for_each(|p| {
+                    a.insert(p);
+                });
+            }
+            Ordering::Equal => continue,
+            Ordering::Greater => {
+                let a = circuits.remove(ia);
+                let b = circuits.get_mut(ib).unwrap();
+                a.into_iter().for_each(|p| {
+                    b.insert(p);
+                });
+            }
         }
 
         if circuits.len() == 1 {
-            break pair;
+            return edge.0.x * edge.1.x;
         }
-    };
+    }
 
-    pair.0.x * pair.1.x
+    panic!("A solution should have been found.")
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
