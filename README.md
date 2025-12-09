@@ -82,6 +82,8 @@ In rare cases, I needed external help to solve a puzzle. I credit the source in 
     - [Dynamic Programming](#dynamic-programming)
   - [8](https://adventofcode.com/2025/day/8) ([Code](./src/y2025/d8.rs)): Find the shortest connections between a given set of positions
     - [Graph](#graph) (Kruskal's Algorithm)
+  - [9](https://adventofcode.com/2025/day/9) ([Code](./src/y2025/d9.rs)): Find the largest sqares from a given list of points
+    - [Polygon](#polygon)
 
 ## Problems and Techniques Explained
 ### Complex Input Parsing
@@ -255,7 +257,7 @@ if board.contains_shape(shape) {
   
 ```
 ### Graph
-The solutions involves interpreting the input as a graph and analyzing it, mostly by using graph algorithms.
+The solutions involves interpreting the input as one ore more graphs and analyzing them using graph algorithms.
 
 The (currently not used) [petgraph](https://docs.rs/petgraph/latest/petgraph/) library might be usable in the future to work with graphs.
 
@@ -281,3 +283,9 @@ for i in 0..num_vertices {
 
 #### Kruskal's Algorithm
 [Kruskal's Algorithm](https://en.wikipedia.org/wiki/Kruskal%27s_algorithm) can be used to find the minimum spanning tree of a graph.
+
+
+### Polygon
+The solution involves interpreting the input as one or more polygons and analytzing them using polygon algorithms.
+
+The [geo](https://docs.rs/geo/latest/geo/) is currently in use to provide a polygon struct, which provides common operations.
