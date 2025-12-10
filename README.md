@@ -84,6 +84,9 @@ In rare cases, I needed external help to solve a puzzle. I credit the source in 
     - [Graph](#graph) (Kruskal's Algorithm)
   - [9](https://adventofcode.com/2025/day/9) ([Code](./src/y2025/d9.rs)): Find the largest sqares from a given list of points
     - [Polygon](#polygon)
+  - [10](https://adventofcode.com/2025/day/10) ([Code](./src/y2025/d10.rs)): Find optimal results in a state space
+    - [State Space Search](#state-space-search)
+    - [Linear Programming](#linear-programming)
 
 ## Problems and Techniques Explained
 ### Complex Input Parsing
@@ -220,6 +223,8 @@ match path_res {
 }
 ```
 
+If no heuristic is known, the dijkstra algorithm can be used as well.
+
 ### Permutations
 The solutions involves finding a specific value or values in a given permutation. The problem is that the permutation
 could contain millions or even billions of values.
@@ -288,4 +293,18 @@ for i in 0..num_vertices {
 ### Polygon
 The solution involves interpreting the input as one or more polygons and analytzing them using polygon algorithms.
 
-The [geo](https://docs.rs/geo/latest/geo/) is currently in use to provide a polygon struct, which provides common operations.
+The [geo](https://docs.rs/geo/latest/geo/) library is currently in use to provide a polygon struct, which provides common operations.
+
+
+### State Space Search
+The solution requires to be solved using [State-space search](https://en.wikipedia.org/wiki/State-space_search) algorithms. The input
+contains or implies the state-space, the start, the goal and the transitions.
+
+One possible approach to solve this is interpreting the input as a graph an performing [Pathfinding](#pathfinding) on it.
+
+
+### Linear Programming
+The solution requires to be solved as a [Linear programming](https://en.wikipedia.org/wiki/Linear_programming) or
+[Integer programming](https://en.wikipedia.org/wiki/Integer_programming) problem.
+
+The [microlp](https://github.com/specy/microlp) library can be used for this. An example can be found in [2025 Day 10](./src/y2025/d10.rs).

@@ -2,13 +2,10 @@ use std::collections::HashMap;
 
 use bitarray::BitArray;
 use microlp::{ComparisonOp, LinearExpr, OptimizationDirection, Problem};
-// use nalgebra::{DMatrix, DVector, Vector};
-// use z3::{Optimize, ast::Int};
 
 use crate::aoc_lib::*;
 
 pub fn solve_a(input: &str) -> usize {
-    // https://en.wikipedia.org/wiki/State-space_search
     input.lines().map(Machine::from).map(|m| m.activate()).sum()
 }
 
@@ -116,6 +113,7 @@ impl Machine {
 
     fn set_joltage(&self) -> usize {
         // Solve as a linear programming problem.
+        // As I had no idea how to do this in rust, I followed this solution which uses microlp: https://www.reddit.com/r/adventofcode/comments/1pity70/comment/nta10wc/
 
         let buttons = self
             .buttons
