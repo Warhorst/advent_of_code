@@ -87,6 +87,9 @@ In rare cases, I needed external help to solve a puzzle. I credit the source in 
   - [10](https://adventofcode.com/2025/day/10) ([Code](./src/y2025/d10.rs)): Find optimal results in a state space
     - [State Space Search](#state-space-search)
     - [Linear Programming](#linear-programming)
+  - [11](https://adventofcode.com/2025/day/11) ([Code](./src/y2025/d11.rs)): Find all paths in a given network which fulfill a specific constraint
+    - [Graph](#graph)
+    - [Dynamic Programming](#dynamic-programming)
 
 ## Problems and Techniques Explained
 ### Complex Input Parsing
