@@ -2,6 +2,14 @@ use crate::aoc_lib::*;
 
 pub fn solve_a(input: &str) -> usize {
     // Just try to place all shapes using DFS with backtracking
+    // 
+    // Edit: Well, it seems I fucked up just in the right way. Before writing this
+    // comment, my "solvable" function used the original shapes, not all the variants of them.
+    // This means every problem was officially solvable. However, the filter if all the shapes match at all
+    // was enough to solve the puzzle, as the puzzle is designed to let every shape have its own 3x3-block on the board,
+    // if solvable. (see all the memes on reddit discussing this)
+    // I fixed my solution, and as every shape will have enogh space, it will never try other variants or backtrack,
+    // so as long as I keep the filter, it is solvable in short time.
     
     let problem = Problem::from(input);
 
@@ -37,7 +45,7 @@ fn solveable(
             .for_each(|s_clone| all_shapes.push(s_clone));
     }
 
-    solveable_(shapes, &mut board, 0)
+    solveable_(&all_shapes, &mut board, 0)
 }
 
 fn solveable_(
@@ -46,10 +54,9 @@ fn solveable_(
     index: usize,
 ) -> bool {
     if index == shapes.len() {
+        // All shapes placed
         return true;
     }
-
-    // println!("{index}");
 
     let shape = &shapes[index];
 
@@ -57,7 +64,6 @@ fn solveable_(
         for x in 0..board.width {
             for y in 0..board.height {
                 if can_place(v, board, x, y) {
-                    // println!("placable");
                     place(v, board, x, y);
 
                     if solveable_(shapes, board, index + 1) {
