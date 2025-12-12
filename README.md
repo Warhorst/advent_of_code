@@ -90,6 +90,8 @@ In rare cases, I needed external help to solve a puzzle. I credit the source in 
   - [11](https://adventofcode.com/2025/day/11) ([Code](./src/y2025/d11.rs)): Find all paths in a given network which fulfill a specific constraint
     - [Graph](#graph)
     - [Dynamic Programming](#dynamic-programming)
+  - [12](https://adventofcode.com/2025/day/12) ([Code](./src/y2025/d12.rs)): Place a set of shapes in a given area
+    - [Packing Problems](#packing-problems)
 
 ## Problems and Techniques Explained
 ### Complex Input Parsing
@@ -300,14 +302,24 @@ The [geo](https://docs.rs/geo/latest/geo/) library is currently in use to provid
 
 
 ### State Space Search
-The solution requires to be solved using [State-space search](https://en.wikipedia.org/wiki/State-space_search) algorithms. The input
+The puzzle requires to be solved using [State-space search](https://en.wikipedia.org/wiki/State-space_search) algorithms. The input
 contains or implies the state-space, the start, the goal and the transitions.
 
 One possible approach to solve this is interpreting the input as a graph an performing [Pathfinding](#pathfinding) on it.
 
 
 ### Linear Programming
-The solution requires to be solved as a [Linear programming](https://en.wikipedia.org/wiki/Linear_programming) or
+The puzzle requires to be solved as a [Linear programming](https://en.wikipedia.org/wiki/Linear_programming) or
 [Integer programming](https://en.wikipedia.org/wiki/Integer_programming) problem.
 
 The [microlp](https://github.com/specy/microlp) library can be used for this. An example can be found in [2025 Day 10](./src/y2025/d10.rs).
+
+
+### Packing Problems
+The puzzle requires to be solved as a [packing problem](https://en.wikipedia.org/wiki/Packing_problems). The input defines items and a space
+where these items need to be put. The exact problem and best solution strategy depends on the puzzle.
+
+Subtypes of this are:
+- [Exact Cover](https://en.wikipedia.org/wiki/Exact_cover) (see [Knuths Algorithm X](https://en.wikipedia.org/wiki/Knuth%27s_Algorithm_X) to solve these)
+  - Polyomino tiling puzzles are a variant of Exact Cover, where [Polyominos](https://en.wikipedia.org/wiki/Polyomino) need to be placed exactly on a board
+- [Bin Packing](https://en.wikipedia.org/wiki/Bin_packing_problem )
