@@ -15,83 +15,88 @@ A '-' means a puzzle had no extraordinary problem or required special techniques
 
 In rare cases, I needed external help to solve a puzzle. I credit the source in a code comment on the puzzle solver.
 
-## Puzzle Solutions
-- 2022
-  - [1](https://adventofcode.com/2022/day/1) ([Code](./src/y2022/d1.rs)): -
-  - [2](https://adventofcode.com/2022/day/2) ([Code](./src/y2022/d2.rs)): -
-  - [3](https://adventofcode.com/2022/day/3) ([Code](./src/y2022/d3.rs)): Find the common element in 3 sets using intersections
-    - [Set Operations](#set-operations)
-  - [4](https://adventofcode.com/2022/day/4) ([Code](./src/y2022/d4.rs)): -
-  - [5](https://adventofcode.com/2022/day/5) ([Code](./src/y2022/d5.rs)):
-    - [Complex Input Parsing](#complex-input-parsing)
-    - [Regexes](#regexes)
-  - [6](https://adventofcode.com/2022/day/6) ([Code](./src/y2022/d6.rs)): -
-  - [7](https://adventofcode.com/2022/day/7) ([Code](./src/y2022/d7.rs)): Keeping track of directory sizes using console like output (this might also been solvable with a tree) 
-    - [State Machine](#state-machine)
-    - [Regexes](#regexes)
-  - [8](https://adventofcode.com/2022/day/8) ([Code](./src/y2022/d8.rs)): Transform the input into a board and solve the puzzle using board operations 
-    - [Board](#board)
-  - [9](https://adventofcode.com/2022/day/9) ([Code](./src/y2022/d9.rs)): Move a snake like structure across a board
-  - [10](https://adventofcode.com/2022/day/10) ([Code](./src/y2022/d10.rs)): Simulate a computer and computer screen by parsing a list of commands, updating the state based on them and move a cursor to draw on the screen
-    - [Regexes](#regexes)
-    - [State Machine](#state-machine)
-  - [11](https://adventofcode.com/2022/day/11) ([Code](./src/y2022/d11.rs)): Perform addition and multiplication to increase numbers indefinitily, but only their remainders are important. This puzzle also requires the use of multiple different divisors. 
-    - [Complex Input Parsing](#complex-input-parsing)
-    - [Modular Arithmetic](#modular-arithmethic) 
-  - [12](https://adventofcode.com/2022/day/12) ([Code](./src/y2022/d12.rs)): Find the shortest path up a mountain using a given heightmap
-    - [Pathfinding](#pathfinding)
-- 2024
-  - [1](https://adventofcode.com/2024/day/1) ([Code](./src/y2024/d1.rs)): -
-  - [2](https://adventofcode.com/2024/day/2) ([Code](./src/y2024/d2.rs)): -
-  - [3](https://adventofcode.com/2024/day/3) ([Code](./src/y2024/d3.rs)): Extract and parse commands from a string and perform the commands to multiply numbers.
-    - [Regexes](#regexes)
-  - [4](https://adventofcode.com/2024/day/4) ([Code](./src/y2024/d4.rs)): Given a 2D array of letters, a word and shape search must be performed.
-    - [Board](#board)
-  - [5](https://adventofcode.com/2024/day/5) ([Code](./src/y2024/d5.rs)): Check if a sequence of numbers is correctly ordered, based on a set of rules. Later, sort incorrect sequences using these rules.
-    - [Complex Input Parsing](#complex-input-parsing)
-  - [6](https://adventofcode.com/2024/day/6) ([Code](./src/y2024/d6.rs)): Simulate a robot moving around a board until it leaves the area. Afterwards, find all positions which would cause the robot to get stuck in a loop.
-    - [Board](#board)
-    - [State Machine](#state-machine)
-  - [7](https://adventofcode.com/2024/day/7) ([Code](./src/y2024/d7.rs)): Find the operators which fulfill a given equation.
-    - [Permutations](#permutations)
-  - [8](https://adventofcode.com/2024/day/8) ([Code](./src/y2024/d8.rs)): Handle relations between antennas on a map
-    - [Board](#board)
-  - [9](https://adventofcode.com/2024/day/9) ([Code](./src/y2024/d9.rs)): Compress and create the checksum of a "file system" based on a disk map
-  - [10](https://adventofcode.com/2024/day/10) ([Code](./src/y2024/d10.rs)): Find trails on a mountain based on a heightmap
-    - [Board](#board)
-  - [11](https://adventofcode.com/2024/day/11) ([Code](./src/y2024/d11.rs)): Count the number of stones which multiply after each iteration based on a set of rules
-    - [Dynamic Programming](#dynamic-programming)
-  - [12](https://adventofcode.com/2024/day/12) ([Code](./src/y2024/d12.rs)): Determine the sides of randomly shaped areas (might also be solvable with polygons)
-  - [13](https://adventofcode.com/2024/day/13) ([Code](./src/y2024/d13.rs)): Solve a given set of linear equations (If I understand this one day, I could create a section regarding linear algebra)
-  - [14](https://adventofcode.com/2024/day/14) ([Code](./src/y2024/d14.rs)): Move robots around a board based on a given set of parameters
-    - [Board](#board)
-    - [Visualization](#visualization)
-- 2025
-  - [1](https://adventofcode.com/2025/day/1) ([Code](./src/y2025/d1.rs)): Simulate a safe dial
-  - [2](https://adventofcode.com/2025/day/2) ([Code](./src/y2025/d2.rs)): Determine if a string consists of repeating patterns
-  - [3](https://adventofcode.com/2025/day/3) ([Code](./src/y2025/d3.rs)): Find the combination of digits which form the largest value
-    - [Permutations](#permutations)
-  - [4](https://adventofcode.com/2025/day/4) ([Code](./src/y2025/d4.rs)): Filter tiles on a board based on their neighbours
-    - [Board](#board)
-  - [5](https://adventofcode.com/2025/day/5) ([Code](./src/y2025/d5.rs)): Return the amount of elements in a given list of ranges
-  - [6](https://adventofcode.com/2025/day/6) ([Code](./src/y2025/d6.rs)): Perform a math calculation based on a given equation. Part 2 is solved by transforming the input into a board and reading the columns.
-    - [Complex Input Parsing](#complex-input-parsing)
-    - [Board](#board)
-  - [7](https://adventofcode.com/2025/day/7) ([Code](./src/y2025/d7.rs)): Count the times a beam can split when shot through a map and how many different possibilities exist for the beam to travel
-    - [Board](#board)
-    - [Dynamic Programming](#dynamic-programming)
-  - [8](https://adventofcode.com/2025/day/8) ([Code](./src/y2025/d8.rs)): Find the shortest connections between a given set of positions
-    - [Graph](#graph) (Kruskal's Algorithm)
-  - [9](https://adventofcode.com/2025/day/9) ([Code](./src/y2025/d9.rs)): Find the largest sqares from a given list of points
-    - [Polygon](#polygon)
-  - [10](https://adventofcode.com/2025/day/10) ([Code](./src/y2025/d10.rs)): Find optimal results in a state space
-    - [State Space Search](#state-space-search)
-    - [Linear Programming](#linear-programming)
-  - [11](https://adventofcode.com/2025/day/11) ([Code](./src/y2025/d11.rs)): Find all paths in a given network which fulfill a specific constraint
-    - [Graph](#graph)
-    - [Dynamic Programming](#dynamic-programming)
-  - [12](https://adventofcode.com/2025/day/12) ([Code](./src/y2025/d12.rs)): Place a set of shapes in a given area
-    - [Packing Problems](#packing-problems)
+## 2022 Puzzle Solutions
+*Documentation incomplete*
+
+- [1](https://adventofcode.com/2022/day/1) ([Code](./src/y2022/d1.rs)): -
+- [2](https://adventofcode.com/2022/day/2) ([Code](./src/y2022/d2.rs)): -
+- [3](https://adventofcode.com/2022/day/3) ([Code](./src/y2022/d3.rs)): Find the common element in 3 sets using intersections
+  - [Set Operations](#set-operations)
+- [4](https://adventofcode.com/2022/day/4) ([Code](./src/y2022/d4.rs)): -
+- [5](https://adventofcode.com/2022/day/5) ([Code](./src/y2022/d5.rs)):
+  - [Complex Input Parsing](#complex-input-parsing)
+  - [Regexes](#regexes)
+- [6](https://adventofcode.com/2022/day/6) ([Code](./src/y2022/d6.rs)): -
+- [7](https://adventofcode.com/2022/day/7) ([Code](./src/y2022/d7.rs)): Keeping track of directory sizes using console like output (this might also been solvable with a tree) 
+  - [State Machine](#state-machine)
+  - [Regexes](#regexes)
+- [8](https://adventofcode.com/2022/day/8) ([Code](./src/y2022/d8.rs)): Transform the input into a board and solve the puzzle using board operations 
+  - [Board](#board)
+- [9](https://adventofcode.com/2022/day/9) ([Code](./src/y2022/d9.rs)): Move a snake like structure across a board
+- [10](https://adventofcode.com/2022/day/10) ([Code](./src/y2022/d10.rs)): Simulate a computer and computer screen by parsing a list of commands, updating the state based on them and move a cursor to draw on the screen
+  - [Regexes](#regexes)
+  - [State Machine](#state-machine)
+- [11](https://adventofcode.com/2022/day/11) ([Code](./src/y2022/d11.rs)): Perform addition and multiplication to increase numbers indefinitily, but only their remainders are important. This puzzle also requires the use of multiple different divisors. 
+  - [Complex Input Parsing](#complex-input-parsing)
+  - [Modular Arithmetic](#modular-arithmethic) 
+- [12](https://adventofcode.com/2022/day/12) ([Code](./src/y2022/d12.rs)): Find the shortest path up a mountain using a given heightmap
+  - [Pathfinding](#pathfinding)
+
+## 2024 Puzzle Solutions
+*Documentation incomplete*
+
+- [1](https://adventofcode.com/2024/day/1) ([Code](./src/y2024/d1.rs)): -
+- [2](https://adventofcode.com/2024/day/2) ([Code](./src/y2024/d2.rs)): -
+- [3](https://adventofcode.com/2024/day/3) ([Code](./src/y2024/d3.rs)): Extract and parse commands from a string and perform the commands to multiply numbers.
+  - [Regexes](#regexes)
+- [4](https://adventofcode.com/2024/day/4) ([Code](./src/y2024/d4.rs)): Given a 2D array of letters, a word and shape search must be performed.
+  - [Board](#board)
+- [5](https://adventofcode.com/2024/day/5) ([Code](./src/y2024/d5.rs)): Check if a sequence of numbers is correctly ordered, based on a set of rules. Later, sort incorrect sequences using these rules.
+  - [Complex Input Parsing](#complex-input-parsing)
+- [6](https://adventofcode.com/2024/day/6) ([Code](./src/y2024/d6.rs)): Simulate a robot moving around a board until it leaves the area. Afterwards, find all positions which would cause the robot to get stuck in a loop.
+  - [Board](#board)
+  - [State Machine](#state-machine)
+- [7](https://adventofcode.com/2024/day/7) ([Code](./src/y2024/d7.rs)): Find the operators which fulfill a given equation.
+  - [Permutations](#permutations)
+- [8](https://adventofcode.com/2024/day/8) ([Code](./src/y2024/d8.rs)): Handle relations between antennas on a map
+  - [Board](#board)
+- [9](https://adventofcode.com/2024/day/9) ([Code](./src/y2024/d9.rs)): Compress and create the checksum of a "file system" based on a disk map
+- [10](https://adventofcode.com/2024/day/10) ([Code](./src/y2024/d10.rs)): Find trails on a mountain based on a heightmap
+  - [Board](#board)
+- [11](https://adventofcode.com/2024/day/11) ([Code](./src/y2024/d11.rs)): Count the number of stones which multiply after each iteration based on a set of rules
+  - [Dynamic Programming](#dynamic-programming)
+- [12](https://adventofcode.com/2024/day/12) ([Code](./src/y2024/d12.rs)): Determine the sides of randomly shaped areas (might also be solvable with polygons)
+- [13](https://adventofcode.com/2024/day/13) ([Code](./src/y2024/d13.rs)): Solve a given set of linear equations (If I understand this one day, I could create a section regarding linear algebra)
+- [14](https://adventofcode.com/2024/day/14) ([Code](./src/y2024/d14.rs)): Move robots around a board based on a given set of parameters
+  - [Board](#board)
+  - [Visualization](#visualization)
+
+## 2025 Puzzle Solutions
+- [1](https://adventofcode.com/2025/day/1) ([Code](./src/y2025/d1.rs)): Simulate a safe dial
+- [2](https://adventofcode.com/2025/day/2) ([Code](./src/y2025/d2.rs)): Determine if a string consists of repeating patterns
+- [3](https://adventofcode.com/2025/day/3) ([Code](./src/y2025/d3.rs)): Find the combination of digits which form the largest value
+  - [Permutations](#permutations)
+- [4](https://adventofcode.com/2025/day/4) ([Code](./src/y2025/d4.rs)): Filter tiles on a board based on their neighbours
+  - [Board](#board)
+- [5](https://adventofcode.com/2025/day/5) ([Code](./src/y2025/d5.rs)): Return the amount of elements in a given list of ranges
+- [6](https://adventofcode.com/2025/day/6) ([Code](./src/y2025/d6.rs)): Perform a math calculation based on a given equation. Part 2 is solved by transforming the input into a board and reading the columns.
+  - [Complex Input Parsing](#complex-input-parsing)
+  - [Board](#board)
+- [7](https://adventofcode.com/2025/day/7) ([Code](./src/y2025/d7.rs)): Count the times a beam can split when shot through a map and how many different possibilities exist for the beam to travel
+  - [Board](#board)
+  - [Dynamic Programming](#dynamic-programming)
+- [8](https://adventofcode.com/2025/day/8) ([Code](./src/y2025/d8.rs)): Find the shortest connections between a given set of positions
+  - [Graph](#graph) (Kruskal's Algorithm)
+- [9](https://adventofcode.com/2025/day/9) ([Code](./src/y2025/d9.rs)): Find the largest sqares from a given list of points
+  - [Polygon](#polygon)
+- [10](https://adventofcode.com/2025/day/10) ([Code](./src/y2025/d10.rs)): Find optimal results in a state space
+  - [State Space Search](#state-space-search)
+  - [Linear Programming](#linear-programming)
+- [11](https://adventofcode.com/2025/day/11) ([Code](./src/y2025/d11.rs)): Find all paths in a given network which fulfill a specific constraint
+  - [Graph](#graph)
+  - [Dynamic Programming](#dynamic-programming)
+- [12](https://adventofcode.com/2025/day/12) ([Code](./src/y2025/d12.rs)): Place a set of shapes in a given area
+  - [Packing Problems](#packing-problems)
 
 ## Problems and Techniques Explained
 ### Complex Input Parsing
