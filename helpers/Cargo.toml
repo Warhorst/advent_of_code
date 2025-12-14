@@ -1,0 +1,9 @@
+[package]
+name = "helpers"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+itertools = "0.13.0"
+pad = { git = "https://github.com/Warhorst/pad.git", tag = "1.2.0" }
+regex = "1.11.1"
