@@ -1,6 +1,6 @@
 use std::str::FromStr;
 use regex::Regex;
-use crate::aoc_lib::*;
+use helpers::prelude::*;
 
 pub fn solve_a(input: &str) -> usize {
     let regex = Regex::new(r"mul\((\d+),(\d+)\)").unwrap();

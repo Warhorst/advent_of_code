@@ -3,7 +3,6 @@ use colored::Colorize;
 
 #[allow(dead_code)]
 mod aoc_lib;
-mod y2024;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();

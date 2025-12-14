@@ -1,4 +1,4 @@
-use crate::aoc_lib::*;
+use helpers::prelude::*;
 use itertools::Itertools;
 
 pub fn solve_a(input: &str) -> usize {

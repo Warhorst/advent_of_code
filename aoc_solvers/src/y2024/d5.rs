@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
-use crate::aoc_lib::*;
+use helpers::prelude::*;
 
 pub fn solve_a(input: &str) -> usize {
     let split = input.split("\n\n").collect::<Vec<_>>();

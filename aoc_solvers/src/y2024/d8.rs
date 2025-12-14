@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 use itertools::Itertools;
-use crate::aoc_lib::*;
+use helpers::prelude::*;
 
 pub fn solve_a(input: &str) -> usize {
     let board = Board::<Tile>::from(input);

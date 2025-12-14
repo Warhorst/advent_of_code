@@ -1,7 +1,7 @@
 use std::str::FromStr;
 use rayon::iter::ParallelIterator;
 use rayon::iter::ParallelBridge;
-use crate::aoc_lib::*;
+use helpers::prelude::*;
 
 pub fn solve_a(input: &str) -> usize {
     // solve with simple brute force
