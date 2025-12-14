@@ -35,5 +35,5 @@ pub(super) fn solve(
 }
 
 fn input<A: PuzzleOutput, B: PuzzleOutput>(day: u8) -> Input<A, B> {
-    Input::<A, B>::load(day, 2025)
+    Input::<A, B>::load(day, 2022)
 }

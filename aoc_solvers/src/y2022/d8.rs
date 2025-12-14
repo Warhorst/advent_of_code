@@ -1,5 +1,5 @@
 use std::collections::HashSet;
-use crate::aoc_lib::*;
+use helpers::prelude::*;
 
 pub fn solve_a(input: &str) -> usize {
     let board = Board::from_str_using_mapping(input, |c| c.to_digit(10).unwrap() as usize).unwrap();

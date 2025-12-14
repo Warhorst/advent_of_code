@@ -3,7 +3,6 @@ use colored::Colorize;
 
 #[allow(dead_code)]
 mod aoc_lib;
-mod y2022;
 mod y2023;
 mod y2024;
 
