@@ -4,6 +4,7 @@ use std::fs::read_to_string;
 use std::str::FromStr;
 
 mod y2022;
+mod y2023;
 mod y2025;
 
 pub fn solve(
@@ -13,6 +14,7 @@ pub fn solve(
 ) -> Option<PuzzleResult> {
     match year {
         2022 => y2022::solve(day, run_config),
+        2023 => y2023::solve(day, run_config),
         2025 => y2025::solve(day, run_config),
         _ => None,
     }

@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use itertools::Itertools;
 use Tile::*;
-use crate::aoc_lib::TileMap;
+use helpers::prelude::*;
 
 /// Hint: I added the number of taken steps to my puzzle input (first line)
 pub fn solve_a(input: &str) -> usize {

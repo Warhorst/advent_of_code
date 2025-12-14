@@ -1,6 +1,6 @@
 use proc_macros::tile;
 
-use crate::aoc_lib::*;
+use helpers::prelude::*;
 
 pub fn solve_a(input: &str) -> usize {
     let blocks = input

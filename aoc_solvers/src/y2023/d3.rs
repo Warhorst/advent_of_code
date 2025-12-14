@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::aoc_lib::*;
+use helpers::prelude::*;
 
 pub fn solve_a(input: &str) -> usize {
     let pos_char_map = create_pos_char_map(input);
