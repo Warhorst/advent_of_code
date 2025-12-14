@@ -1,9 +1,6 @@
 use aoc_solvers::{ExampleResult, RealResult, RunConfig};
 use colored::Colorize;
 
-#[allow(dead_code)]
-mod aoc_lib;
-
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     let year = args[1].parse::<usize>().unwrap();
