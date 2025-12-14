@@ -12,6 +12,8 @@ use proc_macro::TokenStream;
 /// Example:
 ///
 /// ```
+/// use proc_macros::tile;
+/// 
 /// #[tile]
 /// enum ChessPiece {
 ///     #[t('K')]

@@ -3,7 +3,7 @@
 ///
 /// Example:
 /// ```
-/// use crate::aoc_lib::string_helpers::remove_prefix;
+/// use helpers::prelude::remove_prefix;
 /// 
 /// let string = "Foo Bar L60";
 ///
@@ -24,7 +24,7 @@ pub fn remove_prefix<'a>(
 ///
 /// Example:
 /// ```
-/// use crate::aoc_lib::string_helpers::remove_suffix;
+/// use helpers::prelude::remove_suffix;
 ///
 /// let string = "L60 Foo Bar";
 ///
@@ -42,7 +42,7 @@ pub fn remove_suffix<'a>(
 
 #[cfg(test)]
 mod tests {
-    use super::{remove_prefix, remove_suffix};
+    use crate::prelude::{remove_prefix, remove_suffix};
 
     #[test]
     fn remove_prefix_works() {
