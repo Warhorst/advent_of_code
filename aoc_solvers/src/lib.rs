@@ -79,7 +79,7 @@ pub(crate) fn solve_puzzle<
                             RealResult::Works(solution_a.to_string())
                         } else {
                             RealResult::Fails {
-                                expedted: expected_a.to_string(),
+                                expected: expected_a.to_string(),
                                 was: solution_a.to_string(),
                             }
                         }
@@ -104,7 +104,7 @@ pub(crate) fn solve_puzzle<
                             RealResult::Works(solution_b.to_string())
                         } else {
                             RealResult::Fails {
-                                expedted: expected_b.to_string(),
+                                expected: expected_b.to_string(),
                                 was: solution_b.to_string(),
                             }
                         }
@@ -130,10 +130,10 @@ trait PuzzleOutput: Display + PartialEq + FromStr<Err: Debug> {}
 impl<T> PuzzleOutput for T where T: Display + PartialEq + FromStr<Err: Debug> {}
 
 pub struct RunConfig {
-    run_example_a: bool,
-    run_a: bool,
-    run_example_b: bool,
-    run_b: bool,
+    pub run_example_a: bool,
+    pub run_a: bool,
+    pub run_example_b: bool,
+    pub run_b: bool,
 }
 
 struct Input<A: PuzzleOutput, B: PuzzleOutput> {
@@ -215,13 +215,13 @@ impl<A: PuzzleOutput, B: PuzzleOutput> Input<A, B> {
 }
 
 pub struct PuzzleResult {
-    example_a_result: Option<ExampleResult>,
-    a_result: Option<RealResult>,
-    example_b_result: Option<ExampleResult>,
-    b_result: Option<RealResult>,
+    pub example_a_result: Option<ExampleResult>,
+    pub a_result: Option<RealResult>,
+    pub example_b_result: Option<ExampleResult>,
+    pub b_result: Option<RealResult>,
 }
 
-enum ExampleResult {
+pub enum ExampleResult {
     /// The example does not exist in the input.
     DoesNotExist,
     /// The example output has the expected result.
@@ -230,7 +230,7 @@ enum ExampleResult {
     Fails { expected: String, was: String },
 }
 
-enum RealResult {
+pub enum RealResult {
     /// The puzzle input does not exist
     DoesNotExist,
     /// The puzzle has the given output.
@@ -238,5 +238,5 @@ enum RealResult {
     /// The puzzle has the expected output. Also returns the result.
     Works(String),
     /// The puzzle has not the expected output.
-    Fails { expedted: String, was: String },
+    Fails { expected: String, was: String },
 }
