@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use bitarray::BitArray;
 use microlp::{ComparisonOp, LinearExpr, OptimizationDirection, Problem};
+use pathfinding::prelude::dijkstra;
 
 use helpers::prelude::*;
 

@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use helpers::prelude::*;
 use Tile::*;
-use pathfinding::prelude::astar;
+use pathfinding::prelude::{astar, astar_bag_collect};
 
 pub fn solve_a(input: &str) -> usize {
     let board = Board::<Tile>::from(input);

@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use colored::Colorize;
 use helpers::prelude::*;
+use pathfinding::prelude::astar;
 
 pub fn solve_a(input: &str) -> usize {
     let tile_map = TileMap::<Tile>::from(input);
