@@ -6,7 +6,7 @@ use colored::Colorize;
 /// This binary takes 3 inputs:
 /// 1. The year (required): The year of the puzzle
 /// 2. The day (required): The day of the puzzle
-/// 3. The selection (optional): A string which contains a space separated list of selection identifiers. If not set, every example and puzzle will be executed Possible values:
+/// 3. The selection (optional): A string which contains a space separated list of selection identifiers. If not set, every example and puzzle will be executed. Possible values:
 ///     - ea -> Run example A
 ///     - eb -> Run example B
 ///     - a -> Run puzzle A
