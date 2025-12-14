@@ -100,6 +100,7 @@ struct Input<A: PuzzleResult, B: PuzzleResult> {
     pub example_a: Option<(String, A)>,
     /// Input and expected result of example B, if present
     pub example_b: Option<(String, B)>,
+    /// Existing solutions for A and B. Helpful to automatically check if solvers still work.
     pub puzzle_solution: Option<(A, B)>
 }
 
