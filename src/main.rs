@@ -6,7 +6,6 @@ mod aoc_lib;
 mod y2022;
 mod y2023;
 mod y2024;
-mod y2025;
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
